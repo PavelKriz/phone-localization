@@ -47,7 +47,7 @@ const float good_matches_min_distance_alpha = 2;
 #define CURRENT_TEST MTEST1
 
 //timing of the calculation
-#define TIMINGx
+#define TIMING
 
 #ifndef TIMING
 #define VIEW_RESULT
