@@ -6,6 +6,7 @@
 #include <map>
 #include <limits>
 #include <utility>
+#include <exception>
 //timing
 #include <chrono>
 
@@ -55,6 +56,65 @@ const float good_matches_min_distance_alpha = 2;
 
 
 #define DEBUG
+
+//=================================================================================================
+//=================================================================================================
+
+
+class CImage {
+	//methods for detection
+	enum EDetectionMethod {
+		SIFT_DETECTION_,
+		ORB_DETECTION_
+	};
+	// methods for descriptors extraction 
+	enum EDescribingMethod {
+		SIFT_DESCRIPTORS_EXTRACTING_,
+		ORB_DESCRIPTORS_EXTRACTING_
+	};
+
+	Ptr<Mat> image_;
+	Ptr<vector<KeyPoint>> imageKeypoints_;
+	Ptr<Mat> keypointsDescriptors_;
+	
+	//set nullptr to every pointer
+	CImage():image_(), imageKeypoints_(), keypointsDescriptors_(){}
+	
+	//throws ::failure exceptions
+	void loadImageFile(string filePath);
+	//computes both keypoints and theirs descriptors
+	void detectDescribeFeatures(EDetectionMethod detMethod, EDescribingMethod desMethod);
+};
+
+//=================================================================================================
+
+void CImage::loadImageFile(string filePath)
+{
+	*image_ = imread(filePath, CV_8U);
+	if (image_->empty())
+	{
+		throw ios_base::failure("Can't load image with file path: " + filePath);
+	}
+}
+
+//=================================================================================================
+
+void CImage::detectDescribeFeatures(EDetectionMethod detMethod, EDescribingMethod desMethod)
+{
+	Ptr<Feature2D> detector;
+	if (detMethod == EDetectionMethod::SIFT_DETECTION_) {
+		detector = SIFT::create(500);
+	}
+	else if (detMethod == EDetectionMethod::ORB_DETECTION_) {
+		detector = ORB::create(500);
+	}
+	else {
+		cout << "Error feature detecting method was used!!! ORB is used instead." << endl;
+		detector = ORB::create(500);
+	}
+
+	detector->detectAndCompute(image_, noArray(), keypoints, descriptors);
+}
 
 //=================================================================================================
 //=================================================================================================
