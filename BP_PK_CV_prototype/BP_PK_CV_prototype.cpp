@@ -60,6 +60,60 @@ const float good_matches_min_distance_alpha = 2;
 //=================================================================================================
 //=================================================================================================
 
+class CLogger{
+public:
+	virtual ~CLogger() {}
+	virtual CLogger& logSection(const string& name, unsigned int level = 0) = 0;
+	virtual CLogger& log(const string & toLog) = 0;
+	virtual CLogger& endl() = 0;
+	virtual ostream& getStream() = 0;
+};
+
+//=================================================================================================
+//=================================================================================================
+
+class CTermLogger : public CLogger{
+public:
+	~CTermLogger() override {}
+	virtual CLogger& logSection(const string& name, unsigned int level = 0) override {
+		//make the name in upper case
+		string upperName = name;
+		for (auto& c : upperName)
+			c = toupper(c);
+
+		if (level > 2)
+			level = 2;
+
+		cout << std::endl;
+
+		for (int i = -1; i < (int) level; ++i)
+			cout << "==";
+
+		cout << upperName;
+
+		for (int i = -1; i < (int) level; ++i)
+			cout << "==";
+
+		std::cout << std::endl;
+
+		return *this;
+	}
+	virtual CLogger& log(const string& toLog) override {
+		cout << toLog;
+		return *this;
+	}
+	virtual CLogger& endl() override {
+		std::cout << std::endl;
+		return *this;
+	}
+
+	virtual ostream& getStream() override { return cout; }
+};
+
+
+//=================================================================================================
+//=================================================================================================
+
 
 class CImage {
 public:
@@ -80,7 +134,7 @@ public:
 	//TODO move constructor
 	
 	//computes both keypoints and theirs descriptors, throws invalid argument
-	void detectDescribeFeatures(EProcessMethod method);
+	void detectDescribeFeatures(EProcessMethod method, CLogger * logger);
 
 	const string& getFilePath() { return filePath_; }
 	Mat& getImage() { return image_; }
@@ -102,7 +156,7 @@ CImage::CImage(string filePath)
 
 //=================================================================================================
 
-void CImage::detectDescribeFeatures(EProcessMethod method)
+void CImage::detectDescribeFeatures(EProcessMethod method, CLogger * logger)
 {
 	Ptr<Feature2D> detector;
 	switch (method)
@@ -119,7 +173,7 @@ void CImage::detectDescribeFeatures(EProcessMethod method)
 	}
 
 	detector->detectAndCompute(image_, noArray(), imageKeypoints_, keypointsDescriptors_);
-	cout << "CImage with filepath: " + filePath_ +" keypoints count: " << imageKeypoints_.size() << endl;
+	logger->getStream() << "CImage with filepath: " + filePath_ + " keypoints count: " << imageKeypoints_.size() << endl;
 	wasProcessed_ = true;
 }
 
@@ -143,9 +197,9 @@ private:
 
 public:
 	//throws invalid argument
-	CImagesMatch(Ptr<CImage> & object, Ptr<CImage> & scene, EMatchingMethod method = FLANN_BASED);
+	CImagesMatch(Ptr<CImage> & object, Ptr<CImage> & scene, CLogger* logger, EMatchingMethod method = FLANN_BASED);
 	CImagesMatch(CImagesMatch&& right) noexcept;
-	void drawPreviewAndResult( string& testName);
+	void drawPreviewAndResult( string& runName, CLogger* logger);
 
 	size_t getNumberOfMatches() { return matches_.size(); }
 	double getAvarageMatchesDistance() { return avarageMatchesDistance_; }
@@ -156,7 +210,7 @@ public:
 
 //=================================================================================================
 
-CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, EMatchingMethod method)
+CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger * logger, EMatchingMethod method)
 	: methodUsed_(method), objectImage_(object), sceneImage_(scene)
 {
 	if (object.empty()) {
@@ -192,16 +246,15 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, EMatchingMet
 	double avarageWeight = 0;
 	for (int i = 0; i < object->getDescriptors().rows; i++)
 	{
-		//cout << allMatches[i].distance << endl;
 		double dist = allMatches[i].distance;
 		if (dist < min_dist) min_dist = dist;
 		if (dist > max_dist) max_dist = dist;
 		avarageDist = ((avarageDist * avarageWeight) + (dist)) / (1 + avarageWeight);
 	}
 
-	cout << "-- Max dist :" << max_dist << endl;
-	cout << "-- Min dist :" << min_dist << endl;
-	cout << "-- Avg dist :" << avarageDist << endl;
+	logger->getStream() << "-- Max dist :" << max_dist << endl;
+	logger->getStream() << "-- Min dist :" << min_dist << endl;
+	logger->getStream() << "-- Avg dist :" << avarageDist << endl;
 
 	avarageMatchesDistance_ = avarageDist;
 
@@ -231,7 +284,7 @@ CImagesMatch::CImagesMatch(CImagesMatch&& right) noexcept
 
 //=================================================================================================
 
-void CImagesMatch::drawPreviewAndResult( string& testName)
+void CImagesMatch::drawPreviewAndResult( string& runName, CLogger* logger)
 {
 	// drawing the results
 #ifdef VIEW_RESULT
@@ -287,7 +340,7 @@ void CImagesMatch::drawPreviewAndResult( string& testName)
 	waitKey(0);
 #endif
 #ifdef WRITE_RESULT
-	string outputNameMatches = "matches_" + testName + ".jpg";
+	string outputNameMatches = "matches_" + runName + ".jpg";
 	imwrite(outputNameMatches, imageMatches);
 #endif
 
@@ -323,7 +376,7 @@ void CImagesMatch::drawPreviewAndResult( string& testName)
 	waitKey(0);
 #endif
 #ifdef WRITE_RESULT
-	string outputNameImageMatch = "image_match_" + testName + ".jpg";
+	string outputNameImageMatch = "image_match_" + runName + ".jpg";
 	imwrite(outputNameImageMatch, imgSceneColor);
 #endif
 
@@ -334,6 +387,7 @@ void CImagesMatch::drawPreviewAndResult( string& testName)
 
 //class that searches trough scenes and it is searching where is the object
 class CObjectInScenesEngine {
+	CLogger* logger_;
 	Ptr<CImage> objectImage_;
 	vector<Ptr<CImage>> sceneImages_;
 	vector<CImagesMatch> matches_;
@@ -341,35 +395,43 @@ class CObjectInScenesEngine {
 	bool bestMatchExist_ = false;
 public:
 	//can throw ios_base::failure exception
-	CObjectInScenesEngine(string& objectFilePath, vector<string>& sceneFilePaths);
+	CObjectInScenesEngine(const string & runName, const string& objectFilePath, const vector<string>& sceneFilePaths);
+	~CObjectInScenesEngine() { delete logger_; }
 	//can throw invalid_argument
 	int run(CImage::EProcessMethod method);
 	//throws exception logic_error
-	void viewBestResult( string& testName);
+	void viewBestResult( string& runName);
 };
 
 //=================================================================================================
 
-CObjectInScenesEngine::CObjectInScenesEngine(string& objectFilePath, vector<string>& sceneFilePaths)
+CObjectInScenesEngine::CObjectInScenesEngine(const string& runName, const string& objectFilePath, const vector<string>& sceneFilePaths)
 {
-		objectImage_ = new CImage(objectFilePath);
-		for (auto& it : sceneFilePaths) {
-			sceneImages_.push_back(new CImage(it));
-		}
+	logger_ = new CTermLogger();
+	logger_->logSection("Run: " + runName, 0);
+	objectImage_ = new CImage(objectFilePath);
+	for (auto& it : sceneFilePaths) {
+		sceneImages_.push_back(new CImage(it));
+	}
+	logger_->log("images loaded").endl();
 }
 
 //=================================================================================================
 
 int CObjectInScenesEngine::run(CImage::EProcessMethod method)
 {
+	logger_->logSection("detectig and describing features", 1);
+	logger_->logSection("object", 2);
 	//prepare the object
-	objectImage_->detectDescribeFeatures(method);
+	objectImage_->detectDescribeFeatures(method, logger_);
 
 	//prepare the scenes
+	logger_->logSection("scenes", 2);
 	for (auto & ptr : sceneImages_) {
-		ptr->detectDescribeFeatures(method);
+		ptr->detectDescribeFeatures(method, logger_);
 	}
 
+	logger_->logSection("matching", 1);
 	//searching for the scene object matching combination with lowest avarage distance of matches
 	double lowestDistance = numeric_limits<double>::max();
 	int lowestDistanceIndex = 0;
@@ -378,7 +440,8 @@ int CObjectInScenesEngine::run(CImage::EProcessMethod method)
 	for (int i = 0; i < sceneImages_.size(); ++i) {
 		//computing the keypoints, descriptors, matches
 		//move construction
-		matches_.emplace_back( CImagesMatch(objectImage_, sceneImages_[i], CImagesMatch::EMatchingMethod::BRUTE_FORCE));
+		logger_->getStream() << endl << "Matching object with scene with filepath: " << sceneImages_[i]->getFilePath() << endl;
+		matches_.emplace_back(CImagesMatch(objectImage_, sceneImages_[i], logger_, CImagesMatch::EMatchingMethod::BRUTE_FORCE));
 
 		//checking if the match is possible to be the best until now
 		double currentDist = matches_.back().getAvarageMatchesDistance();
@@ -387,20 +450,22 @@ int CObjectInScenesEngine::run(CImage::EProcessMethod method)
 			lowestDistance = currentDist;
 		}
 		bestMatchExist_ = true;
-		cout << "Compare index:" << i << " | avarage distance: " << currentDist << endl;
+		logger_->getStream() << "Compare index:" << i << " | avarage distance: " << currentDist << endl;
 	}
 
 	bestMatchIndex_ = lowestDistanceIndex;
+	logger_->logSection("result", 2);
+	logger_->getStream() << "Best scene match for object is scene with filepath: " << sceneImages_[bestMatchIndex_]->getFilePath() << endl;
 
 	return lowestDistanceIndex;
 }
 
 //=================================================================================================
 
-void CObjectInScenesEngine::viewBestResult(string& testName)
+void CObjectInScenesEngine::viewBestResult(string& runName)
 {
 	if (bestMatchExist_) {
-		matches_[bestMatchIndex_].drawPreviewAndResult( testName);
+		matches_[bestMatchIndex_].drawPreviewAndResult( runName, logger_);
 	}
 	else {
 		throw logic_error("View of matches was called without computing matches first");
@@ -414,12 +479,12 @@ void CObjectInScenesEngine::viewBestResult(string& testName)
 //=================================================================================================
 
 //function for finding object in multiple scene, result is the best one match
-int comparisonRun(string& objectFilePath, vector<string>& sceneFilePaths, string& testName) {
+int comparisonRun(string& objectFilePath, vector<string>& sceneFilePaths, string& runName) {
 
 	try {
-		CObjectInScenesEngine engine(objectFilePath, sceneFilePaths);
+		CObjectInScenesEngine engine(runName, objectFilePath, sceneFilePaths);
 		engine.run(CImage::EProcessMethod::SIFT_);
-		engine.viewBestResult(testName);
+		engine.viewBestResult(runName);
 	}
 	catch(ios_base::failure e){
 		cout << e.what() << endl;
@@ -452,42 +517,42 @@ int main(int argc, char** argv)
 #if CURRENT_TEST == TEST1
 	string objectFilePath = "pavel.png";
 	vector<string> sceneFilePaths = { "pavelOnPalette.png" };
-	string testName = "test1";
+	string runName = "test1";
 #elif CURRENT_TEST == TEST2
 	string objectFilePath = dumRottRoot + "dumRottRef.png";
 	vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene.jpg" };
-	string testName = "test2";
+	string runName = "test2";
 #elif CURRENT_TEST == TEST3
 	string objectFilePath = dumRottRoot + "dumRottRef.png";
 	vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene2.jpg" };
-	string testName = "test3";
+	string runName = "test3";
 #elif CURRENT_TEST == TEST4
 	string objectFilePath = dumRottRoot + "dumRottRef.png";
 	vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene3.jpg" };
-	string testName = "test4";
+	string runName = "test4";
 #elif CURRENT_TEST == TEST5
 	string objectFilePath = dumRottRoot + "dumRottRef.png";
 	vector<string> sceneFilePaths = { dumRottRoot + "dumRottScen4.jpg" };
-	string testName = "test5";
+	string runName = "test5";
 #elif CURRENT_TEST == TEST6
 	string objectFilePath = dumRottRoot + "dumRottRef.png";
 	vector<string> sceneFilePaths = { dumRottRoot + "dumRottRef.png" };
-	string testName = "test6";
+	string runName = "test6";
 #elif CURRENT_TEST == MTEST1
 	string objectFilePath = dumRottRoot + "dumRottRef.png";
 	vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene2.jpg", imagesRoot + "white_house\\whiteHouse1.jpg", imagesRoot + "pavel\\pavel.png" };
-	string testName = "mtest1";
+	string runName = "mtest1";
 #endif
 
 
 	//for different type of test is there different function
 	int retValue = 0;
 #if CURRENT_TEST < MULTIPLE_TEST_BOTTOM
-	if ((retValue = comparisonRun(objectFilePath, sceneFilePath, testName)) != 1) {
+	if ((retValue = comparisonRun(objectFilePath, sceneFilePath, runName)) != 1) {
 		return retValue;
 	}
 #else
-	if ((retValue = comparisonRun(objectFilePath, sceneFilePaths, testName)) != 1) {
+	if ((retValue = comparisonRun(objectFilePath, sceneFilePaths, runName)) != 1) {
 		return retValue;
 	}
 #endif
