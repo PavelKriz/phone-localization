@@ -31,29 +31,29 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* log
 
 	//-- Quick calculation of max, min, avf distances between keypoints
 
-	double max_dist = 0; double min_dist = numeric_limits<double>::max();
-	double avarageDist = 0;
+	double maxDistance = 0; double minDistance = numeric_limits<double>::max();
+	double avarageDistance = 0;
 	double avarageWeight = 0;
 	for (int i = 0; i < object->getDescriptors().rows; i++)
 	{
 		double dist = allMatches[i].distance;
-		if (dist < min_dist) min_dist = dist;
-		if (dist > max_dist) max_dist = dist;
-		avarageDist = ((avarageDist * avarageWeight) + (dist)) / (1 + avarageWeight);
+		if (dist < minDistance) minDistance = dist;
+		if (dist > maxDistance) maxDistance = dist;
+		avarageDistance = ((avarageDistance * avarageWeight) + (dist)) / (1 + avarageWeight);
 	}
 
-	logger->getStream() << "-- Max dist :" << max_dist << endl;
-	logger->getStream() << "-- Min dist :" << min_dist << endl;
-	logger->getStream() << "-- Avg dist :" << avarageDist << endl;
+	logger->log("Max distance :").log(to_string(maxDistance)).endl();
+	logger->log("Min distance :").log(to_string(minDistance)).endl();
+	logger->log("Average distance :").log(to_string(avarageDistance)).endl();
 
-	avarageMatchesDistance_ = avarageDist;
+	avarageMatchesDistance_ = avarageDistance;
 
 
-	//-- Get only "good" matches (i.e. whose distance is less than something like (2-3)*min_dist )
+	//-- Get only "good" matches (i.e. whose distance is less than something like (2-3)*minDistance )
 	// just filtering some "badly" matched matches
 	for (auto& it : allMatches)
 	{
-		if (it.distance <= (good_matches_min_distance_alpha * min_dist))
+		if (it.distance <= (good_matches_min_distance_alpha * minDistance))
 		{
 			matches_.push_back(it);
 		}

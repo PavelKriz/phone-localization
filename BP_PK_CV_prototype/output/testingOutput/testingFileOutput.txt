@@ -1,0 +1,48 @@
+
+===RUN: TESTINGFILEOUTPUT===
+images loaded
+
+======DETECTIG AND DESCRIBING FEATURES======
+    
+=========object=========
+        CImage with filepath: input_images\dum_rott\dumRottRef.png keypoints count: 500
+        
+=========scenes=========
+        CImage with filepath: input_images\dum_rott\dumRottScene2.jpg keypoints count: 500
+        CImage with filepath: input_images\white_house\whiteHouse1.jpg keypoints count: 500
+        CImage with filepath: input_images\pavel\pavel.png keypoints count: 500
+        
+=========timing=========
+        Detecting and describing all features took: 1605[ms]
+        
+======MATCHING======
+    
+    Matching object with scene with filepath: input_images\dum_rott\dumRottScene2.jpg
+    Max distance :417.814545
+    Min distance :90.127686
+    Average distance :260.148041
+    Compare index: 0 | avarage distance: 260.148041
+    
+    Matching object with scene with filepath: input_images\white_house\whiteHouse1.jpg
+    Max distance :436.253357
+    Min distance :152.200531
+    Average distance :307.873352
+    Compare index: 1 | avarage distance: 307.873352
+    
+    Matching object with scene with filepath: input_images\pavel\pavel.png
+    Max distance :446.258881
+    Min distance :150.701691
+    Average distance :317.932373
+    Compare index: 2 | avarage distance: 317.932373
+    
+=========timing=========
+        Matching the right scene took: 44[ms]
+        Time of the whole process: 1650[ms]
+        
+=========result=========
+        Best scene match for object is scene with filepath: input_images\dum_rott\dumRottScene2.jpg
+        
+=========timing=========
+        Result output took: 352[ms]
+        Time of the whole process with view: 2003[ms]
+        

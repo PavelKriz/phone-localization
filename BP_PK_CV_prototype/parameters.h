@@ -15,6 +15,15 @@ const float good_matches_min_distance_alpha = 2;
 //Current used test / tests are changed with preprocessor
 #define CURRENT_TEST TEST7
 
+const string OUTPUT_ROOT = "output\\testingOutput\\";
+
+enum class EOutputType{
+	console,
+	file
+};
+
+const EOutputType OUTPUT_TYPE = EOutputType::file;
+
 //timing of the calculation
 #define TIMING
 
@@ -58,6 +67,6 @@ const string dumRottRoot = imagesRoot + "dum_rott\\";
 #elif CURRENT_TEST == TEST7
 	const string objectFilePath = dumRottRoot + "dumRottRef.png";
 	const vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene2.jpg", imagesRoot + "white_house\\whiteHouse1.jpg", imagesRoot + "pavel\\pavel.png" };
-	const string runName = "mtest1";
+	const string runName = "testingFileOutput";
 #endif
 

@@ -31,6 +31,6 @@ void CImage::detectDescribeFeatures(EProcessMethod method, CLogger* logger)
 	}
 
 	detector->detectAndCompute(image_, noArray(), imageKeypoints_, keypointsDescriptors_);
-	logger->getStream() << "CImage with filepath: " + filePath_ + " keypoints count: " << imageKeypoints_.size() << endl;
+	logger->log("CImage with filepath: " + filePath_ + " keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
 	wasProcessed_ = true;
 }

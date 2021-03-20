@@ -4,6 +4,7 @@
 #include <vector>
 #include <utility>
 #include "CLogger.h"
+#include "COstreamLogger.h"
 
 //reading writing images
 #include <opencv2/imgcodecs.hpp>
@@ -12,17 +13,13 @@
 
 using namespace std;
 
-class CRuntimeLogger : public CLogger {
-	vector<pair<Mat, string>> images_;
+class CRuntimeLogger : public COstreamLogger {
+protected:
+	inline virtual ostream& out() override { return cout; }
 public:
 	CRuntimeLogger() = delete;
-	CRuntimeLogger(bool putImages) : CLogger(putImages){}
-	~CRuntimeLogger() override {}
-	virtual CLogger& logSection(const string& name, unsigned int level = 0) override;
-	virtual CLogger& log(const string& toLog) override;
-	virtual CLogger& endl() override;
-	inline virtual ostream& getStream() override { return std::cout; }
-	virtual void putImage(const Mat& image, const string & name) override;
+	CRuntimeLogger(bool putImages);
+	virtual ~CRuntimeLogger() override {}
 	virtual void flush() override;
 };
 

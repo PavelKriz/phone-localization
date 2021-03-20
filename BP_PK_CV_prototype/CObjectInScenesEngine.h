@@ -7,6 +7,7 @@
 #include <opencv2/core/cvstd_wrapper.hpp>
 
 #include "CRuntimeLogger.h"
+#include "CFileLogger.h"
 #include "CImagesMatch.h"
 
 

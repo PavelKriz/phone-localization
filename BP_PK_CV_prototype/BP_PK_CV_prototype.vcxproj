@@ -20,16 +20,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BP_PK_CV_prototype.cpp" />
+    <ClCompile Include="CFileLogger.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CImagesMatch.cpp" />
     <ClCompile Include="CObjectInScenesEngine.cpp" />
+    <ClCompile Include="COstreamLogger.cpp" />
     <ClCompile Include="CRuntimeLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CFileLogger.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CImagesMatch.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CObjectInScenesEngine.h" />
+    <ClInclude Include="COstreamLogger.h" />
     <ClInclude Include="CRuntimeLogger.h" />
     <ClInclude Include="parameters.h" />
   </ItemGroup>
