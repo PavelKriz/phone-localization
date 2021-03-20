@@ -24,7 +24,7 @@
     <ClCompile Include="CImagesMatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CObjectInScenesEngine.cpp">
+    <ClCompile Include="CObjectInSceneFinder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CRuntimeLogger.cpp">
@@ -53,7 +53,7 @@
     <ClInclude Include="parameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CObjectInScenesEngine.h">
+    <ClInclude Include="CObjectInSceneFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="COstreamLogger.h">

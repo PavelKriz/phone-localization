@@ -13,7 +13,7 @@ const float good_matches_min_distance_alpha = 2;
 
 
 //Current used test / tests are changed with preprocessor
-#define CURRENT_TEST TEST7
+#define CURRENT_TEST TEST1
 
 const string OUTPUT_ROOT = "output\\testingOutput\\";
 
@@ -22,10 +22,10 @@ enum class EOutputType{
 	file
 };
 
-const EOutputType OUTPUT_TYPE = EOutputType::file;
+const EOutputType OUTPUT_TYPE = EOutputType::console;
 
 //timing of the calculation
-#define TIMING
+#define TIMINGxx
 
 #ifndef TIMING
 const bool WRITE_OR_SHOW_IMAGES = true;
@@ -41,32 +41,8 @@ const string dumRottRoot = imagesRoot + "dum_rott\\";
 
 //inits for each tests
 #if CURRENT_TEST == TEST1
-	const string objectFilePath = "pavel.png";
-	const vector<string> sceneFilePaths = { "pavelOnPalette.png" };
-	const string runName = "test1";
-#elif CURRENT_TEST == TEST2
-	const string objectFilePath = dumRottRoot + "dumRottRef.png";
-	const vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene.jpg" };
-	const string runName = "test2";
-#elif CURRENT_TEST == TEST3
-	const string objectFilePath = dumRottRoot + "dumRottRef.png";
-	const vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene2.jpg" };
-	const string runName = "test3";
-#elif CURRENT_TEST == TEST4
-	const string objectFilePath = dumRottRoot + "dumRottRef.png";
-	const vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene3.jpg" };
-	const string runName = "test4";
-#elif CURRENT_TEST == TEST5
-	const string objectFilePath = dumRottRoot + "dumRottRef.png";
-	const vector<string> sceneFilePaths = { dumRottRoot + "dumRottScen4.jpg" };
-	const string runName = "test5";
-#elif CURRENT_TEST == TEST6
-	const string objectFilePath = dumRottRoot + "dumRottRef.png";
-	const vector<string> sceneFilePaths = { dumRottRoot + "dumRottRef.png" };
-	const string runName = "test6";
-#elif CURRENT_TEST == TEST7
-	const string objectFilePath = dumRottRoot + "dumRottRef.png";
-	const vector<string> sceneFilePaths = { dumRottRoot + "dumRottScene2.jpg", imagesRoot + "white_house\\whiteHouse1.jpg", imagesRoot + "pavel\\pavel.png" };
-	const string runName = "testingFileOutput";
+	const string sceneFilePath = dumRottRoot + "dumRottScene2.jpg";
+	const vector<string> objectFilePaths = { dumRottRoot + "dumRottRef.png", imagesRoot + "white_house\\" +  "whiteHouse1ref.png" };
+	const string runName = "testingFindingObjectsInScene";
 #endif
 

@@ -13,36 +13,36 @@ images loaded
         CImage with filepath: input_images\pavel\pavel.png keypoints count: 500
         
 =========timing=========
-        Detecting and describing all features took: 1605[ms]
+        Detecting and describing all features took: 1418[ms]
         
 ======MATCHING======
     
-    Matching object with scene with filepath: input_images\dum_rott\dumRottScene2.jpg
-    Max distance :417.814545
+    Matching scene with object that has filepath: input_images\dum_rott\dumRottScene2.jpg
+    Max distance :444.227417
     Min distance :90.127686
-    Average distance :260.148041
-    Compare index: 0 | avarage distance: 260.148041
+    Average distance :365.257446
+    Compare index: 0 | avarage distance: 365.257446
     
-    Matching object with scene with filepath: input_images\white_house\whiteHouse1.jpg
-    Max distance :436.253357
+    Matching scene with object that has filepath: input_images\white_house\whiteHouse1.jpg
+    Max distance :439.612335
     Min distance :152.200531
-    Average distance :307.873352
-    Compare index: 1 | avarage distance: 307.873352
+    Average distance :197.565186
+    Compare index: 1 | avarage distance: 197.565186
     
-    Matching object with scene with filepath: input_images\pavel\pavel.png
-    Max distance :446.258881
+    Matching scene with object that has filepath: input_images\pavel\pavel.png
+    Max distance :433.360138
     Min distance :150.701691
-    Average distance :317.932373
-    Compare index: 2 | avarage distance: 317.932373
+    Average distance :287.114960
+    Compare index: 2 | avarage distance: 287.114960
     
 =========timing=========
-        Matching the right scene took: 44[ms]
-        Time of the whole process: 1650[ms]
+        Finding the right object took: 126[ms]
+        Time of the whole process: 1544[ms]
         
 =========result=========
-        Best scene match for object is scene with filepath: input_images\dum_rott\dumRottScene2.jpg
+        Best object match for scene is object with filepath: input_images\white_house\whiteHouse1.jpg
         
 =========timing=========
-        Result output took: 352[ms]
-        Time of the whole process with view: 2003[ms]
+        Result output took: 232[ms]
+        Time of the whole process with view: 1776[ms]
         

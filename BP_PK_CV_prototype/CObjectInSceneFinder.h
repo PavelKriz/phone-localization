@@ -13,17 +13,17 @@
 
 
 //class that searches trough scenes and it is searching where is the object
-class CObjectInScenesEngine {
+class CObjectInSceneFinder {
 	CLogger* logger_;
-	Ptr<CImage> objectImage_;
-	vector<Ptr<CImage>> sceneImages_;
+	Ptr<CImage> sceneImage_;
+	vector<Ptr<CImage>> objectImages_;
 	vector<CImagesMatch> matches_;
 	size_t bestMatchIndex_;
 	bool bestMatchExist_ = false;
 public:
 	//can throw ios_base::failure exception
-	CObjectInScenesEngine(const string& runName, const string& objectFilePath, const vector<string>& sceneFilePaths);
-	~CObjectInScenesEngine() { delete logger_; }
+	CObjectInSceneFinder(const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths);
+	~CObjectInSceneFinder() { delete logger_; }
 	//can throw invalid_argument
 	int run(CImage::EProcessMethod method, bool viewResult = true);
 	//throws exception logic_error
