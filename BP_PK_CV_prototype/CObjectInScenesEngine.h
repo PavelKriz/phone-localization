@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <chrono>
 
 //wrapper around basic shared pointer
 #include <opencv2/core/cvstd_wrapper.hpp>
@@ -23,7 +24,9 @@ public:
 	CObjectInScenesEngine(const string& runName, const string& objectFilePath, const vector<string>& sceneFilePaths);
 	~CObjectInScenesEngine() { delete logger_; }
 	//can throw invalid_argument
-	int run(CImage::EProcessMethod method);
+	int run(CImage::EProcessMethod method, bool viewResult = true);
 	//throws exception logic_error
 	void viewBestResult(const string& runName);
+	//print all the log, should be used on the end
+	void report() { logger_->flush(); }
 };

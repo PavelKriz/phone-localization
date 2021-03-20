@@ -21,8 +21,9 @@ int comparisonRun(const string& objectFilePath, const vector<string>& sceneFileP
 
 	try {
 		CObjectInScenesEngine engine(runName, objectFilePath, sceneFilePaths);
-		engine.run(CImage::EProcessMethod::SIFT_);
-		engine.viewBestResult(runName);
+		bool viewResult = true;
+		engine.run(CImage::EProcessMethod::SIFT_, viewResult);
+		engine.report();
 	}
 	catch(ios_base::failure e){
 		cout << e.what() << endl;

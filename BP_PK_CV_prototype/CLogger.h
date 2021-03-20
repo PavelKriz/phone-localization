@@ -19,4 +19,5 @@ public:
 	virtual CLogger& endl() = 0;
 	virtual ostream& getStream() = 0;
 	virtual void putImage(const Mat& image, const string& outputPath) = 0;
+	virtual void flush() = 0;
 };

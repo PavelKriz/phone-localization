@@ -14,8 +14,11 @@ CObjectInScenesEngine::CObjectInScenesEngine(const string& runName, const string
 
 //=================================================================================================
 
-int CObjectInScenesEngine::run(CImage::EProcessMethod method)
+int CObjectInScenesEngine::run(CImage::EProcessMethod method, bool viewResult)
 {
+	//set begin time
+	chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+
 	logger_->logSection("detectig and describing features", 1);
 	logger_->logSection("object", 2);
 	//prepare the object
@@ -26,6 +29,11 @@ int CObjectInScenesEngine::run(CImage::EProcessMethod method)
 	for (auto& ptr : sceneImages_) {
 		ptr->detectDescribeFeatures(method, logger_);
 	}
+
+	logger_->logSection("timing", 2);
+	chrono::steady_clock::time_point afterDetectingDescring = chrono::steady_clock::now();
+	logger_->getStream() << "Detecting and describing all features took: " << 
+		chrono::duration_cast<chrono::milliseconds>(afterDetectingDescring - begin).count() << "[ms]" << endl;
 
 	logger_->logSection("matching", 1);
 	//searching for the scene object matching combination with lowest avarage distance of matches
@@ -49,9 +57,29 @@ int CObjectInScenesEngine::run(CImage::EProcessMethod method)
 		logger_->getStream() << "Compare index:" << i << " | avarage distance: " << currentDist << endl;
 	}
 
+	logger_->logSection("timing", 2);
+	chrono::steady_clock::time_point afterMatching = chrono::steady_clock::now();
+	logger_->getStream() << "Matching the right scene took: " << 
+		chrono::duration_cast<chrono::milliseconds>(afterMatching - afterDetectingDescring).count() << "[ms]" << endl;
+
+	logger_->getStream() << "Time of the whole process: " <<
+		chrono::duration_cast<chrono::milliseconds>(afterMatching - begin).count() << "[ms]" << endl;
+
 	bestMatchIndex_ = lowestDistanceIndex;
 	logger_->logSection("result", 2);
 	logger_->getStream() << "Best scene match for object is scene with filepath: " << sceneImages_[bestMatchIndex_]->getFilePath() << endl;
+
+	if (viewResult) {
+
+		matches_[bestMatchIndex_].drawPreviewAndResult(runName, logger_);
+		logger_->logSection("timing", 2);
+		chrono::steady_clock::time_point afterRenderingResult = chrono::steady_clock::now();
+		logger_->getStream() << "Result output took: " <<
+			chrono::duration_cast<chrono::milliseconds>(afterRenderingResult - afterMatching).count() << "[ms]" << endl;
+
+		logger_->getStream() << "Time of the whole process with view: " <<
+			chrono::duration_cast<chrono::milliseconds>(afterRenderingResult - begin).count() << "[ms]" << endl;
+	}
 
 	return lowestDistanceIndex;
 }
