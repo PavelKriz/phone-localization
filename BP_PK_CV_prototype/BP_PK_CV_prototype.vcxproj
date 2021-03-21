@@ -35,6 +35,7 @@
     <ClInclude Include="CObjectInSceneFinder.h" />
     <ClInclude Include="COstreamLogger.h" />
     <ClInclude Include="CRuntimeLogger.h" />
+    <ClInclude Include="images.h" />
     <ClInclude Include="parameters.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

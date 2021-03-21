@@ -1,5 +1,7 @@
 #pragma once
 
+#include "images.h"
+
 const float good_matches_min_distance_alpha = 2;
 
 

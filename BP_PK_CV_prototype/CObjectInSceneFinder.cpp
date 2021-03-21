@@ -30,7 +30,7 @@ int CObjectInSceneFinder::run(CImage::EProcessMethod method, bool viewResult)
 	//prepare the scene
 	sceneImage_->detectDescribeFeatures(method, logger_);
 
-	//prepare the scenes
+	//prepare the object
 	logger_->logSection("scenes", 2);
 	for (auto& ptr : objectImages_) {
 		ptr->detectDescribeFeatures(method, logger_);
