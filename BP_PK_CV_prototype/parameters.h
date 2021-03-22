@@ -15,7 +15,7 @@ const float good_matches_min_distance_alpha = 2;
 
 
 //Current used test / tests are changed with preprocessor
-#define CURRENT_TEST TEST1
+#define CURRENT_TEST TEST2
 
 const string OUTPUT_ROOT = "output\\testingOutput\\";
 
@@ -46,5 +46,9 @@ const string dumRottRoot = imagesRoot + "dum_rott\\";
 	const string sceneFilePath = dumRottRoot + "dumRottScene2.jpg";
 	const vector<string> objectFilePaths = { dumRottRoot + "dumRottRef.png", imagesRoot + "white_house\\" +  "whiteHouse1ref.png" };
 	const string runName = "testingFindingObjectsInScene";
+#elif CURRENT_TEST == TEST2
+	const string sceneFilePath = sefcikImagesScenes[49];
+	const vector<string> objectFilePaths = sefcikImagesObjects;
+	const string runName = "testingObjects";
 #endif
 

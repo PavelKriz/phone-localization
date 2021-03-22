@@ -9,6 +9,8 @@
 #include <opencv2/imgcodecs.hpp>
 //features
 #include <opencv2/features2d.hpp>
+//clahe and other image processing
+#include <opencv2/imgproc.hpp>
 
 #include "CLogger.h"
 
@@ -22,20 +24,22 @@ public:
 		SIFT_,
 		ORB_
 	};
-private:
+protected:
 	const string filePath_;
 	Mat image_;
 	bool wasProcessed_ = false;
 	vector<KeyPoint> imageKeypoints_;
 	Mat keypointsDescriptors_;
+
+	//computes both keypoints and theirs descriptors, throws invalid argument
+	void detectDescribeFeatures(EProcessMethod method, CLogger* logger);
+	void processCLAHE( CLogger* logger);
 public:
 	//throws ios_base::failure exceptions
 	CImage(string filePath);
 	//TODO move constructor
-
-	//computes both keypoints and theirs descriptors, throws invalid argument
-	void detectDescribeFeatures(EProcessMethod method, CLogger* logger);
-
+	//method determining all the processes with detection and preparation
+	void process(EProcessMethod method, CLogger * logger);
 	const string& getFilePath() { return filePath_; }
 	Mat& getImage() { return image_; }
 	vector<KeyPoint>& getKeypoints() { return imageKeypoints_; }

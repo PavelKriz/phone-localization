@@ -28,12 +28,12 @@ int CObjectInSceneFinder::run(CImage::EProcessMethod method, bool viewResult)
 	logger_->logSection("detectig and describing features", 1);
 	logger_->logSection("object", 2);
 	//prepare the scene
-	sceneImage_->detectDescribeFeatures(method, logger_);
+	sceneImage_->process(method, logger_);
 
 	//prepare the object
 	logger_->logSection("scenes", 2);
 	for (auto& ptr : objectImages_) {
-		ptr->detectDescribeFeatures(method, logger_);
+		ptr->process(method, logger_);
 	}
 
 	logger_->logSection("timing", 2);
