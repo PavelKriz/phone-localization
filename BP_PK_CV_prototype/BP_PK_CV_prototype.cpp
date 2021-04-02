@@ -20,8 +20,16 @@ int comparisonRun(const string& sceneFilePath, const vector<string>& objectFileP
 
 	//TODO tester has to be to run all the different parameters
 
+	SSIFTParams siftParams;
+	siftParams.nfeatures_ = 1000;
+
+	SORBParams orbParams;
+	orbParams.nfeatures_ = 1000;
+
 	SProcessParams params(
 		SProcessParams::EDetectExtractMethod::SIFT,
+		siftParams,
+		orbParams,
 		SProcessParams::EMatchingMethod::FLANN_BASED
 	);
 

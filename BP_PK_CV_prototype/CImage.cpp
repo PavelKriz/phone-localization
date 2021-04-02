@@ -8,10 +8,10 @@ void CImage::detectDescribeFeatures(const SProcessParams & params, CLogger* logg
 	switch (params.detectExtractMethod_)
 	{
 	case SProcessParams::EDetectExtractMethod::SIFT:
-		detector = SIFT::create(1000);
+		detector = SIFT::create(params.siftParams_.nfeatures_);
 		break;
 	case SProcessParams::EDetectExtractMethod::ORB:
-		detector = ORB::create(1000);
+		detector = ORB::create(params.orbParams_.nfeatures_);
 		break;
 	default:
 		throw invalid_argument("Error feature detecting method was used! (non recognized method)");
