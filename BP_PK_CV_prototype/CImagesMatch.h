@@ -26,7 +26,7 @@ private:
 	vector<DMatch> matches_;
 	double avarageMatchesDistance_ = numeric_limits<double>::max();
 
-
+	Ptr<DescriptorMatcher> createMatcher(EMatchingMethod method);
 public:
 	//throws invalid argument
 	CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, EMatchingMethod method = FLANN_BASED);

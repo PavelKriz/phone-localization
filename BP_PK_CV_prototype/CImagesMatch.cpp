@@ -1,15 +1,7 @@
 #include "CImagesMatch.h"
 
-CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, EMatchingMethod method)
-	: methodUsed_(method), objectImage_(object), sceneImage_(scene)
+Ptr<DescriptorMatcher> CImagesMatch::createMatcher(EMatchingMethod method)
 {
-	if (object.empty()) {
-		throw invalid_argument("Error in matching. Object image pointer is empty!");
-	}
-	else if (scene.empty()) {
-		throw invalid_argument("Error in matching. Scene image pointer is empty!");
-	}
-
 	Ptr<DescriptorMatcher> matcher;
 	switch (method)
 	{
@@ -24,18 +16,37 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* log
 		break;
 	}
 
+	return matcher;
+}
+
+//=================================================================================================
+
+CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, EMatchingMethod method)
+	: methodUsed_(method), objectImage_(object), sceneImage_(scene)
+{
+	//checking for valid input
+	if (object.empty()) {
+		throw invalid_argument("Error in matching. Object image pointer is empty!");
+	}
+	else if (scene.empty()) {
+		throw invalid_argument("Error in matching. Scene image pointer is empty!");
+	}
+
+	Ptr<DescriptorMatcher> matcher = createMatcher(method);
+
 	//match the keypoints
 	vector<DMatch> allMatches;
 	matcher->match(object->getDescriptors(), scene->getDescriptors(), allMatches);
 
 
-	//-- Quick calculation of max, min, avf distances between keypoints
+	//-- Quick calculation of max, min, avg distances between keypoints
 
 	double maxDistance = 0; double minDistance = numeric_limits<double>::max();
 	double avarageDistance = 0;
 	double avarageWeight = 0;
 	for (int i = 0; i < object->getDescriptors().rows; i++)
 	{
+		++avarageWeight;
 		double dist = allMatches[i].distance;
 		if (dist < minDistance) minDistance = dist;
 		if (dist > maxDistance) maxDistance = dist;
