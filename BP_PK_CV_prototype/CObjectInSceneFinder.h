@@ -25,7 +25,7 @@ public:
 	CObjectInSceneFinder(const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths);
 	~CObjectInSceneFinder() { delete logger_; }
 	//can throw invalid_argument
-	int run(CImage::EProcessMethod method, bool viewResult = true);
+	int run(const SProcessParams& params, bool viewResult = true);
 	//throws exception logic_error
 	void viewBestResult(const string& runName);
 	//print all the log, should be used on the end

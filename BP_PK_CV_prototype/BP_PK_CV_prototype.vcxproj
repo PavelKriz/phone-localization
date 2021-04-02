@@ -37,6 +37,7 @@
     <ClInclude Include="CRuntimeLogger.h" />
     <ClInclude Include="images.h" />
     <ClInclude Include="parameters.h" />
+    <ClInclude Include="SProcessParams.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

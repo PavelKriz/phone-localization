@@ -13,6 +13,8 @@
 #include <opencv2/imgproc.hpp>
 
 #include "CLogger.h"
+//process parameters needed to know how to process things
+#include "SProcessParams.h"
 
 using namespace std;
 using namespace cv;
@@ -20,10 +22,6 @@ using namespace cv;
 class CImage {
 public:
 	//methods for detection and description
-	enum EProcessMethod {
-		SIFT_,
-		ORB_
-	};
 protected:
 	const string filePath_;
 	Mat image_;
@@ -32,14 +30,14 @@ protected:
 	Mat keypointsDescriptors_;
 
 	//computes both keypoints and theirs descriptors, throws invalid argument
-	void detectDescribeFeatures(EProcessMethod method, CLogger* logger);
+	void detectDescribeFeatures(const SProcessParams & params, CLogger* logger);
 	void processCLAHE( CLogger* logger);
 public:
 	//throws ios_base::failure exceptions
 	CImage(string filePath);
 	//TODO move constructor
 	//method determining all the processes with detection and preparation
-	void process(EProcessMethod method, CLogger * logger);
+	void process(const SProcessParams& params, CLogger * logger);
 	const string& getFilePath() { return filePath_; }
 	Mat& getImage() { return image_; }
 	vector<KeyPoint>& getKeypoints() { return imageKeypoints_; }

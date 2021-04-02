@@ -11,16 +11,24 @@
 //project includes
 #include "CObjectInSceneFinder.h"
 #include "parameters.h"
+#include "SProcessParams.h"
 
 using namespace std;
 
 //function for finding object in multiple scene, result is the best one match
 int comparisonRun(const string& sceneFilePath, const vector<string>& objectFilePaths, const string& runName) {
 
+	//TODO tester has to be to run all the different parameters
+
+	SProcessParams params(
+		SProcessParams::EDetectExtractMethod::SIFT,
+		SProcessParams::EMatchingMethod::FLANN_BASED
+	);
+
 	try {
 		CObjectInSceneFinder finder(runName, sceneFilePath, objectFilePaths);
 		bool viewResult = true;
-		finder.run(CImage::EProcessMethod::SIFT_, viewResult);
+		finder.run(params, viewResult);
 		finder.report();
 	}
 	catch(ios_base::failure e){

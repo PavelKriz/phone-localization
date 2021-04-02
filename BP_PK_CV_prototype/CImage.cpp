@@ -2,15 +2,15 @@
 
 //=================================================================================================
 
-void CImage::detectDescribeFeatures(EProcessMethod method, CLogger* logger)
+void CImage::detectDescribeFeatures(const SProcessParams & params, CLogger* logger)
 {
 	Ptr<Feature2D> detector;
-	switch (method)
+	switch (params.detectExtractMethod_)
 	{
-	case CImage::SIFT_:
+	case SProcessParams::EDetectExtractMethod::SIFT:
 		detector = SIFT::create(1000);
 		break;
-	case CImage::ORB_:
+	case SProcessParams::EDetectExtractMethod::ORB:
 		detector = ORB::create(1000);
 		break;
 	default:
@@ -49,11 +49,11 @@ CImage::CImage(string filePath)
 	}
 }
 
-void CImage::process(EProcessMethod method, CLogger* logger)
+void CImage::process(const SProcessParams& params, CLogger* logger)
 {
 	logger->log("CImage with filepath: " + filePath_ + " is being processed.").endl();
 	processCLAHE(logger);
-	detectDescribeFeatures(method, logger);
+	detectDescribeFeatures(params, logger);
 }
 
 //=================================================================================================

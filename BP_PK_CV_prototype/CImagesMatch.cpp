@@ -1,14 +1,14 @@
 #include "CImagesMatch.h"
 
-Ptr<DescriptorMatcher> CImagesMatch::createMatcher(EMatchingMethod method)
+Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params)
 {
 	Ptr<DescriptorMatcher> matcher;
-	switch (method)
+	switch (params.matchingMethod_)
 	{
-	case EMatchingMethod::BRUTE_FORCE:
+	case SProcessParams::EMatchingMethod::BRUTE_FORCE:
 		matcher = DescriptorMatcher::create("BruteForce");
 		break;
-	case EMatchingMethod::FLANN_BASED:
+	case SProcessParams::EMatchingMethod::FLANN_BASED:
 		matcher = DescriptorMatcher::create("FlannBased");
 		break;
 	default:
@@ -21,8 +21,8 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(EMatchingMethod method)
 
 //=================================================================================================
 
-CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, EMatchingMethod method)
-	: methodUsed_(method), objectImage_(object), sceneImage_(scene)
+CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, const SProcessParams & params)
+	: objectImage_(object), sceneImage_(scene)
 {
 	//checking for valid input
 	if (object.empty()) {
@@ -32,7 +32,7 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* log
 		throw invalid_argument("Error in matching. Scene image pointer is empty!");
 	}
 
-	Ptr<DescriptorMatcher> matcher = createMatcher(method);
+	Ptr<DescriptorMatcher> matcher = createMatcher(params);
 
 	//knn matches
 	vector<vector<DMatch>> knnMatches;
@@ -79,7 +79,6 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* log
 
 CImagesMatch::CImagesMatch(CImagesMatch&& right) noexcept
 	:
-	methodUsed_(right.methodUsed_),
 	objectImage_(right.objectImage_),
 	sceneImage_(right.sceneImage_)
 {

@@ -11,16 +11,9 @@
 
 #include "CImage.h"
 #include "parameters.h"
+#include "SProcessParams.h"
 
 class CImagesMatch {
-public:
-	// methods for matching
-	enum EMatchingMethod {
-		BRUTE_FORCE,
-		FLANN_BASED
-	};
-private:
-	EMatchingMethod methodUsed_;
 	Ptr<CImage> objectImage_;
 	Ptr<CImage> sceneImage_;
 	vector<DMatch> matches_;
@@ -28,10 +21,10 @@ private:
 	double matchedObjectFeaturesRatio_ = -1; // the bigger the better
 	double avarageFirstToSecondRatio_ = -1; // the smaller the better
 	
-	Ptr<DescriptorMatcher> createMatcher(EMatchingMethod method);
+	Ptr<DescriptorMatcher> createMatcher(const SProcessParams & params);
 public:
 	//throws invalid argument
-	CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, EMatchingMethod method = FLANN_BASED);
+	CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, const SProcessParams& params);
 	CImagesMatch(CImagesMatch&& right) noexcept;
 	void drawPreviewAndResult(const string& runName, CLogger* logger);
 

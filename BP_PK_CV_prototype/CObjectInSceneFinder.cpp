@@ -20,7 +20,7 @@ CObjectInSceneFinder::CObjectInSceneFinder(const string& runName, const string& 
 
 //=================================================================================================
 
-int CObjectInSceneFinder::run(CImage::EProcessMethod method, bool viewResult)
+int CObjectInSceneFinder::run(const SProcessParams& params, bool viewResult)
 {
 	//set begin time
 	chrono::steady_clock::time_point begin = chrono::steady_clock::now();
@@ -28,12 +28,12 @@ int CObjectInSceneFinder::run(CImage::EProcessMethod method, bool viewResult)
 	logger_->logSection("detectig and describing features", 1);
 	logger_->logSection("object", 2);
 	//prepare the scene
-	sceneImage_->process(method, logger_);
+	sceneImage_->process(params, logger_);
 
 	//prepare the object
 	logger_->logSection("scenes", 2);
 	for (auto& ptr : objectImages_) {
-		ptr->process(method, logger_);
+		ptr->process(params, logger_);
 	}
 
 	logger_->logSection("timing", 2);
@@ -52,7 +52,7 @@ int CObjectInSceneFinder::run(CImage::EProcessMethod method, bool viewResult)
 		//computing the keypoints, descriptors, matches
 		//move construction
 		logger_->endl().log("Matching scene with object that has filepath: ").log(objectImages_[i]->getFilePath()).endl();
-		matches_.emplace_back(CImagesMatch(objectImages_[i], sceneImage_, logger_, CImagesMatch::EMatchingMethod::BRUTE_FORCE));
+		matches_.emplace_back(CImagesMatch(objectImages_[i], sceneImage_, logger_, params));
 
 		//checking if the match is possible to be the best until now
 		double currentDist = matches_.back().getAvarageMatchesDistance();
