@@ -34,41 +34,45 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* log
 
 	Ptr<DescriptorMatcher> matcher = createMatcher(method);
 
-	//match the keypoints
-	vector<DMatch> allMatches;
-	matcher->match(object->getDescriptors(), scene->getDescriptors(), allMatches);
+	//knn matches
+	vector<vector<DMatch>> knnMatches;
+	matcher->knnMatch(object->getDescriptors(), scene->getDescriptors(), knnMatches, 2);
 
-
-	//-- Quick calculation of max, min, avg distances between keypoints
-
+	//Looping over all the matches and doing some usefull stuff (filtering and others)
 	double maxDistance = 0; double minDistance = numeric_limits<double>::max();
 	double avarageDistance = 0;
 	double avarageWeight = 0;
-	for (int i = 0; i < object->getDescriptors().rows; i++)
+	double avarageFirstToSecondRatio = 0;
+	for (int i = 0; i < knnMatches.size(); i++)
 	{
+		//-- Quick calculation of max, min, avg distances between keypoints
 		++avarageWeight;
-		double dist = allMatches[i].distance;
+		double dist = knnMatches[i][0].distance;
 		if (dist < minDistance) minDistance = dist;
 		if (dist > maxDistance) maxDistance = dist;
 		avarageDistance = ((avarageDistance * avarageWeight) + (dist)) / (1 + avarageWeight);
+
+		// Lowe's ratio test
+		// just filtering some "badly" matched matches, getting only good matches
+		//TODO might be a slow solution
+		double currentFirstToSecondRatio = knnMatches[i][0].distance / knnMatches[i][1].distance;
+		avarageFirstToSecondRatio = ((avarageFirstToSecondRatio * avarageWeight) + (currentFirstToSecondRatio)) / (1 + avarageWeight);
+		if (knnMatches[i][0].distance < MATCHES_FIRST_TO_SECOND_MAX_RATIO * knnMatches[i][1].distance) {
+			matches_.push_back(knnMatches[i][0]);
+		}
 	}
+
+	avarageMatchesDistance_ = avarageDistance;
+	avarageFirstToSecondRatio_ = avarageFirstToSecondRatio;
+	matchedObjectFeaturesRatio_ = (double) matches_.size() / (double) knnMatches.size();
+
 
 	logger->log("Max distance :").log(to_string(maxDistance)).endl();
 	logger->log("Min distance :").log(to_string(minDistance)).endl();
 	logger->log("Average distance :").log(to_string(avarageDistance)).endl();
+	logger->log("Average first to second ratio is  :").log(to_string(avarageFirstToSecondRatio_)).endl();
+	logger->log("Ratio of filtered matches to number of keypoints of object is (x100):").log(to_string(matchedObjectFeaturesRatio_ * 100.0)).endl();
 
-	avarageMatchesDistance_ = avarageDistance;
-
-
-	//-- Get only "good" matches (i.e. whose distance is less than something like (2-3)*minDistance )
-	// just filtering some "badly" matched matches
-	for (auto& it : allMatches)
-	{
-		if (it.distance <= (good_matches_min_distance_alpha * minDistance))
-		{
-			matches_.push_back(it);
-		}
-	}
 }
 
 //=================================================================================================

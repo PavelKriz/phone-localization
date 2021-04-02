@@ -2,8 +2,7 @@
 
 #include "images.h"
 
-const float good_matches_min_distance_alpha = 2;
-
+const float MATCHES_FIRST_TO_SECOND_MAX_RATIO = 0.7f;
 
 //normal single tests
 #define TEST1 1

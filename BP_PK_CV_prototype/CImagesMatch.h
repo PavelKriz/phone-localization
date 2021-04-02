@@ -24,8 +24,10 @@ private:
 	Ptr<CImage> objectImage_;
 	Ptr<CImage> sceneImage_;
 	vector<DMatch> matches_;
-	double avarageMatchesDistance_ = numeric_limits<double>::max();
-
+	double avarageMatchesDistance_ = numeric_limits<double>::max(); // the smaller the better
+	double matchedObjectFeaturesRatio_ = -1; // the bigger the better
+	double avarageFirstToSecondRatio_ = -1; // the smaller the better
+	
 	Ptr<DescriptorMatcher> createMatcher(EMatchingMethod method);
 public:
 	//throws invalid argument
@@ -35,6 +37,8 @@ public:
 
 	size_t getNumberOfMatches() { return matches_.size(); }
 	double getAvarageMatchesDistance() { return avarageMatchesDistance_; }
+	double getMatchedObjectFeaturesRatio() { return matchedObjectFeaturesRatio_; }
+	double getAvarageFirstToSecondRatio() { return avarageFirstToSecondRatio_; }
 	Ptr<CImage> getObjectImage() { return objectImage_; }
 	Ptr<CImage> getSceneImage() { return sceneImage_; }
 
