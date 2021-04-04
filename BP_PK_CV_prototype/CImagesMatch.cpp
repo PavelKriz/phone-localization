@@ -10,9 +10,8 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 			//matcher = DescriptorMatcher::create("BruteForce");
 			matcher = BFMatcher::create(NORM_L2);
 		}
-		//ORB or other hamming base descriptor extracting methods
+		//ORB or other hamming distance base descriptor extracting methods
 		else {
-			//matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE_HAMMING);
 			matcher = BFMatcher::create(NORM_HAMMING);
 		}
 		break;
@@ -20,7 +19,6 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 		if (params.detectExtractMethod_ == SProcessParams::EDetectExtractMethod::SIFT) {
 			//matcher = DescriptorMatcher::create("FlannBased");
 			matcher = FlannBasedMatcher::create();
-			//matcher = new FlannBasedMatcher(makePtr<flann::LshIndexParams>(12, 20, 2));
 		}
 		else {
 			//explaining why to use lsh or hiearchical clustering
@@ -41,10 +39,11 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 			//LSH is slow for small datasets of descriptors it is better to use hiearchical clustering instead
 			//https://stackoverflow.com/questions/23635921/lsh-slower-than-bruteforce-matching
 
-			//creating flannbased matcher with hiearchical clustering default values
-			//matcher = new FlannBasedMatcher(makePtr<flann::HierarchicalClusteringIndexParams>());
+			//it is showing that flannbassedmatcher supports only LshIndexParams and not HierarchicalClusteringIndexParams
+			//guy in the comment here thinks the same: https://answers.opencv.org/question/229870/flann-with-hierarchical-clustering-index/
+			//he says that it might work only for indexing
+
 			matcher = new FlannBasedMatcher(makePtr<flann::LshIndexParams>(12, 20, 2));
-			//matcher = FlannBasedMatcher::create();
 		}
 		break;
 	default:

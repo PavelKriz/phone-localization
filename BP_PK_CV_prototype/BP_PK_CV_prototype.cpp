@@ -21,7 +21,7 @@ int comparisonRun(const string& sceneFilePath, const vector<string>& objectFileP
 	//TODO tester has to be to run all the different parameters
 
 	SSIFTParams siftParams;
-	siftParams.nfeatures_ = 1000;
+	siftParams.nfeatures_ = 0;
 
 	SORBParams orbParams;
 	orbParams.nfeatures_ = 1000;
@@ -30,7 +30,7 @@ int comparisonRun(const string& sceneFilePath, const vector<string>& objectFileP
 		SProcessParams::EDetectExtractMethod::ORB,
 		siftParams,
 		orbParams,
-		SProcessParams::EMatchingMethod::FLANN_BASED
+		SProcessParams::EMatchingMethod::BRUTE_FORCE
 	);
 
 	try {
