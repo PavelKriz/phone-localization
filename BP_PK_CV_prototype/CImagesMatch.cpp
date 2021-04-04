@@ -6,10 +6,46 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 	switch (params.matchingMethod_)
 	{
 	case SProcessParams::EMatchingMethod::BRUTE_FORCE:
-		matcher = DescriptorMatcher::create("BruteForce");
+		if (params.detectExtractMethod_ == SProcessParams::EDetectExtractMethod::SIFT) {
+			//matcher = DescriptorMatcher::create("BruteForce");
+			matcher = BFMatcher::create(NORM_L2);
+		}
+		//ORB or other hamming base descriptor extracting methods
+		else {
+			//matcher = DescriptorMatcher::create(DescriptorMatcher::BRUTEFORCE_HAMMING);
+			matcher = BFMatcher::create(NORM_HAMMING);
+		}
 		break;
 	case SProcessParams::EMatchingMethod::FLANN_BASED:
-		matcher = DescriptorMatcher::create("FlannBased");
+		if (params.detectExtractMethod_ == SProcessParams::EDetectExtractMethod::SIFT) {
+			//matcher = DescriptorMatcher::create("FlannBased");
+			matcher = FlannBasedMatcher::create();
+			//matcher = new FlannBasedMatcher(makePtr<flann::LshIndexParams>(12, 20, 2));
+		}
+		else {
+			//explaining why to use lsh or hiearchical clustering
+			//https://stackoverflow.com/questions/23634730/opencv-flann-matcher-crashes/23639463?noredirect=1#comment36322682_23639463
+			//cv::makePtr<flann::LshIndexParams>(12, 20, 2) is a way how to make the matcher work with binary descriptors
+			//there is being build a tree in the flann based method and the tree uses indexes based on the distance used by the descriptors
+			//see: https://stackoverflow.com/questions/43830849/opencv-use-flann-with-orb-descriptors-to-match-features
+			//the values are explained here in the older documentation (still the same implementation):
+			// https://docs.opencv.org/2.4/modules/flann/doc/flann_fast_approximate_nearest_neighbor_search.html
+			// in the previous link - also very handy explanation of other distances used in combination with flann
+
+			//there is a table in one comment saying which descriptors are using hamming (binary descriptors) and which euclidean distance (floating point descriptors)
+			//https://stackoverflow.com/questions/11565255/opencv-flann-with-orb-descriptors
+
+			//documentation in opencv 4.5.1 https://docs.opencv.org/4.5.1/db/d18/classcv_1_1flann_1_1GenericIndex.html
+			//tips to set up the values https://answers.opencv.org/question/924/lsh-matching-very-slow/
+
+			//LSH is slow for small datasets of descriptors it is better to use hiearchical clustering instead
+			//https://stackoverflow.com/questions/23635921/lsh-slower-than-bruteforce-matching
+
+			//creating flannbased matcher with hiearchical clustering default values
+			//matcher = new FlannBasedMatcher(makePtr<flann::HierarchicalClusteringIndexParams>());
+			matcher = new FlannBasedMatcher(makePtr<flann::LshIndexParams>(12, 20, 2));
+			//matcher = FlannBasedMatcher::create();
+		}
 		break;
 	default:
 		throw invalid_argument("Error feature detecting method was used! (non recognized method)");
@@ -32,6 +68,9 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* log
 		throw invalid_argument("Error in matching. Scene image pointer is empty!");
 	}
 
+	
+	FlannBasedMatcher matcher2(new flann::LshIndexParams(20, 10, 2));
+
 	Ptr<DescriptorMatcher> matcher = createMatcher(params);
 
 	//knn matches
@@ -45,12 +84,24 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* log
 	double avarageFirstToSecondRatio = 0;
 	for (int i = 0; i < knnMatches.size(); i++)
 	{
+		//the matcher might not find anything
+		if (knnMatches[i].size() == 0) {
+			continue;
+		}
+
 		//-- Quick calculation of max, min, avg distances between keypoints
 		++avarageWeight;
 		double dist = knnMatches[i][0].distance;
 		if (dist < minDistance) minDistance = dist;
 		if (dist > maxDistance) maxDistance = dist;
 		avarageDistance = ((avarageDistance * avarageWeight) + (dist)) / (1 + avarageWeight);
+
+		//check if there is at least two of found pairs and if not do something (push the match for example)
+		//less than two matches might happen for flann based matchers (maybe for others, but I havent experienced it)
+		if (knnMatches[i].size() < 2) {
+			matches_.push_back(knnMatches[i][0]);
+			continue;
+		}
 
 		// Lowe's ratio test
 		// just filtering some "badly" matched matches, getting only good matches
@@ -98,6 +149,7 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, CLogger* logger)
 		matches_, imageMatches, Scalar::all(-1), Scalar::all(-1),
 		vector<char>(), DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
 
+	//TODO some speed optimalization can be done here by pushing back these points already in the lowe's ratio test
 	//-- Localize the object
 	std::vector<Point2f> objectKeypointsCoordinates;
 	std::vector<Point2f> sceneKeypointsCoordinates;

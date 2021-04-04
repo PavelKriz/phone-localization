@@ -27,7 +27,7 @@ int comparisonRun(const string& sceneFilePath, const vector<string>& objectFileP
 	orbParams.nfeatures_ = 1000;
 
 	SProcessParams params(
-		SProcessParams::EDetectExtractMethod::SIFT,
+		SProcessParams::EDetectExtractMethod::ORB,
 		siftParams,
 		orbParams,
 		SProcessParams::EMatchingMethod::FLANN_BASED

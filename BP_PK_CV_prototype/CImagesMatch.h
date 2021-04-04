@@ -8,6 +8,7 @@
 #include <opencv2/imgproc.hpp>
 //matcher is in the same hearder file
 #include <opencv2/features2d.hpp>
+#include <opencv2/flann.hpp>
 
 #include "CImage.h"
 #include "parameters.h"

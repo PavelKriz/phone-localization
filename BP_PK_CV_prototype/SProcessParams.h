@@ -6,7 +6,7 @@
 //all the parameters documentation can be found in the OpenCV documentation
 struct SSIFTParams {
 	//OpenCV params with default vaules
-	int nfeatures_ = 0; //default OpenCV is really 0 - maybe it is determining some automatic algorithm of telling how many features is detected
+	int nfeatures_ = 3000; //default OpenCV is really 0 - maybe it is determining some automatic algorithm of telling how many features is detected
 	int nOctaveLayers = 3;
 	double contrastThreshold_ = 0.04;
 	double edgeTreshold_ = 10;
@@ -15,7 +15,7 @@ struct SSIFTParams {
 
 //all the parameters documentation can be found in the OpenCV documentation
 struct SORBParams {
-	int nfeatures_ = 500;
+	int nfeatures_ = 3000;
 	float scaleFactor_ = 1.2f;
 	int nlevels = 8;
 	int edgeTreshold = 31;
