@@ -43,6 +43,7 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 			//guy in the comment here thinks the same: https://answers.opencv.org/question/229870/flann-with-hierarchical-clustering-index/
 			//he says that it might work only for indexing
 
+			//I have also tested that these values make the best results - more then 1 matches per feature
 			matcher = new FlannBasedMatcher(makePtr<flann::LshIndexParams>(12, 20, 2));
 		}
 		break;

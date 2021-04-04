@@ -24,7 +24,7 @@ void CFileLogger::flush()
 	txtOut.close();
 
 	for(size_t i = 0; i < images_.size(); ++i){
-		imwrite(outputRoot_ + runName + to_string(i) + ".jpg", images_[i].first);
+		imwrite(outputRoot_ + runName_ + to_string(i) + ".jpg", images_[i].first);
 	}
 	
 	wasFlushed_ = true;

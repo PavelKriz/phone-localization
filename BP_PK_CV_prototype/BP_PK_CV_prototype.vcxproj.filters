@@ -36,6 +36,9 @@
     <ClCompile Include="CFileLogger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="COperator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLogger.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SProcessParams.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="COperator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

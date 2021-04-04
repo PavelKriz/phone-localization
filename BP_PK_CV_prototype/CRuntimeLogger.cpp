@@ -1,6 +1,6 @@
 #include "CRuntimeLogger.h"
 
-CRuntimeLogger::CRuntimeLogger(bool putImages) : COstreamLogger(putImages){}
+CRuntimeLogger::CRuntimeLogger(bool timing) : COstreamLogger(timing){}
 
 void CRuntimeLogger::flush()
 {

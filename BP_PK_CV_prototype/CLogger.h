@@ -12,7 +12,7 @@ class CLogger {
 protected:
 	bool putImages_;
 public:
-	CLogger(bool putImages) : putImages_(putImages){}
+	CLogger(bool timing) { timing ? putImages_ = false : putImages_ = true; }
 	virtual ~CLogger() {}
 	virtual CLogger& logSection(const string& name, unsigned int level = 0) = 0;
 	virtual CLogger& log(const string& toLog) = 0;

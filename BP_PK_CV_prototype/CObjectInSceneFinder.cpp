@@ -1,15 +1,10 @@
 #include "CObjectInSceneFinder.h"
 
 
-CObjectInSceneFinder::CObjectInSceneFinder(const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths)
+CObjectInSceneFinder::CObjectInSceneFinder(Ptr<CLogger> &logger, const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths)
+	:
+	logger_(logger)
 {
-	if (OUTPUT_TYPE == EOutputType::console) {
-		logger_ = new CRuntimeLogger(WRITE_OR_SHOW_IMAGES);
-	}
-	else {
-		logger_ = new CFileLogger(OUTPUT_ROOT, runName);
-	}
-
 	logger_->logSection("Run: " + runName, 0);
 	sceneImage_ = new CImage(sceneFilePath);
 	for (auto& it : objectFilePaths) {
@@ -20,7 +15,7 @@ CObjectInSceneFinder::CObjectInSceneFinder(const string& runName, const string& 
 
 //=================================================================================================
 
-int CObjectInSceneFinder::run(const SProcessParams& params, bool viewResult)
+int CObjectInSceneFinder::run(const SProcessParams& params, const string& runName, bool viewResult)
 {
 	//set begin time
 	chrono::steady_clock::time_point begin = chrono::steady_clock::now();

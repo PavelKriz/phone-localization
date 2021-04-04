@@ -3,6 +3,8 @@
 //needed for some parameters
 #include <opencv2/features2d.hpp>
 
+using namespace cv;
+
 //all the parameters documentation can be found in the OpenCV documentation
 struct SSIFTParams {
 	//OpenCV params with default vaules
@@ -17,10 +19,10 @@ struct SSIFTParams {
 struct SORBParams {
 	int nfeatures_ = 1000;
 	float scaleFactor_ = 1.2f;
-	int nlevels = 8;
-	int edgeTreshold = 31;
-	int firstLevel = 0;
-	int WTA_K = 2;
+	int nlevels_ = 8;
+	int edgeTreshold_ = 31;
+	int firstLevel_ = 0;
+	int WTA_K_ = 2;
 	ORB::ScoreType scoreType_ = ORB::HARRIS_SCORE;
 	int patchSize_ = 31;
 	int fastTreshold_ = 20;

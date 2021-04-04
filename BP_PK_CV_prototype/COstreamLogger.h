@@ -13,7 +13,7 @@ protected:
 	inline virtual ostream& out() = 0;
 public:
 	COstreamLogger() = delete;
-	COstreamLogger(bool putImages) : CLogger(putImages){}
+	COstreamLogger(bool timing) : CLogger(timing){}
 	virtual ~COstreamLogger() override { }
 	//lowest level can be 2 and highest 0
 	virtual CLogger& logSection(const string& name, unsigned int level = 0) override;
