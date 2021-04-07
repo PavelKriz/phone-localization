@@ -48,8 +48,9 @@ const bool PREVIEW_RESULT = true;
 //====processing parameters====
 
 //general methods choices
-const SProcessParams::EDetectExtractMethod DETECT_EXTRACT_METHOD = SProcessParams::EDetectExtractMethod::ORB;
-const SProcessParams::EMatchingMethod MATCHING_METHOD = SProcessParams::EMatchingMethod::BRUTE_FORCE;
+const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_SIFT;
+const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_SIFT;
+const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 
 //SIFT TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)
 //used only when SIFT is chosen as a used method
@@ -86,6 +87,10 @@ const bool ORB_PATCH_SIZE_TEST = false;
 const int ORB_PATCH_SIZE = 31;
 const bool ORB_FAST_THRESHOLD_TEST = false;
 const int ORB_FAST_THRESHOLD = 20;
+
+//BEBLID descriptor https://docs.opencv.org/master/d7/d99/classcv_1_1xfeatures2d_1_1BEBLID.html
+const bool BEBLID_N_BITS_TEST = false;
+const bool BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_512_BITS;
 
 //MATCHER
 const float MATCHES_FIRST_TO_SECOND_MAX_RATIO = 0.7f;

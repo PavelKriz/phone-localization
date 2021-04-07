@@ -9,6 +9,8 @@
 #include <opencv2/imgcodecs.hpp>
 //features
 #include <opencv2/features2d.hpp>
+//experimental feature algorithms - eg. BEBLID
+#include <opencv2/xfeatures2d.hpp>
 //clahe and other image processing
 #include <opencv2/imgproc.hpp>
 
@@ -29,6 +31,9 @@ protected:
 	vector<KeyPoint> imageKeypoints_;
 	Mat keypointsDescriptors_;
 
+	Ptr<Feature2D> getDetector(const SProcessParams& params);
+	Ptr<Feature2D> getExtractor(const SProcessParams& params);
+	Ptr<Feature2D> getDetectorExtractor(const SProcessParams& params);
 	//computes both keypoints and theirs descriptors, throws invalid argument
 	void detectDescribeFeatures(const SProcessParams & params, CLogger* logger);
 	void processCLAHE( CLogger* logger);

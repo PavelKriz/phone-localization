@@ -2,6 +2,7 @@
 
 //needed for some parameters
 #include <opencv2/features2d.hpp>
+#include <opencv2/xfeatures2d.hpp>
 
 using namespace cv;
 
@@ -28,29 +29,37 @@ struct SORBParams {
 	int fastTreshold_ = 20;
 };
 
+struct SBEBLIDParams {
+	float scale_factor_ = 1.00f; //default value for ORB only!
+	int n_bits_ = xfeatures2d::BEBLID::SIZE_512_BITS;
+};
+
+
+enum class EAlgorithm {
+	ALG_SIFT,
+	ALG_ORB,
+	ALG_BEBLID,
+	ALG_BF_MATCHING,
+	ALG_FLANN_MATCHING,
+};
+
 struct SProcessParams {
     //keypoints and descriptors
-	enum class EDetectExtractMethod {
-		SIFT,
-		ORB
-	};
-	const EDetectExtractMethod detectExtractMethod_;
+	const EAlgorithm detectMethod_;
+	const EAlgorithm describeMethod_;
 	const SSIFTParams siftParams_;
 	const SORBParams orbParams_;
+	const SBEBLIDParams beblidParams_;
+	const EAlgorithm matchingMethod_;
 
-
-	//matching
-	enum class EMatchingMethod {
-		BRUTE_FORCE,
-		FLANN_BASED
-	};
-	const EMatchingMethod matchingMethod_;
-
-	SProcessParams(EDetectExtractMethod detectExtractMethod, SSIFTParams siftParams, SORBParams orbParams, EMatchingMethod matchingMethod)
+	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
+		SORBParams orbParams, SBEBLIDParams beblidParams, EAlgorithm matchingMethod)
 		:
-		detectExtractMethod_(detectExtractMethod),
+		detectMethod_(detectMethod),
+		describeMethod_(describeMethod),
 		siftParams_(siftParams),
 		orbParams_(orbParams),
+		beblidParams_(beblidParams),
 		matchingMethod_(matchingMethod)
 	{}
 };

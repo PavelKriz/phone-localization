@@ -51,10 +51,26 @@ SProcessParams COperator::getParams()
         orbParams.fastTreshold_ = ORB_FAST_THRESHOLD;
     }
 
+    //set BEBLID params (only descriptor)
+    SBEBLIDParams beblidParams;
+    //values are set according to documentation: https://docs.opencv.org/master/d7/d99/classcv_1_1xfeatures2d_1_1BEBLID.html
+    //for different detecting methods different parameters are set
+    if (DETECT_METHOD == EAlgorithm::ALG_ORB) {
+        beblidParams.scale_factor_ = 1.0f;
+    }
+    else if (DETECT_METHOD == EAlgorithm::ALG_SIFT) {
+        beblidParams.scale_factor_ = 6.75f;
+    }
+    if (BEBLID_N_BITS_TEST) {
+        beblidParams.n_bits_ = BEBLID_N_BITS;
+    }
+
     return SProcessParams(
-        DETECT_EXTRACT_METHOD,
+        DETECT_METHOD,
+        DESCRIBE_METHOD,
         siftParams,
         orbParams,
+        beblidParams,
         MATCHING_METHOD
     );
 }

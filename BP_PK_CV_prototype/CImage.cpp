@@ -2,25 +2,81 @@
 
 //=================================================================================================
 
-void CImage::detectDescribeFeatures(const SProcessParams & params, CLogger* logger)
+Ptr<Feature2D> CImage::getDetector(const SProcessParams& params)
 {
 	Ptr<Feature2D> detector;
-	switch (params.detectExtractMethod_)
+	switch (params.detectMethod_)
 	{
-	case SProcessParams::EDetectExtractMethod::SIFT:
+	case EAlgorithm::ALG_SIFT:
 		detector = SIFT::create(params.siftParams_.nfeatures_);
 		break;
-	case SProcessParams::EDetectExtractMethod::ORB:
+	case EAlgorithm::ALG_ORB:
 		detector = ORB::create(params.orbParams_.nfeatures_);
 		break;
 	default:
 		throw invalid_argument("Error feature detecting method was used! (non recognized method)");
 		break;
 	}
+	return detector;
+}
 
-	detector->detectAndCompute(image_, noArray(), imageKeypoints_, keypointsDescriptors_);
-	logger->log("Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
-	wasProcessed_ = true;
+Ptr<Feature2D> CImage::getExtractor(const SProcessParams& params)
+{
+	Ptr<Feature2D> extractor;
+	switch (params.describeMethod_)
+	{
+	case EAlgorithm::ALG_SIFT:
+		extractor = SIFT::create(params.siftParams_.nfeatures_);
+		break;
+	case EAlgorithm::ALG_ORB:
+		extractor = ORB::create(params.orbParams_.nfeatures_);
+		break;
+	case EAlgorithm::ALG_BEBLID:
+		extractor = xfeatures2d::BEBLID::create(params.beblidParams_.scale_factor_, params.beblidParams_.n_bits_);
+		break;
+	default:
+		throw invalid_argument("Error feature detecting method was used! (non recognized method)");
+		break;
+	}
+	return extractor;
+}
+
+Ptr<Feature2D> CImage::getDetectorExtractor(const SProcessParams& params)
+{
+	Ptr<Feature2D> detectorExtractor;
+	switch (params.detectMethod_)
+	{
+	case EAlgorithm::ALG_SIFT:
+		detectorExtractor = SIFT::create(params.siftParams_.nfeatures_);
+		break;
+	case EAlgorithm::ALG_ORB:
+		detectorExtractor = ORB::create(params.orbParams_.nfeatures_);
+		break;
+	default:
+		throw invalid_argument("Error feature detecting method was used! (non recognized method)");
+		break;
+	}
+	return detectorExtractor;
+}
+
+void CImage::detectDescribeFeatures(const SProcessParams & params, CLogger* logger)
+{
+	if (params.detectMethod_ == params.describeMethod_) {
+		Ptr<Feature2D> detector = getDetectorExtractor(params);
+
+		detector->detectAndCompute(image_, noArray(), imageKeypoints_, keypointsDescriptors_);
+		logger->log("Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
+		wasProcessed_ = true;
+	}
+	else {
+		Ptr<Feature2D> detector = getDetector(params);
+		Ptr<Feature2D> extractor = getExtractor(params);
+
+		detector->detect(image_, imageKeypoints_);
+		extractor->compute(image_, imageKeypoints_, keypointsDescriptors_);
+		logger->log("Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
+		wasProcessed_ = true;
+	}
 }
 
 //=================================================================================================

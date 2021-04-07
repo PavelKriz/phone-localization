@@ -5,18 +5,18 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 	Ptr<DescriptorMatcher> matcher;
 	switch (params.matchingMethod_)
 	{
-	case SProcessParams::EMatchingMethod::BRUTE_FORCE:
-		if (params.detectExtractMethod_ == SProcessParams::EDetectExtractMethod::SIFT) {
+	case EAlgorithm::ALG_BF_MATCHING:
+		if (params.describeMethod_ == EAlgorithm::ALG_SIFT) {
 			//matcher = DescriptorMatcher::create("BruteForce");
 			matcher = BFMatcher::create(NORM_L2);
 		}
-		//ORB or other hamming distance base descriptor extracting methods
+		//ORB, BEBLID or other hamming distance base descriptor extracting methods
 		else {
 			matcher = BFMatcher::create(NORM_HAMMING);
 		}
 		break;
-	case SProcessParams::EMatchingMethod::FLANN_BASED:
-		if (params.detectExtractMethod_ == SProcessParams::EDetectExtractMethod::SIFT) {
+	case EAlgorithm::ALG_FLANN_MATCHING:
+		if (params.describeMethod_ == EAlgorithm::ALG_SIFT) {
 			//matcher = DescriptorMatcher::create("FlannBased");
 			matcher = FlannBasedMatcher::create();
 		}
