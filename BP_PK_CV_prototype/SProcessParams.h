@@ -4,13 +4,16 @@
 #include <opencv2/features2d.hpp>
 #include <opencv2/xfeatures2d.hpp>
 
+#include <string>
+
+using namespace std;
 using namespace cv;
 
 //all the parameters documentation can be found in the OpenCV documentation
 struct SSIFTParams {
 	//OpenCV params with default vaules
 	int nfeatures_ = 0; //default OpenCV is really 0 - maybe it is determining some automatic algorithm of telling how many features is detected
-	int nOctaveLayers = 3;
+	int nOctaveLayers_ = 3;
 	double contrastThreshold_ = 0.04;
 	double edgeTreshold_ = 10;
 	double sigma_ = 1.6;
@@ -34,14 +37,16 @@ struct SBEBLIDParams {
 	int n_bits_ = xfeatures2d::BEBLID::SIZE_512_BITS;
 };
 
-
 enum class EAlgorithm {
 	ALG_SIFT,
 	ALG_ORB,
 	ALG_BEBLID,
 	ALG_BF_MATCHING,
-	ALG_FLANN_MATCHING,
+	ALG_FLANN_MATCHING
 };
+
+
+string algToStr(const EAlgorithm alg);
 
 struct SProcessParams {
     //keypoints and descriptors

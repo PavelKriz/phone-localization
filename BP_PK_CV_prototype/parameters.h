@@ -15,7 +15,7 @@ using namespace cv;
 #define TEST2 2 
 
 //Current used test / tests are changed with preprocessor
-#define CURRENT_TEST TEST2
+#define CURRENT_TEST TEST1
 
 //timing of the calculation
 const bool TIMING = false;
@@ -48,8 +48,8 @@ const bool PREVIEW_RESULT = true;
 //====processing parameters====
 
 //general methods choices
-const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_SIFT;
-const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_SIFT;
+const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_ORB;
+const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_BEBLID;
 const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 
 //SIFT TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)

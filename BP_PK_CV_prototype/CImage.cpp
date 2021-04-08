@@ -8,10 +8,22 @@ Ptr<Feature2D> CImage::getDetector(const SProcessParams& params)
 	switch (params.detectMethod_)
 	{
 	case EAlgorithm::ALG_SIFT:
-		detector = SIFT::create(params.siftParams_.nfeatures_);
+		detector = SIFT::create(params.siftParams_.nfeatures_,
+								params.siftParams_.nOctaveLayers_,
+								params.siftParams_.contrastThreshold_,
+								params.siftParams_.edgeTreshold_,
+								params.siftParams_.sigma_);
 		break;
 	case EAlgorithm::ALG_ORB:
-		detector = ORB::create(params.orbParams_.nfeatures_);
+		detector = ORB::create(params.orbParams_.nfeatures_,
+							   params.orbParams_.scaleFactor_,
+							   params.orbParams_.nlevels_,
+							   params.orbParams_.edgeTreshold_,
+							   params.orbParams_.firstLevel_,
+							   params.orbParams_.WTA_K_,
+							   params.orbParams_.scoreType_,
+							   params.orbParams_.patchSize_,
+							   params.orbParams_.fastTreshold_);
 		break;
 	default:
 		throw invalid_argument("Error feature detecting method was used! (non recognized method)");
@@ -26,13 +38,26 @@ Ptr<Feature2D> CImage::getExtractor(const SProcessParams& params)
 	switch (params.describeMethod_)
 	{
 	case EAlgorithm::ALG_SIFT:
-		extractor = SIFT::create(params.siftParams_.nfeatures_);
+		extractor = SIFT::create(params.siftParams_.nfeatures_,
+								 params.siftParams_.nOctaveLayers_,
+								 params.siftParams_.contrastThreshold_,
+								 params.siftParams_.edgeTreshold_,
+								 params.siftParams_.sigma_);
 		break;
 	case EAlgorithm::ALG_ORB:
-		extractor = ORB::create(params.orbParams_.nfeatures_);
+		extractor = ORB::create(params.orbParams_.nfeatures_,
+								params.orbParams_.scaleFactor_,
+								params.orbParams_.nlevels_,
+								params.orbParams_.edgeTreshold_,
+								params.orbParams_.firstLevel_,
+								params.orbParams_.WTA_K_,
+								params.orbParams_.scoreType_,
+								params.orbParams_.patchSize_,
+								params.orbParams_.fastTreshold_);
 		break;
 	case EAlgorithm::ALG_BEBLID:
-		extractor = xfeatures2d::BEBLID::create(params.beblidParams_.scale_factor_, params.beblidParams_.n_bits_);
+		extractor = xfeatures2d::BEBLID::create(params.beblidParams_.scale_factor_,
+												params.beblidParams_.n_bits_);
 		break;
 	default:
 		throw invalid_argument("Error feature detecting method was used! (non recognized method)");
@@ -47,10 +72,21 @@ Ptr<Feature2D> CImage::getDetectorExtractor(const SProcessParams& params)
 	switch (params.detectMethod_)
 	{
 	case EAlgorithm::ALG_SIFT:
-		detectorExtractor = SIFT::create(params.siftParams_.nfeatures_);
-		break;
+		detectorExtractor = SIFT::create(params.siftParams_.nfeatures_,
+										 params.siftParams_.nOctaveLayers_,
+										 params.siftParams_.contrastThreshold_,
+										 params.siftParams_.edgeTreshold_,
+										 params.siftParams_.sigma_);
 	case EAlgorithm::ALG_ORB:
-		detectorExtractor = ORB::create(params.orbParams_.nfeatures_);
+		detectorExtractor = ORB::create(params.orbParams_.nfeatures_,
+										params.orbParams_.scaleFactor_,
+										params.orbParams_.nlevels_,
+										params.orbParams_.edgeTreshold_,
+										params.orbParams_.firstLevel_,
+										params.orbParams_.WTA_K_,
+										params.orbParams_.scoreType_,
+										params.orbParams_.patchSize_,
+										params.orbParams_.fastTreshold_);
 		break;
 	default:
 		throw invalid_argument("Error feature detecting method was used! (non recognized method)");

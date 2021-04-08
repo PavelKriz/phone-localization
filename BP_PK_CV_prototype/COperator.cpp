@@ -1,69 +1,173 @@
 #include "COperator.h"
 
 
-SProcessParams COperator::getParams()
+SProcessParams COperator::getParams(Ptr<CLogger> logger)
 {
+    logger->logSection("Parameters of used algorithms", 1);
+    logger->log("Method used for detecting: ").log(algToStr(DETECT_METHOD)).endl();
+    logger->log("Method used for extracting/describing: ").log(algToStr(DETECT_METHOD)).endl();
+    logger->log("Method used for matching: ").log(algToStr(MATCHING_METHOD)).endl();
+
     //set SIFT params
     SSIFTParams siftParams;
-    if (SIFT_N_FEATURES_TEST) {
-        siftParams.nfeatures_ = SIFT_N_FEATURES;
-    }
-    if (SIFT_N_OCTAVE_LAYERS_TEST) {
-        siftParams.nOctaveLayers = SIFT_N_OCTAVE_LAYERS;
-    }
-    if (SIFT_CONTRAST_THRESHOLD_TEST) {
-        siftParams.contrastThreshold_ = SIFT_CONTRAST_THRESHOLD;
-    }
-    if (SIFT_EDGE_THRESHOLD_TEST) {
-        siftParams.edgeTreshold_ = SIFT_EDGE_THRESHOLD;
-    }
-    if (SIFT_SIGMA_TEST) {
-        siftParams.sigma_ = SIFT_SIGMA;
+    if((DETECT_METHOD == EAlgorithm::ALG_SIFT) || (DESCRIBE_METHOD == EAlgorithm::ALG_SIFT)){
+        if (SIFT_N_FEATURES_TEST) {
+            siftParams.nfeatures_ = SIFT_N_FEATURES;
+        }
+        if (SIFT_N_OCTAVE_LAYERS_TEST) {
+            siftParams.nOctaveLayers_ = SIFT_N_OCTAVE_LAYERS;
+        }
+        if (SIFT_CONTRAST_THRESHOLD_TEST) {
+            siftParams.contrastThreshold_ = SIFT_CONTRAST_THRESHOLD;
+        }
+        if (SIFT_EDGE_THRESHOLD_TEST) {
+            siftParams.edgeTreshold_ = SIFT_EDGE_THRESHOLD;
+        }
+        if (SIFT_SIGMA_TEST) {
+            siftParams.sigma_ = SIFT_SIGMA;
+        }
+
+        logger->endl();
+        logger->log("SIFT parameters are following:").endl();
+        logger->log("nFeatures: ").log(to_string(siftParams.nfeatures_));
+        if (! SIFT_N_FEATURES_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("nOctaveLayers_: ").log(to_string(siftParams.nOctaveLayers_));
+        if (! SIFT_N_OCTAVE_LAYERS_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("contrastThreshold_: ").log(to_string(siftParams.contrastThreshold_));
+        if (! SIFT_CONTRAST_THRESHOLD_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("edgeTreshold_: ").log(to_string(siftParams.edgeTreshold_));
+        if (! SIFT_EDGE_THRESHOLD_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("sigma_: ").log(to_string(siftParams.sigma_));
+        if (! SIFT_SIGMA_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
     }
 
     SORBParams orbParams;
     //set ORB params
-    if (ORB_N_FEATURES_TEST) {
-        orbParams.nfeatures_ = ORB_N_FEATURES;
-    }
-    if (ORB_SCALE_FACTOR_TEST) {
-        orbParams.scaleFactor_ = ORB_SCALE_FACTOR;
-    }
-    if (ORB_N_LEVELS_TEST) {
-        orbParams.nlevels_ = ORB_N_LEVELS;
-    }
-    if (ORB_EDGE_THRESHOLD_TEST) {
-        orbParams.edgeTreshold_ = ORB_EDGE_THRESHOLD;
-    }
-    if (ORB_FIRST_LEVEL_TEST) {
-        orbParams.firstLevel_ = ORB_FIRST_LEVEL;
-    }
-    if (ORB_WTA_K_TEST) {
-        orbParams.WTA_K_ = ORB_WTA_K;
-    }
-    if (ORB_SCORE_TYPE_TEST) {
-        orbParams.scoreType_ = ORB_SCORE_TYPE;
-    }
-    if (ORB_PATCH_SIZE_TEST) {
-        orbParams.patchSize_ = ORB_PATCH_SIZE;
-    }
-    if (ORB_FAST_THRESHOLD_TEST) {
-        orbParams.fastTreshold_ = ORB_FAST_THRESHOLD;
+    if ((DETECT_METHOD == EAlgorithm::ALG_ORB) || (DESCRIBE_METHOD == EAlgorithm::ALG_ORB)) {
+        if (ORB_N_FEATURES_TEST) {
+            orbParams.nfeatures_ = ORB_N_FEATURES;
+        }
+        if (ORB_SCALE_FACTOR_TEST) {
+            orbParams.scaleFactor_ = ORB_SCALE_FACTOR;
+        }
+        if (ORB_N_LEVELS_TEST) {
+            orbParams.nlevels_ = ORB_N_LEVELS;
+        }
+        if (ORB_EDGE_THRESHOLD_TEST) {
+            orbParams.edgeTreshold_ = ORB_EDGE_THRESHOLD;
+        }
+        if (ORB_FIRST_LEVEL_TEST) {
+            orbParams.firstLevel_ = ORB_FIRST_LEVEL;
+        }
+        if (ORB_WTA_K_TEST) {
+            orbParams.WTA_K_ = ORB_WTA_K;
+        }
+        if (ORB_SCORE_TYPE_TEST) {
+            orbParams.scoreType_ = ORB_SCORE_TYPE;
+        }
+        if (ORB_PATCH_SIZE_TEST) {
+            orbParams.patchSize_ = ORB_PATCH_SIZE;
+        }
+        if (ORB_FAST_THRESHOLD_TEST) {
+            orbParams.fastTreshold_ = ORB_FAST_THRESHOLD;
+        }
+
+        logger->endl();
+        logger->log("ORB parameters are following:").endl();
+        logger->log("nFeatures: ").log(to_string(orbParams.nfeatures_));
+        if (! ORB_N_FEATURES_TEST) {
+            orbParams.nfeatures_ = ORB_N_FEATURES;
+        }
+        logger->endl();
+        logger->log("scaleFactor_: ").log(to_string(orbParams.scaleFactor_));
+        if (! ORB_SCALE_FACTOR_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("nlevels_: ").log(to_string(orbParams.nlevels_));
+        if (! ORB_N_LEVELS_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("edgeTreshold_: ").log(to_string(orbParams.edgeTreshold_));
+        if (! ORB_EDGE_THRESHOLD_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("firstLevel_: ").log(to_string(orbParams.firstLevel_));
+        if (! ORB_FIRST_LEVEL_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("WTA_K_: ").log(to_string(orbParams.WTA_K_));
+        if (! ORB_WTA_K_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("scoreType_: ").log(to_string(orbParams.scoreType_));
+        if (! ORB_SCORE_TYPE_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("patchSize_: ").log(to_string(orbParams.patchSize_));
+        if (! ORB_PATCH_SIZE_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+        logger->log("fastTreshold_: ").log(to_string(orbParams.fastTreshold_));
+        if (! ORB_FAST_THRESHOLD_TEST) {
+            logger->log(" (default value)");
+        }
+        logger->endl();
+
     }
 
     //set BEBLID params (only descriptor)
     SBEBLIDParams beblidParams;
-    //values are set according to documentation: https://docs.opencv.org/master/d7/d99/classcv_1_1xfeatures2d_1_1BEBLID.html
-    //for different detecting methods different parameters are set
-    if (DETECT_METHOD == EAlgorithm::ALG_ORB) {
-        beblidParams.scale_factor_ = 1.0f;
+    if (DESCRIBE_METHOD == EAlgorithm::ALG_BEBLID) {
+        //values are set according to documentation: https://docs.opencv.org/master/d7/d99/classcv_1_1xfeatures2d_1_1BEBLID.html
+        //for different detecting methods different parameters are set
+        logger->endl();
+        logger->log("ORB parameters are following:").endl();
+
+        if (DETECT_METHOD == EAlgorithm::ALG_ORB) {
+            beblidParams.scale_factor_ = 1.0f;
+            logger->log("scale_factor_: ").log(to_string(beblidParams.scale_factor_)).log(" (value to describe ORB features)").endl();
+        }
+        else if (DETECT_METHOD == EAlgorithm::ALG_SIFT) {
+            beblidParams.scale_factor_ = 6.75f;
+            logger->log("scale_factor_: ").log(to_string(beblidParams.scale_factor_)).log(" (value to describe SIFT features)").endl();
+        }
+        if (BEBLID_N_BITS_TEST) {
+            beblidParams.n_bits_ = BEBLID_N_BITS;
+        }
+
+        if (BEBLID_N_BITS == xfeatures2d::BEBLID::SIZE_512_BITS) {
+            logger->log("n_bits_: ").log("512 bits size").log(" (defalut value)").endl();
+        }
+        else {
+            logger->log("n_bits_: ").log("256 bits size").endl();
+        }
+
     }
-    else if (DETECT_METHOD == EAlgorithm::ALG_SIFT) {
-        beblidParams.scale_factor_ = 6.75f;
-    }
-    if (BEBLID_N_BITS_TEST) {
-        beblidParams.n_bits_ = BEBLID_N_BITS;
-    }
+
+    
+    
 
     return SProcessParams(
         DETECT_METHOD,
@@ -90,7 +194,7 @@ int COperator::run()
 
     try {
         CObjectInSceneFinder finder(logger, RUN_NAME, SCENE_FILE_PATH, OBJECT_FILE_PATHS);
-        finder.run(getParams(), RUN_NAME, PREVIEW_RESULT);
+        finder.run(getParams(logger), RUN_NAME, PREVIEW_RESULT);
         finder.report();
     }
     catch (ios_base::failure e) {

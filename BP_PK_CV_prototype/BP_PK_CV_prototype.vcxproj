@@ -27,6 +27,7 @@
     <ClCompile Include="COperator.cpp" />
     <ClCompile Include="COstreamLogger.cpp" />
     <ClCompile Include="CRuntimeLogger.cpp" />
+    <ClCompile Include="SProcessParams.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CFileLogger.h" />

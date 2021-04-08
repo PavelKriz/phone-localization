@@ -39,6 +39,9 @@
     <ClCompile Include="COperator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SProcessParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CLogger.h">
