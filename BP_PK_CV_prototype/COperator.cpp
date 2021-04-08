@@ -5,7 +5,7 @@ SProcessParams COperator::getParams(Ptr<CLogger> logger)
 {
     logger->logSection("Parameters of used algorithms", 1);
     logger->log("Method used for detecting: ").log(algToStr(DETECT_METHOD)).endl();
-    logger->log("Method used for extracting/describing: ").log(algToStr(DETECT_METHOD)).endl();
+    logger->log("Method used for extracting/describing: ").log(algToStr(DESCRIBE_METHOD)).endl();
     logger->log("Method used for matching: ").log(algToStr(MATCHING_METHOD)).endl();
 
     //set SIFT params
@@ -29,6 +29,8 @@ SProcessParams COperator::getParams(Ptr<CLogger> logger)
 
         logger->endl();
         logger->log("SIFT parameters are following:").endl();
+        logger->log("note: defaut value means that it wasnt changed, other walua can be also euqal to the default ones").endl();
+
         logger->log("nFeatures: ").log(to_string(siftParams.nfeatures_));
         if (! SIFT_N_FEATURES_TEST) {
             logger->log(" (default value)");
@@ -89,6 +91,8 @@ SProcessParams COperator::getParams(Ptr<CLogger> logger)
 
         logger->endl();
         logger->log("ORB parameters are following:").endl();
+        logger->log("note: defaut value means that it wasnt changed, other walua can be also euqal to the default ones").endl();
+
         logger->log("nFeatures: ").log(to_string(orbParams.nfeatures_));
         if (! ORB_N_FEATURES_TEST) {
             orbParams.nfeatures_ = ORB_N_FEATURES;
@@ -144,6 +148,7 @@ SProcessParams COperator::getParams(Ptr<CLogger> logger)
         //for different detecting methods different parameters are set
         logger->endl();
         logger->log("ORB parameters are following:").endl();
+        logger->log("note: defaut value means that it wasnt changed, other walua can be also euqal to the default ones").endl();
 
         if (DETECT_METHOD == EAlgorithm::ALG_ORB) {
             beblidParams.scale_factor_ = 1.0f;
