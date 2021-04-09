@@ -52,7 +52,7 @@ const bool PREVIEW_RESULT = true;
 
 //general methods choices
 const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_ORB;
-const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_BEBLID;
+const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_ORB;
 const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 
 //SIFT TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)
