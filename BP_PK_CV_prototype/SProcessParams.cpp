@@ -7,8 +7,12 @@ string algToStr(const EAlgorithm alg) {
 		return "SIFT";
 	case EAlgorithm::ALG_ORB:
 		return "ORB";
+
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	case EAlgorithm::ALG_BEBLID:
 		return "BEBLID";
+#endif
+
 	case EAlgorithm::ALG_BF_MATCHING:
 		return "brute force matching";
 	case EAlgorithm::ALG_FLANN_MATCHING:

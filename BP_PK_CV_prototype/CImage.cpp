@@ -55,10 +55,12 @@ Ptr<Feature2D> CImage::getExtractor(const SProcessParams& params)
 								params.orbParams_.patchSize_,
 								params.orbParams_.fastTreshold_);
 		break;
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	case EAlgorithm::ALG_BEBLID:
 		extractor = xfeatures2d::BEBLID::create(params.beblidParams_.scale_factor_,
 												params.beblidParams_.n_bits_);
 		break;
+#endif
 	default:
 		throw invalid_argument("Error feature detecting method was used! (non recognized method)");
 		break;

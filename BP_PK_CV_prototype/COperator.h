@@ -7,6 +7,10 @@
 #include "CObjectInSceneFinder.h"
 #include "parameters.h"
 
+//enabling and disabling experimental and nonfree modules
+#include "experimentalModules.h"
+
+
 using namespace std;
 
 class COperator

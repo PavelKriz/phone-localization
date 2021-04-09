@@ -141,6 +141,7 @@ SProcessParams COperator::getParams(Ptr<CLogger> logger)
 
     }
 
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
     //set BEBLID params (only descriptor)
     SBEBLIDParams beblidParams;
     if (DESCRIBE_METHOD == EAlgorithm::ALG_BEBLID) {
@@ -170,16 +171,16 @@ SProcessParams COperator::getParams(Ptr<CLogger> logger)
         }
 
     }
-
+#endif
     
-    
-
     return SProcessParams(
         DETECT_METHOD,
         DESCRIBE_METHOD,
         siftParams,
         orbParams,
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
         beblidParams,
+#endif
         MATCHING_METHOD
     );
 }

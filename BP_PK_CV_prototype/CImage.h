@@ -3,6 +3,9 @@
 #include <iostream>
 #include <vector>
 
+//enabling and disabling experimental and nonfree modules
+#include "experimentalModules.h"
+
 //Matrices
 #include <opencv2/core/mat.hpp>
 //reading writing
@@ -10,7 +13,10 @@
 //features
 #include <opencv2/features2d.hpp>
 //experimental feature algorithms - eg. BEBLID
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 #include <opencv2/xfeatures2d.hpp>
+#endif
+
 //clahe and other image processing
 #include <opencv2/imgproc.hpp>
 

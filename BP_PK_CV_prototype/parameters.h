@@ -6,6 +6,9 @@
 #include "SProcessParams.h"
 #include "images.h"
 
+//enabling and disabling experimental and nonfree modules
+#include "experimentalModules.h"
+
 using namespace cv;
 
 //====tests and files parameters====
@@ -88,9 +91,11 @@ const int ORB_PATCH_SIZE = 31;
 const bool ORB_FAST_THRESHOLD_TEST = false;
 const int ORB_FAST_THRESHOLD = 20;
 
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 //BEBLID descriptor https://docs.opencv.org/master/d7/d99/classcv_1_1xfeatures2d_1_1BEBLID.html
 const bool BEBLID_N_BITS_TEST = false;
 const bool BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_512_BITS;
+#endif
 
 //MATCHER
 const float MATCHES_FIRST_TO_SECOND_MAX_RATIO = 0.7f;
