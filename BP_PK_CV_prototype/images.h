@@ -1,10 +1,18 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file       images.h
+ * \author     Pavel Kriz
+ * \date       9/4/2021
+ * \brief      File containing vectors with strings containing filepaths to images from the bc. Jan Sefcik's image database
+*/
+//----------------------------------------------------------------------------------------
+
 #pragma once
 
 #include <vector> 
 #include <string>
 
-
-//sefcik
+/// Vector with reference images from bc. Jan Sefcik's database
 const vector<string> sefcikImagesObjects{
     "input_images\\sefcik\\b1_obj\\01_b.jpg",   //0
     "input_images\\sefcik\\b1_obj\\02_b.jpg",   //1
@@ -56,7 +64,7 @@ const vector<string> sefcikImagesObjects{
     "input_images\\sefcik\\b12_obj\\04_b.jpg"   //47
 };
 
-//sefcik
+/// Vector with scene images from bc. Jan Sefcik's database
 const vector<string> sefcikImagesScenes{
     "input_images\\sefcik\\b1_scn\\01_b.jpg"       , //0
     "input_images\\sefcik\\b1_scn\\01_b_small.jpg" , //1

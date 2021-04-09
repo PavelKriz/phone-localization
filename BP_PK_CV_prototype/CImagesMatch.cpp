@@ -108,7 +108,7 @@ CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* log
 		//TODO might be a slow solution
 		double currentFirstToSecondRatio = knnMatches[i][0].distance / knnMatches[i][1].distance;
 		avarageFirstToSecondRatio = ((avarageFirstToSecondRatio * avarageWeight) + (currentFirstToSecondRatio)) / (1 + avarageWeight);
-		if (knnMatches[i][0].distance < MATCHES_FIRST_TO_SECOND_MAX_RATIO * knnMatches[i][1].distance) {
+		if (knnMatches[i][0].distance < params.loweRatioTestAlpha_ * knnMatches[i][1].distance) {
 			matches_.push_back(knnMatches[i][0]);
 		}
 	}

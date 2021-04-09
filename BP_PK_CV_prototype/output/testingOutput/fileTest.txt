@@ -1,0 +1,67 @@
+OpenCV version : 4.5.2
+
+
+===RUN: FILETEST===
+images loaded
+
+======PARAMETERS OF USED ALGORITHMS======
+    Method used for detecting: ORB
+    Method used for extracting/describing: ORB
+    Method used for matching: brute force matching
+    
+    ORB parameters are following:
+    note: defaut value means that it wasnt changed, other walua can be also euqal to the default ones
+    nFeatures: 1000
+    scaleFactor_: 1.200000 (default value)
+    nlevels_: 8 (default value)
+    edgeTreshold_: 31 (default value)
+    firstLevel_: 0 (default value)
+    WTA_K_: 2 (default value)
+    scoreType_: 0 (default value)
+    patchSize_: 31 (default value)
+    fastTreshold_: 20 (default value)
+    
+======DETECTIG AND DESCRIBING FEATURES======
+    
+=========object=========
+        CImage with filepath: input_images\dum_rott\dumRottScene2.jpg is being processed.
+        CLAHE was applied on the image.Detection and description done, keypoints count: 1000
+        
+=========scenes=========
+        CImage with filepath: input_images\dum_rott\dumRottRef.png is being processed.
+        CLAHE was applied on the image.Detection and description done, keypoints count: 1000
+        CImage with filepath: input_images\white_house\whiteHouse1ref.png is being processed.
+        CLAHE was applied on the image.Detection and description done, keypoints count: 1000
+        
+=========timing=========
+        Detecting and describing all features took: 269[ms]
+        
+======MATCHING======
+    
+    Matching scene with object that has filepath: input_images\dum_rott\dumRottRef.png
+    Max distance :87.000000
+    Min distance :14.000000
+    Average distance :60.251748
+    Average first to second ratio is  :0.910271
+    Ratio of filtered matches to number of keypoints of object is (x100):4.300000
+    Compare index: 0 | avarage distance: 60.251748
+    
+    Matching scene with object that has filepath: input_images\white_house\whiteHouse1ref.png
+    Max distance :88.000000
+    Min distance :33.000000
+    Average distance :63.987013
+    Average first to second ratio is  :0.938901
+    Ratio of filtered matches to number of keypoints of object is (x100):0.100000
+    Compare index: 1 | avarage distance: 63.987013
+    
+=========timing=========
+        Finding the right object took: 5[ms]
+        Time of the whole process: 274[ms]
+        
+=========result=========
+        Best object match for scene is object with filepath: input_images\dum_rott\dumRottRef.png
+        
+=========timing=========
+        Result output took: 11[ms]
+        Time of the whole process with view: 285[ms]
+        

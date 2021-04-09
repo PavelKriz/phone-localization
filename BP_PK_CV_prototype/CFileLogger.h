@@ -1,9 +1,20 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file       CFileLogger.h
+ * \author     Pavel Kriz
+ * \date       9/4/2021
+ * \brief      Contains class for logging output from the app to the file
+ *
+ *  It is designed for printing result after the run of the app (untill then it stores everything that is passed to be printed)
+ *
+*/
+//----------------------------------------------------------------------------------------
+
 #pragma once
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <exception>
 
 
 //reading writing images
@@ -14,21 +25,52 @@
 
 using namespace std;
 
-//can use flush only once
+/**
+ * @brief Class for logging output from the app to the file
+ * 
+ * It is designed for printing result after the run of the app (untill then it stores everything that is passed to be printed)
+ * 
+ * The real output is done with function flush
+ * The flush function has to be called always at the end or every time when the result is immidiately needed
+ * 
+*/
 class CFileLogger : public COstreamLogger {
 protected:
-	ostringstream out_;
-	const string outputRoot_;
-	const string runName_;
-	bool wasFlushed_ = false;
-
+	ostringstream out_; ///< stream to it the method prints until
+	const string outputRoot_; ///< test root filepath - in relation to the run of the app
+	const string runName_; ///< name of the current test
+	bool wasFlushed_ = false; ///< information whether the flush method was called at least once
+	/**
+	 * @brief It returns the stream that the logger is using
+	 * @return It returns internal ostream (buffer)
+	*/
 	inline virtual ostream& out() override { return out_; }
 public:
+	/**
+	 * @brief empty constructor is deleted
+	*/
 	CFileLogger() = delete;
 	//file logger allways produces images
-	CFileLogger(const string& outputRoot, const string & runName);
+	/**
+	 * @brief Constructor of the logger
+	 * @param outputRoot test root filepath - in relation to the run of the app
+	 * @param runName name of the current test
+	 * @param timing information whether the timing optimalization will take place
+	*/
+	CFileLogger(const string& outputRoot, const string & runName, bool timing);
+	/**
+	 * @brief default destructor
+	*/
 	virtual ~CFileLogger() override {}
-	// TODO throwing input output exceptions (checking input)
+	/**
+	 * @brief Flushes (saves) every images or text to the output (implementation)
+	 * 
+	 * The flush function has to be called always at the end or every time when the result is immidiately needed
+	 * 
+	 * It clears the buffered images and text after saving
+	 * 
+	 * On first flush call it truncate the text output file it saves to, on other calles it appends to the file
+	*/
 	virtual void flush() override;
 };
 

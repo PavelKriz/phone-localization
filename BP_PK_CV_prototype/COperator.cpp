@@ -181,7 +181,8 @@ SProcessParams COperator::getParams(Ptr<CLogger> logger)
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
         beblidParams,
 #endif
-        MATCHING_METHOD
+        MATCHING_METHOD,
+        LOWE_RATIO_TEST_ALPHA
     );
 }
 
@@ -192,7 +193,7 @@ int COperator::run()
         logger = new CRuntimeLogger(TIMING);
     }
     else {
-        logger = new CFileLogger(OUTPUT_ROOT, RUN_NAME);
+        logger = new CFileLogger(OUTPUT_ROOT, RUN_NAME, TIMING);
     }
 
     cout << "START" << endl;

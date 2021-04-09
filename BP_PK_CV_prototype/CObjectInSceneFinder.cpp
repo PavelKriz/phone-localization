@@ -15,7 +15,7 @@ CObjectInSceneFinder::CObjectInSceneFinder(Ptr<CLogger> &logger, const string& r
 
 //=================================================================================================
 
-int CObjectInSceneFinder::run(const SProcessParams& params, const string& runName, bool viewResult)
+void CObjectInSceneFinder::run(const SProcessParams& params, const string& runName, bool viewResult)
 {
 	//set begin time
 	chrono::steady_clock::time_point begin = chrono::steady_clock::now();
@@ -87,7 +87,7 @@ int CObjectInSceneFinder::run(const SProcessParams& params, const string& runNam
 			log("[ms]").endl();
 	}
 
-	return lowestDistanceIndex;
+	return;
 }
 
 //=================================================================================================
