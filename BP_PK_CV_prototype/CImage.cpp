@@ -97,7 +97,7 @@ Ptr<Feature2D> CImage::getDetectorExtractor(const SProcessParams& params)
 	return detectorExtractor;
 }
 
-void CImage::detectDescribeFeatures(const SProcessParams & params, CLogger* logger)
+void CImage::detectDescribeFeatures(const SProcessParams & params, Ptr<CLogger>& logger)
 {
 	if (params.detectMethod_ == params.describeMethod_) {
 		Ptr<Feature2D> detector = getDetectorExtractor(params);
@@ -119,7 +119,7 @@ void CImage::detectDescribeFeatures(const SProcessParams & params, CLogger* logg
 
 //=================================================================================================
 
-void CImage::processCLAHE(CLogger* logger)
+void CImage::processCLAHE(Ptr<CLogger>& logger)
 {
 	//TODO think about the parameters for clahe
 	Ptr<CLAHE> clahePtr = createCLAHE();
@@ -133,7 +133,7 @@ void CImage::processCLAHE(CLogger* logger)
 
 //=================================================================================================
 
-CImage::CImage(string filePath)
+CImage::CImage(const string& filePath)
 	: filePath_(filePath)
 {
 	image_ = imread(filePath, CV_8U);
@@ -143,14 +143,14 @@ CImage::CImage(string filePath)
 	}
 }
 
-void CImage::process(const SProcessParams& params, CLogger* logger)
+void CImage::process(const SProcessParams& params, Ptr<CLogger>& logger)
 {
 	logger->log("CImage with filepath: " + filePath_ + " is being processed.").endl();
 	processCLAHE(logger);
 	detectDescribeFeatures(params, logger);
 }
 
-const vector<KeyPoint>& CImage::getKeypoints()
+const vector<KeyPoint>& CImage::getKeypoints() const
 {
 	if (!wasProcessed_) {
 		throw logic_error("CImage - to get keypoints first the process function has to be called.");
@@ -158,7 +158,7 @@ const vector<KeyPoint>& CImage::getKeypoints()
 	return imageKeypoints_;
 }
 
-const Mat& CImage::getDescriptors()
+const Mat& CImage::getDescriptors() const
 {
 	if (!wasProcessed_) {
 		throw logic_error("CImage - to get descriptors of the keypoints first the process function has to be called.");

@@ -32,7 +32,7 @@ class COperator
      * @param logger it prints what it does into that logger
      * @return the set parameters
     */
-    static SProcessParams getParams(Ptr<CLogger> logger);
+    static SProcessParams getParams(Ptr<CLogger>& logger);
 public:
     /**
      * @brief static method that executes the program

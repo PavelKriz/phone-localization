@@ -59,19 +59,19 @@ protected:
 	 * @param params params on which base the detector is created (detector or/and descriptor creator)
 	 * @return returns the smart pointer to the detector
 	*/
-	Ptr<Feature2D> getDetector(const SProcessParams& params);
+	static Ptr<Feature2D> getDetector(const SProcessParams& params);
 	/**
 	 * @brief  returns pointer to correct descriptor creator object (correct according to the params that are passed)
 	 * @param params  params on which base the descriptor creator is made
 	 * @return returns the smart pointer to the descriptor creator object
 	*/
-	Ptr<Feature2D> getExtractor(const SProcessParams& params);
+	static Ptr<Feature2D> getExtractor(const SProcessParams& params);
 	/**
 	 * @brief returns pointer to correct detector or/and descriptor creator object (correct according to the params that are passed)
 	 * @param params params on which base the detector is created (detector or/and descriptor creator)
 	 * @return returns the smart pointer to the detector or/and descriptor creator
 	*/
-	Ptr<Feature2D> getDetectorExtractor(const SProcessParams& params);
+	static Ptr<Feature2D> getDetectorExtractor(const SProcessParams& params);
 	//computes both keypoints and theirs descriptors, throws invalid argument
 
 	/**
@@ -80,19 +80,19 @@ protected:
 	 * @param logger logger in which it will print information about the process
 	 * @throw invalid_argument if there is in parameters some method that is not implemented
 	*/
-	void detectDescribeFeatures(const SProcessParams & params, CLogger* logger);
+	void detectDescribeFeatures(const SProcessParams& params, Ptr<CLogger>& logger);
 	/**
 	 * @brief it proceses a CLAHE (Contrast Limited Adaptive Histogram Equalisation) algorithm over the image 
 	 * @param logger the logging output is printed in the logger
 	*/
-	void processCLAHE( CLogger* logger);
+	void processCLAHE(Ptr<CLogger>& logger);
 public:
 	/**
 	 * @brief Constructor (the image is loaded during the constructor run)
 	 * @param filePath filepath of the image (with the image itself, relative to the place where the app is running)
 	 * @throw ios_base::failure
 	*/
-	CImage(string filePath);
+	CImage(const string& filePath);
 	//method determining all the processes with detection and preparation
 
 	/**
@@ -100,27 +100,27 @@ public:
 	 * @param params parameters that determine which algorithms would be used to detect features and which one used to describe them
 	 * @param logger logger in which it will print information about the process
 	*/
-	void process(const SProcessParams& params, CLogger * logger);
+	void process(const SProcessParams& params, Ptr<CLogger>& logger);
 	/**
 	 * @brief Gives relative filepath of the image (with the image name itself)
 	 * @return the filepath
 	*/
-	const string& getFilePath() { return filePath_; }
+	const string& getFilePath() const { return filePath_; }
 	/**
 	 * @brief Gives the image data
 	 * @return the image data in OpenCV format (matrix)
 	*/
-	const Mat& getImage() { return image_; }
+	const Mat& getImage() const { return image_; }
 	/**
 	 * @brief Gives keypoints
 	 * @return vector of keypoints
 	 * @throw logic_error message: "CImage - to get keypoints first the process function has to be called."
 	*/
-	const vector<KeyPoint>& getKeypoints();
+	const vector<KeyPoint>& getKeypoints() const;
 	/**
 	 * @brief Gives descriptors of the image keypoints
 	 * @return descriptors of the keypoints (matrix)
 	 * @throw logic_error message: "CImage - to get descriptors of the keypoints first the process function has to be called."
 	*/
-	const Mat& getDescriptors();
+	const Mat& getDescriptors() const;
 };

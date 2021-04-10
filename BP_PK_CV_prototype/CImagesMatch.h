@@ -40,8 +40,8 @@
  * 
 */
 class CImagesMatch {
-	Ptr<CImage> objectImage_; ///< image containing the reference object (sort of training object)
-	Ptr<CImage> sceneImage_; ///< image containing the scene (sort of query object)
+	const Ptr<CImage> objectImage_; ///< image containing the reference object (sort of training object)
+	const Ptr<CImage> sceneImage_; ///< image containing the scene (sort of query object)
 	vector<DMatch> matches_; ///< all the matches between the two images keypoints
 	double avarageMatchesDistance_ = numeric_limits<double>::max(); ///< average distance of all the matches (the smaller the better)
 	double matchedObjectFeaturesRatio_ = -1; ///< ratio between amount of detected matches and amount of filtered matches(the bigger the better)
@@ -52,7 +52,7 @@ class CImagesMatch {
 	 * @param params the parameters that determine which matcher would be used
 	 * @return smart pointer to the matcher (returns interface/virtual class)
 	*/
-	Ptr<DescriptorMatcher> createMatcher(const SProcessParams & params);
+	static Ptr<DescriptorMatcher> createMatcher(const SProcessParams & params);
 public:
 	/**
 	 * @brief Constructor of the class
@@ -62,7 +62,7 @@ public:
 	 * @param params params the parameters that determine which matcher would be used
 	 * @throw invalid_argument if there is called a not implemented method for matching
 	*/
-	CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, const SProcessParams& params);
+	CImagesMatch(const Ptr<CImage>& object, const Ptr<CImage>& scene, CLogger* logger, const SProcessParams& params);
 	/**
 	 * @brief Move constructor
 	 * @param right object to be moved
@@ -82,32 +82,32 @@ public:
 	 * @brief Gives number of filtered matches
 	 * @return number of filtered matches
 	*/
-	size_t getNumberOfMatches() { return matches_.size(); }
+	size_t getNumberOfMatches() const { return matches_.size(); }
 	/**
 	 * @brief Gives average distance of all the matches (the smaller the better)
 	 * @return the distance
 	*/
-	double getAvarageMatchesDistance() { return avarageMatchesDistance_; }
+	double getAvarageMatchesDistance() const { return avarageMatchesDistance_; }
 	/**
 	 * @brief Gives ratio between amount of detected matches and amount of filtered matches(the bigger the better)
 	 * @return the ratio
 	*/
-	double getMatchedObjectFeaturesRatio() { return matchedObjectFeaturesRatio_; }
+	double getMatchedObjectFeaturesRatio() const { return matchedObjectFeaturesRatio_; }
 	/**
 	 * @brief Gives average ratio from the Lowe's ratio test (called here as first to second ratio)(the smaller the better)
 	 * @return the average ratio
 	*/
-	double getAvarageFirstToSecondRatio() { return avarageFirstToSecondRatio_; }
+	double getAvarageFirstToSecondRatio() const { return avarageFirstToSecondRatio_; }
 	/**
 	 * @brief Gives the image containing the reference object (sort of training object)
 	 * @return smarter pointer to object CImage
 	*/
-	Ptr<CImage> getObjectImage() { return objectImage_; }
+	const Ptr<CImage> getObjectImage() const { return objectImage_; }
 	/**
 	 * @brief Gives image containing the scene (sort of query object)
 	 * @return smart pointer to scene CImage
 	*/
-	Ptr<CImage> getSceneImage() { return sceneImage_; }
+	const Ptr<CImage> getSceneImage() const { return sceneImage_; }
 
 };
 

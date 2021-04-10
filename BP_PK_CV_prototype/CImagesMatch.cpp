@@ -57,7 +57,7 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 
 //=================================================================================================
 
-CImagesMatch::CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, const SProcessParams & params)
+CImagesMatch::CImagesMatch(const Ptr<CImage>& object, const Ptr<CImage>& scene, CLogger* logger, const SProcessParams & params)
 	: objectImage_(object), sceneImage_(scene)
 {
 	//checking for valid input

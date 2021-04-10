@@ -1,7 +1,7 @@
 #include "COperator.h"
 
 
-SProcessParams COperator::getParams(Ptr<CLogger> logger)
+SProcessParams COperator::getParams(Ptr<CLogger>& logger)
 {
     logger->logSection("Parameters of used algorithms", 1);
     logger->log("Method used for detecting: ").log(algToStr(DETECT_METHOD)).endl();
