@@ -150,4 +150,20 @@ void CImage::process(const SProcessParams& params, CLogger* logger)
 	detectDescribeFeatures(params, logger);
 }
 
+const vector<KeyPoint>& CImage::getKeypoints()
+{
+	if (!wasProcessed_) {
+		throw logic_error("CImage - to get keypoints first the process function has to be called.");
+	}
+	return imageKeypoints_;
+}
+
+const Mat& CImage::getDescriptors()
+{
+	if (!wasProcessed_) {
+		throw logic_error("CImage - to get descriptors of the keypoints first the process function has to be called.");
+	}
+	return keypointsDescriptors_;
+}
+
 //=================================================================================================

@@ -78,7 +78,7 @@ protected:
 	 * @brief computes both keypoints and theirs descriptors, throws invalid argument
 	 * @param params parameters that determine which algorithms would be used to detect features and which one used to describe them
 	 * @param logger logger in which it will print information about the process
-	 * @throw invalid_argument
+	 * @throw invalid_argument if there is in parameters some method that is not implemented
 	*/
 	void detectDescribeFeatures(const SProcessParams & params, CLogger* logger);
 	/**
@@ -110,15 +110,17 @@ public:
 	 * @brief Gives the image data
 	 * @return the image data in OpenCV format (matrix)
 	*/
-	Mat& getImage() { return image_; }
+	const Mat& getImage() { return image_; }
 	/**
 	 * @brief Gives keypoints
 	 * @return vector of keypoints
+	 * @throw logic_error message: "CImage - to get keypoints first the process function has to be called."
 	*/
-	vector<KeyPoint>& getKeypoints() { return imageKeypoints_; }
+	const vector<KeyPoint>& getKeypoints();
 	/**
 	 * @brief Gives descriptors of the image keypoints
 	 * @return descriptors of the keypoints (matrix)
+	 * @throw logic_error message: "CImage - to get descriptors of the keypoints first the process function has to be called."
 	*/
-	Mat& getDescriptors() { return keypointsDescriptors_; }
+	const Mat& getDescriptors();
 };

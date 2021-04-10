@@ -5,6 +5,9 @@ CObjectInSceneFinder::CObjectInSceneFinder(Ptr<CLogger> &logger, const string& r
 	:
 	logger_(logger)
 {
+	if (logger_.empty()) {
+		throw invalid_argument("CObjectInSceneFinder constructor was called with empty pointer to logger (CLogger) object.");
+	}
 	logger_->logSection("Run: " + runName, 0);
 	sceneImage_ = new CImage(sceneFilePath);
 	for (auto& it : objectFilePaths) {
@@ -17,6 +20,11 @@ CObjectInSceneFinder::CObjectInSceneFinder(Ptr<CLogger> &logger, const string& r
 
 void CObjectInSceneFinder::run(const SProcessParams& params, const string& runName, bool viewResult)
 {
+	if (logger_.empty()) {
+		throw invalid_argument(
+			string("CObjectInSceneFinder: method run was called but the logger is empty") +
+			"(the given logger in constructor has to stay valid for the whole lifetime of CObjectInSceneFinder),");
+	}
 	//set begin time
 	chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
@@ -94,6 +102,11 @@ void CObjectInSceneFinder::run(const SProcessParams& params, const string& runNa
 
 void CObjectInSceneFinder::viewBestResult(const string& runName)
 {
+	if (logger_.empty()) {
+		throw invalid_argument(
+			string("CObjectInSceneFinder: method viewBestResult was called but the logger is empty") +
+			"(the given logger in constructor has to stay valid for the whole lifetime of CObjectInSceneFinder),");
+	}
 	if (bestMatchExist_) {
 		matches_[bestMatchIndex_].drawPreviewAndResult(runName, logger_);
 	}

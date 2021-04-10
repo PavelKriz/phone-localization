@@ -46,22 +46,24 @@ public:
 	 * @param runName name of the current test
 	 * @param sceneFilePath  filepath of the scene image (relative to the place of run of the app)
 	 * @param objectFilePaths  vector with filepaths of images of the reference objects (relative to the place of run of the app)
-	 * @throw ios_base::failure
+	 * @throw ios_base::failure (because of image loading)
+	 * @throw invalid_argument (if the pointer to logger is empty)
 	*/
 	CObjectInSceneFinder(Ptr<CLogger>& logger, const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths);
-
 	/**
 	 * @brief the main body of the process (detecting and describing features, matching and keypoints matches filtering)
 	 * @param params parameters of the algorithms that would be used
 	 * @param runName name of the current test
-	 * @param viewResult information whether the result should be viewed (basically if also the viewBestResult should be called, but here some extra timing information will be printed)
-	 * @throw invalid_argument
+	 * @param viewResult information whether the result should be viewed (basically if also the viewBestResult should be called, but here some extra timing information will be printed)	 * @throw invalid_argument (if the pointer to logger is empty)
+	 * @throw all CImage and CImage Match exceptions, because they aren´t catched in this class)
+	 * @throw invalid_argument (if the pointer to logger is empty)
 	*/
 	void run(const SProcessParams& params, const string& runName, bool viewResult = true);
 	/**
 	 * @brief displayes the result - match between scene and best suiting reference object (all matches are displayed and the transformation borders, the object is then being put into the scene)
 	 * @param runName name of the current test
-	 * @throw logic_error
+	 * @throw logic_error is thrown if the method run was not called first
+	 * @throw invalid_argument (if the pointer to logger is empty)
 	*/
 	void viewBestResult(const string& runName);
 	//print all the log, should be used on the end

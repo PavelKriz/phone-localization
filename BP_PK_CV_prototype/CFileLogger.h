@@ -73,4 +73,3 @@ public:
 	*/
 	virtual void flush() override;
 };
-

@@ -60,7 +60,7 @@ public:
 	 * @param scene smart pointer of the scene (sort of query object) - should stay valid through time of using of this clas
 	 * @param logger logger in which it will print information about the process
 	 * @param params params the parameters that determine which matcher would be used
-	 * @throw invalid_argument
+	 * @throw invalid_argument if there is called a not implemented method for matching
 	*/
 	CImagesMatch(Ptr<CImage>& object, Ptr<CImage>& scene, CLogger* logger, const SProcessParams& params);
 	/**
