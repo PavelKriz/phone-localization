@@ -190,35 +190,37 @@ SProcessParams COperator::getParams(Ptr<CLogger>& logger)
 int COperator::run()
 {
     Ptr<CLogger> logger;
+    Ptr<CLogger> consoleLogger = new CRuntimeLogger(TIMING);
+
     if (OUTPUT_TYPE == EOutputType::console) {
-        logger = new CRuntimeLogger(TIMING);
+        logger = consoleLogger;
     }
     else {
         logger = new CFileLogger(OUTPUT_ROOT, RUN_NAME, TIMING);
     }
 
-    cout << "START" << endl;
-    logger->log("OpenCV version : ").log(CV_VERSION).endl().endl();
+    consoleLogger->logSection("START", 0);
+    logger->log("OpenCV version : ").log(CV_VERSION).endl();
 
     try {
+        throw logic_error("CImage - to get keypoints first the process function has to be called.");
         CObjectInSceneFinder finder(logger, RUN_NAME, SCENE_FILE_PATH, OBJECT_FILE_PATHS);
         finder.run(getParams(logger), RUN_NAME, PREVIEW_RESULT);
         finder.report();
     }
     catch (ios_base::failure e) {
-        cout << e.what() << endl;
+        logger->logError(e.what());
         return -1;
     }
     catch (invalid_argument e) {
-        cout << e.what() << endl;
+        logger->logError(e.what());
         return -1;
     }
     catch (logic_error e) {
-        cout << e.what() << endl;
+        logger->logError(e.what());
         return -1;
     }
 
-    cout << endl << "FINISHED" << endl;
-
+    consoleLogger->logSection("FINISHED", 0);
     return 1;
 }

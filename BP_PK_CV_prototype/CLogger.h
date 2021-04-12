@@ -50,6 +50,12 @@ public:
 	*/
 	virtual CLogger& log(const string& toLog) = 0;
 	/**
+	 * @brief Method specialised for logging errors
+	 * @param toLog string with error message to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& logError(const string& toLog) = 0;
+	/**
 	 * @brief Does the right end of the line in the style of the logger.
 	 * @return reference on this CLogger
 	*/

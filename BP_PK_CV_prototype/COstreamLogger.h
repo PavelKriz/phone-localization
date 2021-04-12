@@ -36,6 +36,14 @@ protected:
 	 * @return the output stream for printing
 	*/
 	inline virtual ostream& out() = 0;
+	/**
+	 * @brief method that allows implementations to handle start of the error
+	*/
+	virtual void emergencyStart() { return; }
+	/**
+	 * @brief method that allows implementations to handle end of the error
+	*/
+	virtual void emergencyEnd() { return; }
 public:
 	/**
 	 * @brief Constructor of the class
@@ -65,6 +73,12 @@ public:
 	 * @return reference on this CLogger
 	*/
 	virtual CLogger& log(const string& toLog) override;
+	/**
+	 * @brief Method specialised for logging errors
+	 * @param toLog string with error message to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& logError(const string& toLog) override;
 	/**
 	 * @brief Does the right end of the line in the style of the logger.
 	 * 

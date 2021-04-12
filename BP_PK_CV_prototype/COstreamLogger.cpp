@@ -33,6 +33,21 @@ CLogger& COstreamLogger::log(const string& toLog) {
 	return *this;
 }
 
+CLogger& COstreamLogger::logError(const string& toLog)
+{
+	emergencyStart();
+	int tmpLvl = currentSectionLevel_;
+	logSection("Error", 0);
+	log(toLog);
+	out() << std::endl;
+	log("===========================");
+	
+	currentSectionLevel_ = tmpLvl;
+	endl();
+
+	emergencyEnd();
+}
+
 CLogger& COstreamLogger::endl() {
 	out() << std::endl;
 	for (int i = 0; i < currentSectionLevel_; ++i) out() << "    ";

@@ -39,12 +39,22 @@ protected:
 	ostringstream out_; ///< stream to it the method prints until
 	const string outputRoot_; ///< test root filepath - in relation to the run of the app
 	const string runName_; ///< name of the current test
+	bool emergencyMode_ = false; ///< if true the logger logs into console
 	bool wasFlushed_ = false; ///< information whether the flush method was called at least once
 	/**
 	 * @brief It returns the stream that the logger is using
+	 * the logger is normaly using file stream but in emergency mode (file output doesn´t work) it uses console
 	 * @return It returns internal ostream (buffer)
 	*/
-	inline virtual ostream& out() override { return out_; }
+	inline virtual ostream& out() override { return emergencyMode_ ? cout : out_; }
+	/**
+	 * @brief the logger will start to log into console
+	*/
+	virtual void emergencyStart() override { emergencyMode_ = true; }
+	/**
+	 * @brief the logger will start behaving as normally
+	*/
+	virtual void emergencyEnd() override { emergencyMode_ = false; }
 public:
 	/**
 	 * @brief empty constructor is deleted

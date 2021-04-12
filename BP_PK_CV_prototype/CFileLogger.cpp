@@ -14,20 +14,39 @@ void CFileLogger::flush()
 {
 	//write text to the file
 	ofstream txtOut;
+	string outTxtName = outputRoot_ + runName_ + ".txt";
 	if (wasFlushed_) {
-		txtOut.open(outputRoot_ + runName_ + ".txt", ofstream::app);
+		txtOut.open(outTxtName, ofstream::app);
 	}
 	else {
-		txtOut.open(outputRoot_ + runName_ + ".txt", ofstream::trunc);
+		txtOut.open(outTxtName, ofstream::trunc);
 	}
 
-	txtOut << out_.str();
+	if (txtOut.good()) {
+		txtOut << out_.str();
+		//flush is called on close automatically
+	}
+	else {
+		string text = string("ERROR: Error occured when trying to open a file.\n") +
+			"Problem occured in file: )" + outTxtName;
+		logError(text);
+	}
+
+	//flush is called on close automatically
 	txtOut.close();
 	out_.str(std::string());
 
+
 	//write images to the files (OpenCV functions)
 	for(size_t i = 0; i < images_.size(); ++i){
-		imwrite(outputRoot_ + runName_ + to_string(i) + ".jpg", images_[i].first);
+		string outImageName = outputRoot_ + runName_ + to_string(i) + ".jpg";
+		int result = imwrite(outImageName, images_[i].first);
+		//handle errors
+		if (!result) {
+			string text = string("ERROR: Error occured when trying to save an image.\n") +
+				"Problem occured when saving image: )" + outImageName;
+			logError(text);
+		}
 	}
 	
 	images_.clear();

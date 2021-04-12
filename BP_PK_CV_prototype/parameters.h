@@ -57,8 +57,8 @@ const bool PREVIEW_RESULT = true;
 const bool TIMING = false;
 
 //========================================chosen algorithms for matching, describing, matching========================================
-const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_SIFT;
-const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_SIFT;
+const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_ROOTSIFT;
+const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_ROOTSIFT;
 const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 
 //========================================SIFT parameters========================================
