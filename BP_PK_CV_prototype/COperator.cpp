@@ -10,7 +10,8 @@ SProcessParams COperator::getParams(Ptr<CLogger>& logger)
     //set SIFT params
     SSIFTParams siftParams;
     if((DETECT_METHOD == EAlgorithm::ALG_SIFT) || (DESCRIBE_METHOD == EAlgorithm::ALG_SIFT) 
-        || (DETECT_METHOD == EAlgorithm::ALG_ROOTSIFT) || (DESCRIBE_METHOD == EAlgorithm::ALG_ROOTSIFT)){
+        || (DETECT_METHOD == EAlgorithm::ALG_ROOTSIFT) || (DESCRIBE_METHOD == EAlgorithm::ALG_ROOTSIFT)
+        || (DETECT_METHOD == EAlgorithm::ALG_PRECISE_ROOTSIFT) || (DESCRIBE_METHOD == EAlgorithm::ALG_PRECISE_ROOTSIFT)){
         if (SIFT_N_FEATURES_TEST) {
             siftParams.nfeatures_ = SIFT_N_FEATURES;
         }

@@ -90,10 +90,15 @@ protected:
 	void processCLAHE(Ptr<CLogger>& logger);
 	/**
 	 * @brief does change the inner descriptor matrix into descriptors based on Helloinger kernel
+	 * this method is precise enough
 	 * @param logger the logging output is printed in the logger
 	*/
 	void fastRootSiftDescriptorsAdjust(Ptr<CLogger>& logger);
-
+	/**
+	 * @brief does change the inner descriptor matrix into descriptors based on Helloinger kernel
+	 * this method is a bit more precise then the casual faster method but there is not a big difference both in accuracy gain and speed loss
+	 * @param logger the logging output is printed in the logger
+	*/
 	void preciseRootSiftDescriptorsAdjust(Ptr<CLogger>& logger);
 public:
 	/**

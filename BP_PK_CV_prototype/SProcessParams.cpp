@@ -7,6 +7,8 @@ string algToStr(const EAlgorithm alg) {
 		return "SIFT";
 	case EAlgorithm::ALG_ROOTSIFT:
 		return "RootSIFT";
+	case EAlgorithm::ALG_PRECISE_ROOTSIFT:
+		return "Precise RootSIFT";
 	case EAlgorithm::ALG_ORB:
 		return "ORB";
 
