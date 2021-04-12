@@ -1,6 +1,5 @@
 #include "COperator.h"
 
-
 SProcessParams COperator::getParams(Ptr<CLogger>& logger)
 {
     logger->logSection("Parameters of used algorithms", 1);
@@ -10,7 +9,8 @@ SProcessParams COperator::getParams(Ptr<CLogger>& logger)
 
     //set SIFT params
     SSIFTParams siftParams;
-    if((DETECT_METHOD == EAlgorithm::ALG_SIFT) || (DESCRIBE_METHOD == EAlgorithm::ALG_SIFT)){
+    if((DETECT_METHOD == EAlgorithm::ALG_SIFT) || (DESCRIBE_METHOD == EAlgorithm::ALG_SIFT) 
+        || (DETECT_METHOD == EAlgorithm::ALG_ROOTSIFT) || (DESCRIBE_METHOD == EAlgorithm::ALG_ROOTSIFT)){
         if (SIFT_N_FEATURES_TEST) {
             siftParams.nfeatures_ = SIFT_N_FEATURES;
         }

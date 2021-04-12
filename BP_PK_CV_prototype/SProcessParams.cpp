@@ -5,6 +5,8 @@ string algToStr(const EAlgorithm alg) {
 	{
 	case EAlgorithm::ALG_SIFT:
 		return "SIFT";
+	case EAlgorithm::ALG_ROOTSIFT:
+		return "RootSIFT";
 	case EAlgorithm::ALG_ORB:
 		return "ORB";
 

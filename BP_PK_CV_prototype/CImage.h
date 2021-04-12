@@ -35,6 +35,8 @@
 #include "CLogger.h"
 #include "SProcessParams.h"
 
+#include <iostream>
+
 using namespace std;
 using namespace cv;
 
@@ -86,6 +88,13 @@ protected:
 	 * @param logger the logging output is printed in the logger
 	*/
 	void processCLAHE(Ptr<CLogger>& logger);
+	/**
+	 * @brief does change the inner descriptor matrix into descriptors based on Helloinger kernel
+	 * @param logger the logging output is printed in the logger
+	*/
+	void fastRootSiftDescriptorsAdjust(Ptr<CLogger>& logger);
+
+	void preciseRootSiftDescriptorsAdjust(Ptr<CLogger>& logger);
 public:
 	/**
 	 * @brief Constructor (the image is loaded during the constructor run)

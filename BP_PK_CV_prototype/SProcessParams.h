@@ -78,6 +78,7 @@ struct SBEBLIDParams {
 ///Enum with all implemented algorithms that can be vary
 enum class EAlgorithm {
 	ALG_SIFT,
+	ALG_ROOTSIFT,
 	ALG_ORB,
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	ALG_BEBLID,

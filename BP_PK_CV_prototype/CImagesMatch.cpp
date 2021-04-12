@@ -6,7 +6,7 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 	switch (params.matchingMethod_)
 	{
 	case EAlgorithm::ALG_BF_MATCHING:
-		if (params.describeMethod_ == EAlgorithm::ALG_SIFT) {
+		if (params.describeMethod_ == EAlgorithm::ALG_SIFT || params.describeMethod_ == EAlgorithm::ALG_ROOTSIFT) {
 			//matcher = DescriptorMatcher::create("BruteForce");
 			matcher = BFMatcher::create(NORM_L2);
 		}
