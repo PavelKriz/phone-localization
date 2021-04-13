@@ -1,10 +1,12 @@
 #include "CObjectInSceneFinder.h"
 
 
-CObjectInSceneFinder::CObjectInSceneFinder(Ptr<CLogger> &logger, const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths)
+CObjectInSceneFinder::CObjectInSceneFinder(const SProcessParams& params, Ptr<CLogger> &logger, const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths)
 	:
+	params_(params),
 	logger_(logger)
 {
+	detectorExtractor_ = CImage::createDetectorExtractor(params);
 	if (logger_.empty()) {
 		throw invalid_argument("CObjectInSceneFinder constructor was called with empty pointer to logger (CLogger) object.");
 	}
@@ -18,7 +20,7 @@ CObjectInSceneFinder::CObjectInSceneFinder(Ptr<CLogger> &logger, const string& r
 
 //=================================================================================================
 
-void CObjectInSceneFinder::run(const SProcessParams& params, const string& runName, bool viewResult)
+void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 {
 	if (logger_.empty()) {
 		throw invalid_argument(
@@ -31,12 +33,12 @@ void CObjectInSceneFinder::run(const SProcessParams& params, const string& runNa
 	logger_->logSection("detectig and describing features", 1);
 	logger_->logSection("object", 2);
 	//prepare the scene
-	sceneImage_->process(params, logger_);
+	sceneImage_->process(params_, logger_, detectorExtractor_);
 
 	//prepare the object
 	logger_->logSection("scenes", 2);
 	for (auto& ptr : objectImages_) {
-		ptr->process(params, logger_);
+		ptr->process(params_, logger_, detectorExtractor_);
 	}
 
 	logger_->logSection("timing", 2);
@@ -55,7 +57,7 @@ void CObjectInSceneFinder::run(const SProcessParams& params, const string& runNa
 		//computing the keypoints, descriptors, matches
 		//move construction
 		logger_->endl().log("Matching scene with object that has filepath: ").log(objectImages_[i]->getFilePath()).endl();
-		matches_.emplace_back(CImagesMatch(objectImages_[i], sceneImage_, logger_, params));
+		matches_.emplace_back(CImagesMatch(objectImages_[i], sceneImage_, logger_, params_));
 
 		//checking if the match is possible to be the best until now
 		double currentDist = matches_.back().getAvarageMatchesDistance();

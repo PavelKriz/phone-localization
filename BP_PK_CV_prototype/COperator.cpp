@@ -203,9 +203,8 @@ int COperator::run()
     logger->log("OpenCV version : ").log(CV_VERSION).endl();
 
     try {
-        throw logic_error("CImage - to get keypoints first the process function has to be called.");
-        CObjectInSceneFinder finder(logger, RUN_NAME, SCENE_FILE_PATH, OBJECT_FILE_PATHS);
-        finder.run(getParams(logger), RUN_NAME, PREVIEW_RESULT);
+        CObjectInSceneFinder finder(getParams(logger), logger, RUN_NAME, SCENE_FILE_PATH, OBJECT_FILE_PATHS);
+        finder.run( RUN_NAME, PREVIEW_RESULT);
         finder.report();
     }
     catch (ios_base::failure e) {

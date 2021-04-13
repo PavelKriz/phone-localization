@@ -7,7 +7,7 @@
  *
  * It can load image, detect and describe keypoints with given algorithm (it has to be implemented)
  * 
- * Usage is following: construct object -> call method called process
+ * Usage is following: construct object -> create detector extractor (static method createDetectorExtractor) ->call method called process
  *
 */
 //----------------------------------------------------------------------------------------
@@ -45,10 +45,47 @@ using namespace cv;
  * 
  *  It can load image, detect and describe keypoints with given algorithm (it has to be implemented)
  * 
- * Usage is following: construct object -> call method called process
+ * Usage is following: construct object -> create detector extractor (static method createDetectorExtractor) -> call method called process
+ * 
+ * (preferably all classes should be called with the same detectorExtractor object)
  * 
 */
 class CImage {
+public:
+	/**
+	 * @brief class that solves the problem of having more OpenCV detector and extractors for many CImage classes
+	 * class can be created only by CImage method
+	*/
+	class CDetectorExtractor {
+		friend class CImage;
+
+		Ptr<Feature2D> detector_; ///< pointer to the detector object
+		Ptr<Feature2D> extractor_; ///< pointer to the extractor object
+		/**
+		 * @brief constructor that constructs the class according to the passed parameters
+		 * @param params parameters on which base the class is being constructed
+		*/
+		CDetectorExtractor(const SProcessParams& params);
+		/**
+		 * @brief returns pointer to correct detector object (correct according to the params that are passed)
+		 * @param params params on which base the detector is created (detector or/and descriptor creator)
+		 * @return returns the smart pointer to the detector
+		 */
+		static Ptr<Feature2D> getDetector(const SProcessParams& params);
+		/**
+		 * @brief  returns pointer to correct descriptor creator object (correct according to the params that are passed)
+		 * @param params  params on which base the descriptor creator is made
+		 * @return returns the smart pointer to the descriptor creator object
+		*/
+		static Ptr<Feature2D> getExtractor(const SProcessParams& params);
+		/**
+		 * @brief returns pointer to correct detector or/and descriptor creator object (correct according to the params that are passed)
+		 * @param params params on which base the detector is created (detector or/and descriptor creator)
+		 * @return returns the smart pointer to the detector or/and descriptor creator
+		*/
+		static Ptr<Feature2D> getDetectorExtractor(const SProcessParams& params);
+	};
+
 protected:
 	const string filePath_; ///< filepath of the image (with the image itself, relative to the place where the app is running)
 	Mat image_; ///< image data in the OpenCV matrix
@@ -57,32 +94,12 @@ protected:
 	Mat keypointsDescriptors_; ///< descriptors of the keypoints (it is valid when wasProcessed is set to true)
 
 	/**
-	 * @brief returns pointer to correct detector object (correct according to the params that are passed)
-	 * @param params params on which base the detector is created (detector or/and descriptor creator)
-	 * @return returns the smart pointer to the detector
-	*/
-	static Ptr<Feature2D> getDetector(const SProcessParams& params);
-	/**
-	 * @brief  returns pointer to correct descriptor creator object (correct according to the params that are passed)
-	 * @param params  params on which base the descriptor creator is made
-	 * @return returns the smart pointer to the descriptor creator object
-	*/
-	static Ptr<Feature2D> getExtractor(const SProcessParams& params);
-	/**
-	 * @brief returns pointer to correct detector or/and descriptor creator object (correct according to the params that are passed)
-	 * @param params params on which base the detector is created (detector or/and descriptor creator)
-	 * @return returns the smart pointer to the detector or/and descriptor creator
-	*/
-	static Ptr<Feature2D> getDetectorExtractor(const SProcessParams& params);
-	//computes both keypoints and theirs descriptors, throws invalid argument
-
-	/**
 	 * @brief computes both keypoints and theirs descriptors, throws invalid argument
 	 * @param params parameters that determine which algorithms would be used to detect features and which one used to describe them
 	 * @param logger logger in which it will print information about the process
-	 * @throw invalid_argument if there is in parameters some method that is not implemented
+	 * @throw invalid_argument if there the detectorExtractor is empty
 	*/
-	void detectDescribeFeatures(const SProcessParams& params, Ptr<CLogger>& logger);
+	void detectDescribeFeatures(const SProcessParams& params, Ptr<CLogger>& logger, const Ptr<CDetectorExtractor>& detectorExtractor);
 	/**
 	 * @brief it proceses a CLAHE (Contrast Limited Adaptive Histogram Equalisation) algorithm over the image 
 	 * @param logger the logging output is printed in the logger
@@ -107,14 +124,18 @@ public:
 	 * @throw ios_base::failure
 	*/
 	CImage(const string& filePath);
-	//method determining all the processes with detection and preparation
-
+	/**
+	 * @brief method that creates nested class object that is neede for the image to be processed (the object can be used for infinite amount of CImage classes)
+	 * @param params parameters that determine which algorithms would be used to detect features and which one used to describe them
+	 * @return the detector extractor object
+	*/
+	static Ptr<CDetectorExtractor> createDetectorExtractor(const SProcessParams& params);
 	/**
 	 * @brief method that runs all the preprocessing of the image, detection and descripion of the keypoints
 	 * @param params parameters that determine which algorithms would be used to detect features and which one used to describe them
 	 * @param logger logger in which it will print information about the process
 	*/
-	void process(const SProcessParams& params, Ptr<CLogger>& logger);
+	void process(const SProcessParams& params, Ptr<CLogger>& logger, const Ptr<CDetectorExtractor>& detectorExtractor);
 	/**
 	 * @brief Gives relative filepath of the image (with the image name itself)
 	 * @return the filepath

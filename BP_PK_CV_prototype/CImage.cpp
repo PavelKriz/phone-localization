@@ -2,7 +2,18 @@
 
 //=================================================================================================
 
-Ptr<Feature2D> CImage::getDetector(const SProcessParams& params)
+CImage::CDetectorExtractor::CDetectorExtractor(const SProcessParams& params) {
+	if (params.detectMethod_ == params.describeMethod_) {
+		detector_ = getDetectorExtractor(params);
+		extractor_ = detector_;
+	}
+	else {
+		detector_ = getDetector(params);
+		extractor_ = getExtractor(params);
+	}
+}
+
+Ptr<Feature2D> CImage::CDetectorExtractor::getDetector(const SProcessParams& params)
 {
 	Ptr<Feature2D> detector;
 	switch (params.detectMethod_)
@@ -34,7 +45,7 @@ Ptr<Feature2D> CImage::getDetector(const SProcessParams& params)
 	return detector;
 }
 
-Ptr<Feature2D> CImage::getExtractor(const SProcessParams& params)
+Ptr<Feature2D> CImage::CDetectorExtractor::getExtractor(const SProcessParams& params)
 {
 	Ptr<Feature2D> extractor;
 	switch (params.describeMethod_)
@@ -72,7 +83,7 @@ Ptr<Feature2D> CImage::getExtractor(const SProcessParams& params)
 	return extractor;
 }
 
-Ptr<Feature2D> CImage::getDetectorExtractor(const SProcessParams& params)
+Ptr<Feature2D> CImage::CDetectorExtractor::getDetectorExtractor(const SProcessParams& params)
 {
 	Ptr<Feature2D> detectorExtractor;
 	switch (params.detectMethod_)
@@ -104,21 +115,20 @@ Ptr<Feature2D> CImage::getDetectorExtractor(const SProcessParams& params)
 	return detectorExtractor;
 }
 
-void CImage::detectDescribeFeatures(const SProcessParams & params, Ptr<CLogger>& logger)
+void CImage::detectDescribeFeatures(const SProcessParams & params, Ptr<CLogger>& logger, const Ptr<CDetectorExtractor>& detectorExtractor)
 {
 	if (params.detectMethod_ == params.describeMethod_) {
-		Ptr<Feature2D> detector = getDetectorExtractor(params);
-
-		detector->detectAndCompute(image_, noArray(), imageKeypoints_, keypointsDescriptors_);
+		if (detectorExtractor.empty()) {
+			throw invalid_argument("Method detectDescribeFeatures was called with empty pointer to CDetectorExtractor");
+		}
+		detectorExtractor->detector_->detectAndCompute(image_, noArray(), imageKeypoints_, keypointsDescriptors_);
 		logger->log("Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
 		wasProcessed_ = true;
 	}
+	//bit slower then previous version (OpenCV implementation is slower when it is done splited - first detecting and then extracting)
 	else {
-		Ptr<Feature2D> detector = getDetector(params);
-		Ptr<Feature2D> extractor = getExtractor(params);
-
-		detector->detect(image_, imageKeypoints_);
-		extractor->compute(image_, imageKeypoints_, keypointsDescriptors_);
+		detectorExtractor->detector_->detect(image_, imageKeypoints_);
+		detectorExtractor->extractor_->compute(image_, imageKeypoints_, keypointsDescriptors_);
 		logger->log("Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
 		wasProcessed_ = true;
 	}
@@ -139,8 +149,6 @@ void CImage::processCLAHE(Ptr<CLogger>& logger)
 }
 
 //=================================================================================================
-
-
 
 void CImage::fastRootSiftDescriptorsAdjust(Ptr<CLogger>& logger)
 {
@@ -223,11 +231,16 @@ CImage::CImage(const string& filePath)
 	}
 }
 
-void CImage::process(const SProcessParams& params, Ptr<CLogger>& logger)
+Ptr<CImage::CDetectorExtractor> CImage::createDetectorExtractor(const SProcessParams& params)
+{
+	return Ptr<CImage::CDetectorExtractor>(new CImage::CDetectorExtractor(params));
+}
+
+void CImage::process(const SProcessParams& params, Ptr<CLogger>& logger, const Ptr<CDetectorExtractor>& detectorExtractor)
 {
 	logger->log("CImage with filepath: " + filePath_ + " is being processed.").endl();
 	processCLAHE(logger);
-	detectDescribeFeatures(params, logger);
+	detectDescribeFeatures(params, logger, detectorExtractor);
 	if (params.describeMethod_ == EAlgorithm::ALG_ROOTSIFT) {
 		fastRootSiftDescriptorsAdjust(logger);
 	}

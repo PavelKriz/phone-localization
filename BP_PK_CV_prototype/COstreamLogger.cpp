@@ -46,6 +46,7 @@ CLogger& COstreamLogger::logError(const string& toLog)
 	endl();
 
 	emergencyEnd();
+	return *this;
 }
 
 CLogger& COstreamLogger::endl() {

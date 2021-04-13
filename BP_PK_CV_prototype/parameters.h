@@ -39,7 +39,7 @@ const bool PREVIEW_RESULT = true;
 #define TEST2 2 
 
 //Current used test / tests are changed with preprocessor
-#define CURRENT_TEST TEST1
+#define CURRENT_TEST TEST2
 
 //inits for each tests
 #if CURRENT_TEST == TEST1
@@ -57,9 +57,9 @@ const bool PREVIEW_RESULT = true;
 const bool TIMING = false;
 
 //========================================chosen algorithms for matching, describing, matching========================================
-const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_ROOTSIFT;
-const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_ROOTSIFT;
-const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
+const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_ORB;
+const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_BEBLID;
+const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_FLANN_MATCHING;
 
 //========================================SIFT parameters========================================
 //SIFT TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)

@@ -33,6 +33,8 @@
  * 
 */
 class CObjectInSceneFinder {
+	Ptr<CImage::CDetectorExtractor> detectorExtractor_; ///< detector extractor with which all the CImage processing is being called
+	const SProcessParams params_; ///<parameters used for the processing
 	Ptr<CLogger> logger_; ///< smart pointer to logger to which is being logged the results and all the process
 	Ptr<CImage> sceneImage_; ///< smart pointer to a scene in which the object is being searched
 	vector<Ptr<CImage>> objectImages_; ///< vector of smart pointers pointing to images of the objects that are being found in the image
@@ -42,6 +44,7 @@ class CObjectInSceneFinder {
 public:
 	/**
 	 * @brief Constructor
+	 * @param params parameters of the algorithms that would be used
 	 * @param logger smart pointer to logger to which will be logged the results and all the processes information (for correct working the logger has to stay valid for the using time of this class)
 	 * @param runName name of the current test
 	 * @param sceneFilePath  filepath of the scene image (relative to the place of run of the app)
@@ -49,16 +52,15 @@ public:
 	 * @throw ios_base::failure (because of image loading)
 	 * @throw invalid_argument (if the pointer to logger is empty)
 	*/
-	CObjectInSceneFinder(Ptr<CLogger>& logger, const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths);
+	CObjectInSceneFinder(const SProcessParams& params, Ptr<CLogger>& logger, const string& runName, const string& sceneFilePath, const vector<string>& objectFilePaths);
 	/**
 	 * @brief the main body of the process (detecting and describing features, matching and keypoints matches filtering)
-	 * @param params parameters of the algorithms that would be used
 	 * @param runName name of the current test
 	 * @param viewResult information whether the result should be viewed (basically if also the viewBestResult should be called, but here some extra timing information will be printed)	 * @throw invalid_argument (if the pointer to logger is empty)
 	 * @throw all CImage and CImage Match exceptions, because they aren´t catched in this class)
 	 * @throw invalid_argument (if the pointer to logger is empty)
 	*/
-	void run(const SProcessParams& params, const string& runName, bool viewResult = true);
+	void run(const string& runName, bool viewResult = true);
 	/**
 	 * @brief displayes the result - match between scene and best suiting reference object (all matches are displayed and the transformation borders, the object is then being put into the scene)
 	 * @param runName name of the current test
