@@ -57,6 +57,23 @@ Ptr<DescriptorMatcher> CImagesMatch::createMatcher(const SProcessParams & params
 	return matcher;
 }
 
+void CImagesMatch::printTransformationMatrix(Ptr<CLogger>& logger) const
+{
+	//transformation matrix returned from findHomography contains doubles
+	for (size_t i = 0; i < transformationMatrix_.rows; ++i) {
+		logger->log("(");
+		for (size_t j = 0; j < transformationMatrix_.cols; ++j) {
+			if (j < transformationMatrix_.cols - 1) {
+				logger->log(to_string(transformationMatrix_.at<double>(i, j))).log(", ");
+			}
+			else {
+				logger->log(to_string(transformationMatrix_.at<double>(i, j))).log(")");
+			}
+		}
+		logger->endl();
+	}
+}
+
 //=================================================================================================
 
 CImagesMatch::CImagesMatch(const Ptr<CImage>& object, const Ptr<CImage>& scene, CLogger* logger, const SProcessParams & params)
@@ -119,12 +136,10 @@ CImagesMatch::CImagesMatch(const Ptr<CImage>& object, const Ptr<CImage>& scene, 
 	avarageFirstToSecondRatio_ = avarageFirstToSecondRatio;
 	matchedObjectFeaturesRatio_ = (double) matches_.size() / (double) knnMatches.size();
 
-
-	logger->log("Max distance :").log(to_string(maxDistance)).endl();
-	logger->log("Min distance :").log(to_string(minDistance)).endl();
-	logger->log("Average distance :").log(to_string(avarageDistance)).endl();
-	logger->log("Average first to second ratio is  :").log(to_string(avarageFirstToSecondRatio_)).endl();
-	logger->log("Ratio of filtered matches to number of keypoints of object is (x100):").log(to_string(matchedObjectFeaturesRatio_ * 100.0)).endl();
+	logger->log("Min distance: ").log(to_string(minDistance)).log(" | Max distance:").log(to_string(maxDistance)).endl();
+	logger->log("Average distance:").log(to_string(avarageDistance)).endl();
+	logger->log("Average first to second ratio is: ").log(to_string(avarageFirstToSecondRatio_)).endl();
+	logger->log("Ratio of filtered matches to number of keypoints of object is: ").log(to_string(matchedObjectFeaturesRatio_)).endl();
 
 }
 
@@ -137,11 +152,13 @@ CImagesMatch::CImagesMatch(CImagesMatch&& right) noexcept
 {
 	this->matches_ = move(right.matches_);
 	avarageMatchesDistance_ = right.avarageMatchesDistance_;
+	matchedObjectFeaturesRatio_ = right.matchedObjectFeaturesRatio_;
+	avarageFirstToSecondRatio_ = right.avarageFirstToSecondRatio_;
 }
 
 //=================================================================================================
 
-void CImagesMatch::drawPreviewAndResult(const string& runName, CLogger* logger)
+void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& logger)
 {
 	// drawing the results
 	Mat imageMatches;
@@ -163,11 +180,11 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, CLogger* logger)
 		sceneKeypointsCoordinates.push_back(sceneImage_->getKeypoints()[matches_[i].trainIdx].pt);
 	}
 
-	//TODO more methods then only ransac - more at https://docs.opencv.org/4.5.1/d9/d0c/group__calib3d.html#ga4abc2ece9fab9398f2e560d53c8c9780
+	transformationMatrix_ = findHomography(objectKeypointsCoordinates, sceneKeypointsCoordinates, RANSAC);
+	transformMatrixComputed_ = true;
 
-	Mat transformationMatrix = findHomography(objectKeypointsCoordinates, sceneKeypointsCoordinates, RANSAC);
 
-	//-- Get the corners from the image_1 ( the object to be "detected" )
+	// Get the corners from the image_1 ( the object to be "detected" )
 	std::vector<Point2f> obj_corners(4);
 	obj_corners[0] = Point2f(0, 0); // left upper
 	obj_corners[1] = Point2f(objectImage_->getImage().cols, 0); // right uppper
@@ -177,7 +194,7 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, CLogger* logger)
 	//future cornes coordinates
 	std::vector<Point2f> scene_corners(4);
 	//transformating the cornes
-	perspectiveTransform(obj_corners, scene_corners, transformationMatrix);
+	perspectiveTransform(obj_corners, scene_corners, transformationMatrix_);
 
 	//-- Draw lines between the corners (the mapped object in the scene - image_2 )
 	line(imageMatches, scene_corners[0] + Point2f(objectImage_->getImage().cols, 0),
@@ -203,11 +220,11 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, CLogger* logger)
 	//create mask
 	Mat mask(objectImage_->getImage().rows, objectImage_->getImage().cols, CV_8U, Scalar(255));
 	Mat transformedMask(sceneImage_->getImage().rows, sceneImage_->getImage().cols, CV_8U, Scalar(0));
-	warpPerspective(mask, transformedMask, transformationMatrix, Size(transformedMask.cols, transformedMask.rows));
+	warpPerspective(mask, transformedMask, transformationMatrix_, Size(transformedMask.cols, transformedMask.rows));
 
 	//transform object into scene size image plane
 	Mat transformedObject(Size(sceneImage_->getImage().cols, sceneImage_->getImage().rows), CV_8U);
-	warpPerspective(objectImage_->getImage(), transformedObject, transformationMatrix, Size(transformedObject.cols, transformedObject.rows));
+	warpPerspective(objectImage_->getImage(), transformedObject, transformationMatrix_, Size(transformedObject.cols, transformedObject.rows));
 
 	//redraw the object in the red color and according to mask
 	for (int i = 0; i < transformedObject.rows; ++i) {
@@ -217,7 +234,8 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, CLogger* logger)
 			}
 		}
 	}
-
+	logger->log("The result transformation matrix is:").endl();
+	printTransformationMatrix(logger);
 	// draw the object to the scene in the right place
 	logger->putImage(sceneImageRenderBuffer, "Matches");
 }

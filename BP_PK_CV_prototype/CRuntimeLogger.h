@@ -44,13 +44,13 @@ public:
 	CRuntimeLogger() = delete;
 	/**
 	 * @brief Constructor of the class
-	 * @param timing information whether the timing optimalization will take place
+	 * @param timing information whether the timing optimalization will take place and the images wont be saved
 	*/
 	CRuntimeLogger(bool timing);
 	/**
 	 * @brief default virtual destructor
 	*/
-	virtual ~CRuntimeLogger() override {}
+	virtual ~CRuntimeLogger() override { flush(); }
 	/**
 	 * @brief Flushes every images or text to the output (implementation)
 	 * 

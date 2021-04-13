@@ -53,13 +53,17 @@ const bool PREVIEW_RESULT = true;
 #endif
 
 //========================================timing optimalizations========================================
+//used for logger optimalisation in case of loggers
 //timing of the calculation - needed when the timing is the highest priority
+//timing information whether the timing optimalization will take placeand the images wont be saved
+//in general is usually not needed even for the testing since the loggers are done in a way that the image saving is done on the application end
+//reccomended value is false for almost all cases
 const bool TIMING = false;
 
 //========================================chosen algorithms for matching, describing, matching========================================
 const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_ORB;
 const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_BEBLID;
-const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_FLANN_MATCHING;
+const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 
 //========================================SIFT parameters========================================
 //SIFT TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)
@@ -102,8 +106,8 @@ const int ORB_FAST_THRESHOLD = 20;
 //========================================BEBLID parameters========================================
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 //BEBLID descriptor https://docs.opencv.org/master/d7/d99/classcv_1_1xfeatures2d_1_1BEBLID.html
-const bool BEBLID_N_BITS_TEST = false;
-const bool BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_512_BITS;
+const bool BEBLID_N_BITS_TEST = true;
+const xfeatures2d::BEBLID::BeblidSize BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_512_BITS;
 #endif
 
 //========================================Lowe's ratio test parameter========================================

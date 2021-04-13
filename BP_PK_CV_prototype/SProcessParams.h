@@ -71,7 +71,7 @@ struct SORBParams {
 */
 struct SBEBLIDParams {
 	float scale_factor_ = 1.00f; //default value for ORB only!
-	int n_bits_ = xfeatures2d::BEBLID::SIZE_512_BITS;
+	xfeatures2d::BEBLID::BeblidSize n_bits_ = xfeatures2d::BEBLID::SIZE_512_BITS;
 };
 #endif
 

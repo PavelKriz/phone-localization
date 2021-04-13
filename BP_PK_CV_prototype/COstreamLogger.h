@@ -47,7 +47,7 @@ protected:
 public:
 	/**
 	 * @brief Constructor of the class
-	 * @param timing information whether the timing optimalization will take place
+	 * @param timing information whether the timing optimalization will take place and the images wont be saved
 	*/
 	COstreamLogger(bool timing) : CLogger(timing){}
 	/**

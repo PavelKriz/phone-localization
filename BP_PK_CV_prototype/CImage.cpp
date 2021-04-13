@@ -122,14 +122,14 @@ void CImage::detectDescribeFeatures(const SProcessParams & params, Ptr<CLogger>&
 			throw invalid_argument("Method detectDescribeFeatures was called with empty pointer to CDetectorExtractor");
 		}
 		detectorExtractor->detector_->detectAndCompute(image_, noArray(), imageKeypoints_, keypointsDescriptors_);
-		logger->log("Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
+		logger->endl().log("  Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
 		wasProcessed_ = true;
 	}
 	//bit slower then previous version (OpenCV implementation is slower when it is done splited - first detecting and then extracting)
 	else {
 		detectorExtractor->detector_->detect(image_, imageKeypoints_);
 		detectorExtractor->extractor_->compute(image_, imageKeypoints_, keypointsDescriptors_);
-		logger->log("Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
+		logger->endl().log("  Detection and description done, keypoints count: ").log(to_string(imageKeypoints_.size())).endl();
 		wasProcessed_ = true;
 	}
 }
@@ -145,7 +145,7 @@ void CImage::processCLAHE(Ptr<CLogger>& logger)
 	clahePtr->setClipLimit(3);
 	clahePtr->apply(image_, image_);
 
-	logger->log("CLAHE was applied on the image.");
+	logger->log("  CLAHE was done on the image.");
 }
 
 //=================================================================================================
@@ -238,7 +238,7 @@ Ptr<CImage::CDetectorExtractor> CImage::createDetectorExtractor(const SProcessPa
 
 void CImage::process(const SProcessParams& params, Ptr<CLogger>& logger, const Ptr<CDetectorExtractor>& detectorExtractor)
 {
-	logger->log("CImage with filepath: " + filePath_ + " is being processed.").endl();
+	logger->log("Image with filepath: " + filePath_ + " is being processed.").endl();
 	processCLAHE(logger);
 	detectDescribeFeatures(params, logger, detectorExtractor);
 	if (params.describeMethod_ == EAlgorithm::ALG_ROOTSIFT) {

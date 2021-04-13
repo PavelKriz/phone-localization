@@ -46,13 +46,20 @@ class CImagesMatch {
 	double avarageMatchesDistance_ = numeric_limits<double>::max(); ///< average distance of all the matches (the smaller the better)
 	double matchedObjectFeaturesRatio_ = -1; ///< ratio between amount of detected matches and amount of filtered matches(the bigger the better)
 	double avarageFirstToSecondRatio_ = -1; ///< average ratio from the Lowe's ratio test (called here as first to second ratio)(the smaller the better)
-	
+	Mat transformationMatrix_; ///< transformation matrix of the match
+	bool transformMatrixComputed_ = false; ///< information whether the transformation matrix was computed
 	/**
 	 * @brief Creates the right matcher object
 	 * @param params the parameters that determine which matcher would be used
 	 * @return smart pointer to the matcher (returns interface/virtual class)
 	*/
 	static Ptr<DescriptorMatcher> createMatcher(const SProcessParams & params);
+	/**
+	 * @brief prints the inner transformation matrix of the match
+	 * @param clogger logger in which the matrix will be printed in
+	 * @throw logic_error when the method is called earlier then the transformation matrix is computed
+	*/
+	void printTransformationMatrix(Ptr<CLogger>& logger) const;
 public:
 	/**
 	 * @brief Constructor of the class
@@ -77,7 +84,7 @@ public:
 	 * @param runName name of the current test 
 	 * @param logger logger in which it will print information about the process
 	*/
-	void drawPreviewAndResult(const string& runName, CLogger* logger);
+	void drawPreviewAndResult(const string& runName, Ptr<CLogger>& logger);
 	/**
 	 * @brief Gives number of filtered matches
 	 * @return number of filtered matches

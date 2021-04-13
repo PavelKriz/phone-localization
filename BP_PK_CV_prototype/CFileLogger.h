@@ -65,13 +65,13 @@ public:
 	 * @brief Constructor of the logger
 	 * @param outputRoot test root filepath - in relation to the run of the app
 	 * @param runName name of the current test
-	 * @param timing information whether the timing optimalization will take place
+	 * @param timing information whether the timing optimalization will take place and the images wont be saved
 	*/
 	CFileLogger(const string& outputRoot, const string & runName, bool timing);
 	/**
 	 * @brief default destructor
 	*/
-	virtual ~CFileLogger() override {}
+	virtual ~CFileLogger() override { flush(); }
 	/**
 	 * @brief Flushes (saves) every images or text to the output (implementation)
 	 * 

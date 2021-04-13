@@ -31,23 +31,23 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 	chrono::steady_clock::time_point begin = chrono::steady_clock::now();
 
 	logger_->logSection("detectig and describing features", 1);
-	logger_->logSection("object", 2);
+	logger_->logSection("Scene", 2);
 	//prepare the scene
 	sceneImage_->process(params_, logger_, detectorExtractor_);
 
 	//prepare the object
-	logger_->logSection("scenes", 2);
+	logger_->logSection("Objects", 2);
 	for (auto& ptr : objectImages_) {
 		ptr->process(params_, logger_, detectorExtractor_);
 	}
 
-	logger_->logSection("timing", 2);
+	logger_->logSection("Timing", 2);
 	chrono::steady_clock::time_point afterDetectingDescring = chrono::steady_clock::now();
 	logger_->log("Detecting and describing all features took: ").
 		log(to_string(chrono::duration_cast<chrono::milliseconds>(afterDetectingDescring - begin).count())).
 		log("[ms]").endl();
 
-	logger_->logSection("matching", 1);
+	logger_->logSection("Matching", 1);
 	//searching for the scene object matching combination with lowest avarage distance of matches
 	double lowestDistance = numeric_limits<double>::max();
 	int lowestDistanceIndex = 0;
@@ -56,7 +56,8 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 	for (int i = 0; i < objectImages_.size(); ++i) {
 		//computing the keypoints, descriptors, matches
 		//move construction
-		logger_->endl().log("Matching scene with object that has filepath: ").log(objectImages_[i]->getFilePath()).endl();
+		logger_->endl().log("Compare index: ").log(to_string(i)).endl();
+		logger_->log("Matching scene with object that has filepath: ").log(objectImages_[i]->getFilePath()).endl();
 		matches_.emplace_back(CImagesMatch(objectImages_[i], sceneImage_, logger_, params_));
 
 		//checking if the match is possible to be the best until now
@@ -66,10 +67,9 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 			lowestDistance = currentDist;
 		}
 		bestMatchExist_ = true;
-		logger_->log("Compare index: ").log(to_string(i)).log(" | avarage distance: ").log(to_string(currentDist)).endl();
 	}
 
-	logger_->logSection("timing", 2);
+	logger_->logSection("Timing", 2);
 	chrono::steady_clock::time_point afterMatching = chrono::steady_clock::now();
 	logger_->log("Finding the right object took: ").
 		log(to_string(chrono::duration_cast<chrono::milliseconds>(afterMatching - afterDetectingDescring).count())).
@@ -80,13 +80,18 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 		log("[ms]").endl();
 
 	bestMatchIndex_ = lowestDistanceIndex;
-	logger_->logSection("result", 2);
+	logger_->logSection("Result", 2);
+	logger_->log("Best object match for scene is object with compare index: ").log(to_string(bestMatchIndex_)).endl();
 	logger_->log("Best object match for scene is object with filepath: ").log(objectImages_[bestMatchIndex_]->getFilePath()).endl();
 
 	if (viewResult) {
 
 		matches_[bestMatchIndex_].drawPreviewAndResult(runName, logger_);
-		logger_->logSection("timing", 2);
+		logger_->log("The result object stats: ").endl();
+		logger_->log("Avarage feature match distance: ").log(to_string(matches_[bestMatchIndex_].getAvarageMatchesDistance())).endl();
+		logger_->log("Average first to second ratio is  ").log(to_string(matches_[bestMatchIndex_].getAvarageFirstToSecondRatio())).endl();
+		logger_->log("Ratio of filtered matches to number of keypoints of object is: ").log(to_string(matches_[bestMatchIndex_].getMatchedObjectFeaturesRatio())).endl();
+		logger_->logSection("Timing", 2);
 		chrono::steady_clock::time_point afterRenderingResult = chrono::steady_clock::now();
 		logger_->log("Result output took: ").
 			log(to_string(chrono::duration_cast<chrono::milliseconds>(afterRenderingResult - afterMatching).count())).

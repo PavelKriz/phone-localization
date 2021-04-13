@@ -2,6 +2,12 @@
 
 SProcessParams COperator::getParams(Ptr<CLogger>& logger)
 {
+    if (TIMING)
+        logger->log("TIMING: ON (speed optimalisation)").endl();
+    else
+        logger->log("TIMING: OFF (speed optimalisation)").endl();
+    logger->log("NOTE: When is TIMING ON the images are not saved and also the processing might be slightly faster than without timing optimalisation").endl();
+
     logger->logSection("Parameters of used algorithms", 1);
     logger->log("Method used for detecting: ").log(algToStr(DETECT_METHOD)).endl();
     logger->log("Method used for extracting/describing: ").log(algToStr(DESCRIBE_METHOD)).endl();
@@ -149,7 +155,7 @@ SProcessParams COperator::getParams(Ptr<CLogger>& logger)
         //values are set according to documentation: https://docs.opencv.org/master/d7/d99/classcv_1_1xfeatures2d_1_1BEBLID.html
         //for different detecting methods different parameters are set
         logger->endl();
-        logger->log("ORB parameters are following:").endl();
+        logger->log("BEBLID parameters are following:").endl();
         logger->log("note: defaut value means that it wasnt changed, other walua can be also euqal to the default ones").endl();
 
         if (DETECT_METHOD == EAlgorithm::ALG_ORB) {
