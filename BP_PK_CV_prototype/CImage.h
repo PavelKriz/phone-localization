@@ -132,8 +132,10 @@ public:
 	static Ptr<CDetectorExtractor> createDetectorExtractor(const SProcessParams& params);
 	/**
 	 * @brief method that runs all the preprocessing of the image, detection and descripion of the keypoints
-	 * @param params parameters that determine which algorithms would be used to detect features and which one used to describe them
+	 * @param params parameters that determine which algorithms would be used to detect features and which one used to describe them (!!! the same as the detector extractor was created with)
 	 * @param logger logger in which it will print information about the process
+	 * @param detectorExtractor container in which are OpenCV detectors and extractors that are going to be used to detect and extract features
+	 * @throw invalid_argument if there the detectorExtractor is empty
 	*/
 	void process(const SProcessParams& params, Ptr<CLogger>& logger, const Ptr<CDetectorExtractor>& detectorExtractor);
 	/**
