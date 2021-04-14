@@ -198,7 +198,7 @@ int COperator::run()
     Ptr<CLogger> logger;
     Ptr<CLogger> consoleLogger = new CRuntimeLogger(TIMING);
 
-    if (OUTPUT_TYPE == EOutputType::console) {
+    if (OUTPUT_TYPE == EOutputType::CONSOLE) {
         logger = consoleLogger;
     }
     else {

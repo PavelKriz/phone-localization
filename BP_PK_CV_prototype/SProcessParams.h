@@ -29,8 +29,8 @@ using namespace cv;
 //========================================console========================================
 ///Enum for specifying the output type
 enum class EOutputType {
-	console,
-	file
+	CONSOLE,
+	FILE
 };
 
 //========================================algorithm parameters structs========================================
