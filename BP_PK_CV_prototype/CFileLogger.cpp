@@ -39,7 +39,7 @@ void CFileLogger::flush()
 
 	//write images to the files (OpenCV functions)
 	for(size_t i = 0; i < images_.size(); ++i){
-		string outImageName = outputRoot_ + runName_ + "_img_" + to_string(i) + ".jpg";
+		string outImageName = outputRoot_ + runName_ + "_img" + to_string(i) + ".jpg";
 		int result = imwrite(outImageName, images_[i].first);
 		//handle errors
 		if (!result) {

@@ -30,7 +30,7 @@ const string imagesRoot = "input_images\\";
 const string dumRottRoot = imagesRoot + "dum_rott\\";
 
 //if the output is going to be to files or only to the console
-const EOutputType OUTPUT_TYPE = EOutputType::CONSOLE;
+const EOutputType OUTPUT_TYPE = EOutputType::FILE;
 //display the result in the run?
 const bool PREVIEW_RESULT = true;
 
@@ -69,7 +69,7 @@ const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 //SIFT TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)
 //used only when SIFT is chosen as a used method
 const bool SIFT_N_FEATURES_TEST = true;
-const int SIFT_N_FEATURES = 2000;
+const int SIFT_N_FEATURES = 1000;
 const bool SIFT_N_OCTAVE_LAYERS_TEST = false;
 const int SIFT_N_OCTAVE_LAYERS = 3;
 const bool SIFT_CONTRAST_THRESHOLD_TEST = false;
@@ -85,7 +85,7 @@ const double SIFT_SIGMA = 1.6;
 //ORB TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)
 //used only when ORB is chosen as a used method
 const bool ORB_N_FEATURES_TEST = true;
-const int ORB_N_FEATURES = 2000;
+const int ORB_N_FEATURES = 1000;
 const bool ORB_SCALE_FACTOR_TEST = false;
 const float ORB_SCALE_FACTOR = 1.2f;
 const bool ORB_N_LEVELS_TEST = false;
