@@ -25,7 +25,7 @@ using namespace cv;
 
 //========================================tests and files parameters========================================
 
-const string OUTPUT_ROOT = "output\\featuresSpeed\\";
+const string OUTPUT_ROOT = "output\\featureDetectingExtractingMethodsSpeedTest\\";
 const string imagesRoot = "input_images\\";
 const string dumRottRoot = imagesRoot + "dum_rott\\";
 
@@ -47,9 +47,9 @@ const bool PREVIEW_RESULT = true;
 	const vector<string> OBJECT_FILE_PATHS = { dumRottRoot + "dumRottRef.png", imagesRoot + "white_house\\" +  "whiteHouse1ref.png" };
 	const string RUN_NAME = "fileTest";
 #elif CURRENT_TEST == TEST2
-	const string SCENE_FILE_PATH = sefcikImagesScenes[49];
+	const string SCENE_FILE_PATH = sefcikImagesScenes[33];
 	const vector<string> OBJECT_FILE_PATHS = sefcikImagesObjects;
-	const string RUN_NAME = "SIFT_SIFT_BF_1";  //better to write spaces with underscore and not to do camelcase
+	const string RUN_NAME = "SIFT_ROOTSIFT_BF_5";  //better to write spaces with underscore and not to do camelcase
 #endif
 
 //========================================timing optimalizations========================================
@@ -62,7 +62,7 @@ const bool TIMING = false;
 
 //========================================chosen algorithms for matching, describing, matching========================================
 const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_SIFT;
-const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_SIFT;
+const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_ROOTSIFT;
 const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 
 //========================================SIFT parameters========================================
