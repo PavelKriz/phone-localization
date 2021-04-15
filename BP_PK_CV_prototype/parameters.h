@@ -47,9 +47,9 @@ const bool PREVIEW_RESULT = true;
 	const vector<string> OBJECT_FILE_PATHS = { dumRottRoot + "dumRottRef.png", imagesRoot + "white_house\\" +  "whiteHouse1ref.png" };
 	const string RUN_NAME = "fileTest";
 #elif CURRENT_TEST == TEST2
-	const string SCENE_FILE_PATH = sefcikImagesScenes[33];
+	const string SCENE_FILE_PATH = sefcikImagesScenes[49];
 	const vector<string> OBJECT_FILE_PATHS = sefcikImagesObjects;
-	const string RUN_NAME = "SIFT_ROOTSIFT_BF_5";  //better to write spaces with underscore and not to do camelcase
+	const string RUN_NAME = "SIFT_ROOTSIFT_BF_1";  //better to write spaces with underscore and not to do camelcase
 #endif
 
 //========================================timing optimalizations========================================

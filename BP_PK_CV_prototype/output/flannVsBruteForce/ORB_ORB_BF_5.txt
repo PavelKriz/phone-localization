@@ -1,0 +1,538 @@
+OpenCV version : 4.5.2
+TIMING: OFF (speed optimalisation)
+NOTE: When is TIMING ON the images are not saved and also the processing might be slightly faster than without timing optimalisation
+
+======PARAMETERS OF USED ALGORITHMS======
+    Method used for detecting: ORB
+    Method used for extracting/describing: ORB
+    Method used for matching: brute force matching
+    
+    ORB parameters are following:
+    note: defaut value means that it wasnt changed, other walua can be also euqal to the default ones
+    nFeatures: 1000
+    scaleFactor_: 1.200000 (default value)
+    nlevels_: 8 (default value)
+    edgeTreshold_: 31 (default value)
+    firstLevel_: 0 (default value)
+    WTA_K_: 2 (default value)
+    scoreType_: 0 (default value)
+    patchSize_: 31 (default value)
+    fastTreshold_: 20 (default value)
+    
+===RUN: ORB_ORB_BF_5===
+images loaded
+
+======DETECTIG AND DESCRIBING FEATURES======
+    
+=========Scene=========
+        Image with filepath: input_images\sefcik\b8_scn\03_b_small.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        
+=========Objects=========
+        Image with filepath: input_images\sefcik\b1_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b1_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b1_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b1_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b2_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b2_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b2_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b2_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b2_obj\05_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b3_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b3_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b3_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b3_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b4_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b4_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b4_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b4_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b4_obj\05_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b5_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b5_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b5_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b5_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b5_obj\05_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b7_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b7_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b7_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b8_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b8_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b8_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b8_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b8_obj\05_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b8_obj\06_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b9_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b9_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b9_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b10_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b10_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b10_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b10_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b10_obj\05_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b11_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b11_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b11_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b11_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b12_obj\01_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b12_obj\02_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b12_obj\03_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        Image with filepath: input_images\sefcik\b12_obj\04_b.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1000
+        
+=========Timing=========
+        Detecting and describing all features took: 1390[ms]
+        
+======MATCHING======
+    
+    Compare index: 0
+    Matching scene with object that has filepath: input_images\sefcik\b1_obj\01_b.jpg
+    Min distance: 33.000000 | Max distance:88.000000
+    Average distance:66.720280
+    Average first to second ratio is: 0.942326
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 1
+    Matching scene with object that has filepath: input_images\sefcik\b1_obj\02_b.jpg
+    Min distance: 42.000000 | Max distance:89.000000
+    Average distance:66.712288
+    Average first to second ratio is: 0.943788
+    Ratio of filtered matches to number of keypoints of object is: 0.003000
+    
+    Compare index: 2
+    Matching scene with object that has filepath: input_images\sefcik\b1_obj\03_b.jpg
+    Min distance: 42.000000 | Max distance:90.000000
+    Average distance:68.103896
+    Average first to second ratio is: 0.943935
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 3
+    Matching scene with object that has filepath: input_images\sefcik\b1_obj\04_b.jpg
+    Min distance: 38.000000 | Max distance:90.000000
+    Average distance:67.024975
+    Average first to second ratio is: 0.943244
+    Ratio of filtered matches to number of keypoints of object is: 0.003000
+    
+    Compare index: 4
+    Matching scene with object that has filepath: input_images\sefcik\b2_obj\01_b.jpg
+    Min distance: 41.000000 | Max distance:95.000000
+    Average distance:67.763237
+    Average first to second ratio is: 0.942396
+    Ratio of filtered matches to number of keypoints of object is: 0.000000
+    
+    Compare index: 5
+    Matching scene with object that has filepath: input_images\sefcik\b2_obj\02_b.jpg
+    Min distance: 24.000000 | Max distance:90.000000
+    Average distance:67.067932
+    Average first to second ratio is: 0.939700
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 6
+    Matching scene with object that has filepath: input_images\sefcik\b2_obj\03_b.jpg
+    Min distance: 31.000000 | Max distance:90.000000
+    Average distance:66.976024
+    Average first to second ratio is: 0.940715
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 7
+    Matching scene with object that has filepath: input_images\sefcik\b2_obj\04_b.jpg
+    Min distance: 35.000000 | Max distance:91.000000
+    Average distance:67.432567
+    Average first to second ratio is: 0.940385
+    Ratio of filtered matches to number of keypoints of object is: 0.006000
+    
+    Compare index: 8
+    Matching scene with object that has filepath: input_images\sefcik\b2_obj\05_b.jpg
+    Min distance: 36.000000 | Max distance:93.000000
+    Average distance:67.968032
+    Average first to second ratio is: 0.941344
+    Ratio of filtered matches to number of keypoints of object is: 0.000000
+    
+    Compare index: 9
+    Matching scene with object that has filepath: input_images\sefcik\b3_obj\01_b.jpg
+    Min distance: 40.000000 | Max distance:98.000000
+    Average distance:67.169830
+    Average first to second ratio is: 0.941351
+    Ratio of filtered matches to number of keypoints of object is: 0.003000
+    
+    Compare index: 10
+    Matching scene with object that has filepath: input_images\sefcik\b3_obj\02_b.jpg
+    Min distance: 34.000000 | Max distance:95.000000
+    Average distance:64.752248
+    Average first to second ratio is: 0.940410
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 11
+    Matching scene with object that has filepath: input_images\sefcik\b3_obj\03_b.jpg
+    Min distance: 32.000000 | Max distance:98.000000
+    Average distance:65.157842
+    Average first to second ratio is: 0.940270
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 12
+    Matching scene with object that has filepath: input_images\sefcik\b3_obj\04_b.jpg
+    Min distance: 33.000000 | Max distance:92.000000
+    Average distance:64.170829
+    Average first to second ratio is: 0.941028
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 13
+    Matching scene with object that has filepath: input_images\sefcik\b4_obj\01_b.jpg
+    Min distance: 39.000000 | Max distance:89.000000
+    Average distance:67.459540
+    Average first to second ratio is: 0.941520
+    Ratio of filtered matches to number of keypoints of object is: 0.000000
+    
+    Compare index: 14
+    Matching scene with object that has filepath: input_images\sefcik\b4_obj\02_b.jpg
+    Min distance: 39.000000 | Max distance:89.000000
+    Average distance:67.459540
+    Average first to second ratio is: 0.941520
+    Ratio of filtered matches to number of keypoints of object is: 0.000000
+    
+    Compare index: 15
+    Matching scene with object that has filepath: input_images\sefcik\b4_obj\03_b.jpg
+    Min distance: 32.000000 | Max distance:88.000000
+    Average distance:67.197802
+    Average first to second ratio is: 0.942624
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 16
+    Matching scene with object that has filepath: input_images\sefcik\b4_obj\04_b.jpg
+    Min distance: 32.000000 | Max distance:92.000000
+    Average distance:68.106893
+    Average first to second ratio is: 0.943024
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 17
+    Matching scene with object that has filepath: input_images\sefcik\b4_obj\05_b.jpg
+    Min distance: 30.000000 | Max distance:90.000000
+    Average distance:68.522478
+    Average first to second ratio is: 0.943631
+    Ratio of filtered matches to number of keypoints of object is: 0.006000
+    
+    Compare index: 18
+    Matching scene with object that has filepath: input_images\sefcik\b5_obj\01_b.jpg
+    Min distance: 40.000000 | Max distance:92.000000
+    Average distance:67.477522
+    Average first to second ratio is: 0.941149
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 19
+    Matching scene with object that has filepath: input_images\sefcik\b5_obj\02_b.jpg
+    Min distance: 30.000000 | Max distance:89.000000
+    Average distance:66.446553
+    Average first to second ratio is: 0.939023
+    Ratio of filtered matches to number of keypoints of object is: 0.005000
+    
+    Compare index: 20
+    Matching scene with object that has filepath: input_images\sefcik\b5_obj\03_b.jpg
+    Min distance: 39.000000 | Max distance:90.000000
+    Average distance:68.431568
+    Average first to second ratio is: 0.944019
+    Ratio of filtered matches to number of keypoints of object is: 0.004000
+    
+    Compare index: 21
+    Matching scene with object that has filepath: input_images\sefcik\b5_obj\04_b.jpg
+    Min distance: 34.000000 | Max distance:90.000000
+    Average distance:65.577423
+    Average first to second ratio is: 0.940707
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 22
+    Matching scene with object that has filepath: input_images\sefcik\b5_obj\05_b.jpg
+    Min distance: 34.000000 | Max distance:89.000000
+    Average distance:64.976024
+    Average first to second ratio is: 0.940732
+    Ratio of filtered matches to number of keypoints of object is: 0.004000
+    
+    Compare index: 23
+    Matching scene with object that has filepath: input_images\sefcik\b7_obj\01_b.jpg
+    Min distance: 33.000000 | Max distance:90.000000
+    Average distance:65.056943
+    Average first to second ratio is: 0.941179
+    Ratio of filtered matches to number of keypoints of object is: 0.004000
+    
+    Compare index: 24
+    Matching scene with object that has filepath: input_images\sefcik\b7_obj\02_b.jpg
+    Min distance: 38.000000 | Max distance:89.000000
+    Average distance:65.311688
+    Average first to second ratio is: 0.941213
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 25
+    Matching scene with object that has filepath: input_images\sefcik\b7_obj\03_b.jpg
+    Min distance: 36.000000 | Max distance:88.000000
+    Average distance:66.329670
+    Average first to second ratio is: 0.943620
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 26
+    Matching scene with object that has filepath: input_images\sefcik\b8_obj\01_b.jpg
+    Min distance: 41.000000 | Max distance:95.000000
+    Average distance:68.647353
+    Average first to second ratio is: 0.943858
+    Ratio of filtered matches to number of keypoints of object is: 0.000000
+    
+    Compare index: 27
+    Matching scene with object that has filepath: input_images\sefcik\b8_obj\02_b.jpg
+    Min distance: 23.000000 | Max distance:90.000000
+    Average distance:66.420579
+    Average first to second ratio is: 0.925421
+    Ratio of filtered matches to number of keypoints of object is: 0.025000
+    
+    Compare index: 28
+    Matching scene with object that has filepath: input_images\sefcik\b8_obj\03_b.jpg
+    Min distance: 0.000000 | Max distance:88.000000
+    Average distance:24.827173
+    Average first to second ratio is: 0.379759
+    Ratio of filtered matches to number of keypoints of object is: 0.677000
+    
+    Compare index: 29
+    Matching scene with object that has filepath: input_images\sefcik\b8_obj\04_b.jpg
+    Min distance: 37.000000 | Max distance:91.000000
+    Average distance:68.009990
+    Average first to second ratio is: 0.943812
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 30
+    Matching scene with object that has filepath: input_images\sefcik\b8_obj\05_b.jpg
+    Min distance: 38.000000 | Max distance:90.000000
+    Average distance:67.330669
+    Average first to second ratio is: 0.936430
+    Ratio of filtered matches to number of keypoints of object is: 0.007000
+    
+    Compare index: 31
+    Matching scene with object that has filepath: input_images\sefcik\b8_obj\06_b.jpg
+    Min distance: 40.000000 | Max distance:89.000000
+    Average distance:67.567433
+    Average first to second ratio is: 0.943175
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 32
+    Matching scene with object that has filepath: input_images\sefcik\b9_obj\01_b.jpg
+    Min distance: 38.000000 | Max distance:89.000000
+    Average distance:68.049950
+    Average first to second ratio is: 0.946398
+    Ratio of filtered matches to number of keypoints of object is: 0.000000
+    
+    Compare index: 33
+    Matching scene with object that has filepath: input_images\sefcik\b9_obj\02_b.jpg
+    Min distance: 29.000000 | Max distance:92.000000
+    Average distance:67.258741
+    Average first to second ratio is: 0.941143
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 34
+    Matching scene with object that has filepath: input_images\sefcik\b9_obj\03_b.jpg
+    Min distance: 32.000000 | Max distance:90.000000
+    Average distance:66.985015
+    Average first to second ratio is: 0.938900
+    Ratio of filtered matches to number of keypoints of object is: 0.003000
+    
+    Compare index: 35
+    Matching scene with object that has filepath: input_images\sefcik\b10_obj\01_b.jpg
+    Min distance: 37.000000 | Max distance:90.000000
+    Average distance:67.067932
+    Average first to second ratio is: 0.939918
+    Ratio of filtered matches to number of keypoints of object is: 0.003000
+    
+    Compare index: 36
+    Matching scene with object that has filepath: input_images\sefcik\b10_obj\02_b.jpg
+    Min distance: 31.000000 | Max distance:93.000000
+    Average distance:67.921079
+    Average first to second ratio is: 0.942989
+    Ratio of filtered matches to number of keypoints of object is: 0.004000
+    
+    Compare index: 37
+    Matching scene with object that has filepath: input_images\sefcik\b10_obj\03_b.jpg
+    Min distance: 31.000000 | Max distance:90.000000
+    Average distance:67.731269
+    Average first to second ratio is: 0.942189
+    Ratio of filtered matches to number of keypoints of object is: 0.004000
+    
+    Compare index: 38
+    Matching scene with object that has filepath: input_images\sefcik\b10_obj\04_b.jpg
+    Min distance: 37.000000 | Max distance:89.000000
+    Average distance:67.677323
+    Average first to second ratio is: 0.942447
+    Ratio of filtered matches to number of keypoints of object is: 0.003000
+    
+    Compare index: 39
+    Matching scene with object that has filepath: input_images\sefcik\b10_obj\05_b.jpg
+    Min distance: 31.000000 | Max distance:90.000000
+    Average distance:68.069930
+    Average first to second ratio is: 0.944670
+    Ratio of filtered matches to number of keypoints of object is: 0.000000
+    
+    Compare index: 40
+    Matching scene with object that has filepath: input_images\sefcik\b11_obj\01_b.jpg
+    Min distance: 23.000000 | Max distance:94.000000
+    Average distance:67.999001
+    Average first to second ratio is: 0.945116
+    Ratio of filtered matches to number of keypoints of object is: 0.003000
+    
+    Compare index: 41
+    Matching scene with object that has filepath: input_images\sefcik\b11_obj\02_b.jpg
+    Min distance: 38.000000 | Max distance:102.000000
+    Average distance:66.840160
+    Average first to second ratio is: 0.943174
+    Ratio of filtered matches to number of keypoints of object is: 0.001000
+    
+    Compare index: 42
+    Matching scene with object that has filepath: input_images\sefcik\b11_obj\03_b.jpg
+    Min distance: 34.000000 | Max distance:92.000000
+    Average distance:67.107892
+    Average first to second ratio is: 0.938439
+    Ratio of filtered matches to number of keypoints of object is: 0.006000
+    
+    Compare index: 43
+    Matching scene with object that has filepath: input_images\sefcik\b11_obj\04_b.jpg
+    Min distance: 22.000000 | Max distance:97.000000
+    Average distance:66.484515
+    Average first to second ratio is: 0.945280
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 44
+    Matching scene with object that has filepath: input_images\sefcik\b12_obj\01_b.jpg
+    Min distance: 33.000000 | Max distance:88.000000
+    Average distance:67.000999
+    Average first to second ratio is: 0.942875
+    Ratio of filtered matches to number of keypoints of object is: 0.003000
+    
+    Compare index: 45
+    Matching scene with object that has filepath: input_images\sefcik\b12_obj\02_b.jpg
+    Min distance: 39.000000 | Max distance:91.000000
+    Average distance:67.896104
+    Average first to second ratio is: 0.941746
+    Ratio of filtered matches to number of keypoints of object is: 0.002000
+    
+    Compare index: 46
+    Matching scene with object that has filepath: input_images\sefcik\b12_obj\03_b.jpg
+    Min distance: 29.000000 | Max distance:88.000000
+    Average distance:67.284715
+    Average first to second ratio is: 0.942767
+    Ratio of filtered matches to number of keypoints of object is: 0.006000
+    
+    Compare index: 47
+    Matching scene with object that has filepath: input_images\sefcik\b12_obj\04_b.jpg
+    Min distance: 36.000000 | Max distance:91.000000
+    Average distance:68.727273
+    Average first to second ratio is: 0.944476
+    Ratio of filtered matches to number of keypoints of object is: 0.000000
+    
+=========Timing=========
+        Finding the right object took: 90[ms]
+        Time of the whole process: 1480[ms]
+        
+=========Result=========
+        Best object match for scene is object with compare index: 28
+        Best object match for scene is object with filepath: input_images\sefcik\b8_obj\03_b.jpg
+        The result transformation matrix is:
+        (0.999943, 0.000030, 0.003403)
+        (-0.000062, 1.000078, -0.004258)
+        (-0.000000, 0.000000, 1.000000)
+        The result object stats: 
+        Avarage feature match distance: 24.827173
+        Average first to second ratio is  0.379759
+        Ratio of filtered matches to number of keypoints of object is: 0.677000
+        
+=========Timing=========
+        Result output took: 21[ms]
+        Time of the whole process with view: 1502[ms]
+        

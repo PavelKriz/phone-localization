@@ -117,7 +117,8 @@ Ptr<Feature2D> CImage::CDetectorExtractor::getDetectorExtractor(const SProcessPa
 
 void CImage::detectDescribeFeatures(const SProcessParams & params, Ptr<CLogger>& logger, const Ptr<CDetectorExtractor>& detectorExtractor)
 {
-	if (params.detectMethod_ == params.describeMethod_) {
+	if (params.detectMethod_ == params.describeMethod_ ||
+		(params.detectMethod_ == EAlgorithm::ALG_SIFT && params.describeMethod_ == EAlgorithm::ALG_ROOTSIFT)) {
 		if (detectorExtractor.empty()) {
 			throw invalid_argument("Method detectDescribeFeatures was called with empty pointer to CDetectorExtractor");
 		}

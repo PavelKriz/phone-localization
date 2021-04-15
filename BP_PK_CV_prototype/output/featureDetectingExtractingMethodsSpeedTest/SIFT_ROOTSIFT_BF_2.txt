@@ -221,7 +221,7 @@ images loaded
         the descriptors have been adjusted with the rootSIFT processing
         
 =========Timing=========
-        Detecting and describing all features took: 17824[ms]
+        Detecting and describing all features took: 10220[ms]
         
 ======MATCHING======
     
@@ -562,8 +562,8 @@ images loaded
     Ratio of filtered matches to number of keypoints of object is: 0.003996
     
 =========Timing=========
-        Finding the right object took: 123[ms]
-        Time of the whole process: 17947[ms]
+        Finding the right object took: 125[ms]
+        Time of the whole process: 10345[ms]
         
 =========Result=========
         Best object match for scene is object with compare index: 10
@@ -579,5 +579,5 @@ images loaded
         
 =========Timing=========
         Result output took: 95[ms]
-        Time of the whole process with view: 18043[ms]
+        Time of the whole process with view: 10441[ms]
         
