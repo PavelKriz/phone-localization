@@ -30,7 +30,7 @@ const string imagesRoot = "input_images\\";
 const string dumRottRoot = imagesRoot + "dum_rott\\";
 
 //if the output is going to be to files or only to the console
-const EOutputType OUTPUT_TYPE = EOutputType::FILE;
+const EOutputType OUTPUT_TYPE = EOutputType::CONSOLE;
 //display the result in the run?
 const bool PREVIEW_RESULT = true;
 
@@ -39,7 +39,7 @@ const bool PREVIEW_RESULT = true;
 #define TEST2 2 
 
 //Current used test / tests are changed with preprocessor
-#define CURRENT_TEST TEST2
+#define CURRENT_TEST TEST1
 
 //inits for each tests
 #if CURRENT_TEST == TEST1
@@ -47,7 +47,7 @@ const bool PREVIEW_RESULT = true;
 	const vector<string> OBJECT_FILE_PATHS = { dumRottRoot + "dumRottRef.png", imagesRoot + "white_house\\" +  "whiteHouse1ref.png" };
 	const string RUN_NAME = "fileTest";
 #elif CURRENT_TEST == TEST2
-	const string SCENE_FILE_PATH = sefcikImagesScenes[49];
+	const string SCENE_FILE_PATH = sefcikImagesScenes[13];
 	const vector<string> OBJECT_FILE_PATHS = sefcikImagesObjects;
 	const string RUN_NAME = "SIFT_ROOTSIFT_BF_1";  //better to write spaces with underscore and not to do camelcase
 #endif
@@ -62,7 +62,7 @@ const bool TIMING = false;
 
 //========================================chosen algorithms for matching, describing, matching========================================
 const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_SIFT;
-const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_ROOTSIFT;
+const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_SIFT;
 const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 
 //========================================SIFT parameters========================================

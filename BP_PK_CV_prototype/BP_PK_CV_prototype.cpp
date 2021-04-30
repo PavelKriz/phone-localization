@@ -8,6 +8,7 @@
 #include <utility>
 #include <exception>
 
+
 //project includes
 #include "CObjectInSceneFinder.h"
 #include "parameters.h"

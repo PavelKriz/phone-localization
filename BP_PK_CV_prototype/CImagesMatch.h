@@ -16,6 +16,11 @@
 
 #pragma once
 
+//for the constants
+#define _USE_MATH_DEFINES
+#include<cmath>
+//quaternion
+#include <opencv2/core/quaternion.hpp>
 //wrapper around basic shared pointer
 #include <opencv2/core/cvstd_wrapper.hpp>
 //find homography
@@ -60,6 +65,8 @@ class CImagesMatch {
 	 * @throw logic_error when the method is called earlier then the transformation matrix is computed
 	*/
 	void printTransformationMatrix(Ptr<CLogger>& logger) const;
+
+	void calcLocation(vector<Point2f>& obj_corners, std::vector<Point3f>& obj_corners3D, vector<Point2f>& sceneCorners, Ptr<CLogger>& logger);
 public:
 	/**
 	 * @brief Constructor of the class
