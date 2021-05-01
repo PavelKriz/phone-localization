@@ -63,6 +63,23 @@ struct SORBParams {
 	int fastTreshold_ = 20;
 };
 
+/**
+ * @brief Basic information about the camera parameters with which was the scene taken
+ * 
+ * to fill the chip size - basicaly the x and y has to be different vales and rest should be done automaticaly
+*/
+struct SCameraInfo {
+	double focalLength_; ///< in mm (original, NOT recomputed for the full fram size)
+	double chipSizeX_; ///< chip size in x axis
+	double chipSizeY_; ///< chip size in y axis
+	SCameraInfo( double focalLength, double chipSizeX, double chipSizeY)
+		:
+		focalLength_(focalLength),
+		chipSizeX_(chipSizeX),
+		chipSizeY_(chipSizeY)
+	{}
+};
+
 
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 ///BEBLID paramaters (default values are default values from OpenCV documentation, besides scale factor)
@@ -99,6 +116,7 @@ struct SProcessParams {
 	const SSIFTParams siftParams_;
 	const SORBParams orbParams_;
 	const double loweRatioTestAlpha_;
+	const SCameraInfo cameraInfo_;
 
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	const SBEBLIDParams beblidParams_;
@@ -109,7 +127,7 @@ struct SProcessParams {
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	///basic constructor
 	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
-		SORBParams orbParams, SBEBLIDParams beblidParams, EAlgorithm matchingMethod, double loweRatioTestAlpha)
+		SORBParams orbParams, SBEBLIDParams beblidParams, EAlgorithm matchingMethod, double loweRatioTestAlpha, const SCameraInfo& cameraInfo)
 		:
 		detectMethod_(detectMethod),
 		describeMethod_(describeMethod),
@@ -117,19 +135,21 @@ struct SProcessParams {
 		orbParams_(orbParams),
 		beblidParams_(beblidParams),
 		matchingMethod_(matchingMethod),
-		loweRatioTestAlpha_(loweRatioTestAlpha)
+		loweRatioTestAlpha_(loweRatioTestAlpha),
+		cameraInfo_(cameraInfo)
 	{}
 #else
 	///basic constructor without experimental methods
 	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
-		SORBParams orbParams, EAlgorithm matchingMethod, double loweRatioTestAlpha)
+		SORBParams orbParams, EAlgorithm matchingMethod, double loweRatioTestAlpha, const SCameraInfo& cameraInfo)
 		:
 	detectMethod_(detectMethod),
 		describeMethod_(describeMethod),
 		siftParams_(siftParams),
 		orbParams_(orbParams),
 		matchingMethod_(matchingMethod),
-		loweRatioTestAlpha_(loweRatioTestAlpha)
+		loweRatioTestAlpha_(loweRatioTestAlpha),
+		cameraInfo_(cameraInfo)
 	{}
 #endif
 };

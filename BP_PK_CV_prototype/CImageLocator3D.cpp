@@ -1,20 +1,33 @@
 #include "CImageLocator3D.h"
 
-void CImageLocator3D::printTransformationMatrix(Ptr<CLogger>& logger) const
+void CImageLocator3D::createCameraIntrinsicsMatrix(const SCameraInfo& cameraInfo)
 {
-	//transformation matrix returned from findHomography contains doubles
-	for (size_t i = 0; i < transformationMatrix_.rows; ++i) {
-		logger->log("(");
-		for (size_t j = 0; j < transformationMatrix_.cols; ++j) {
-			if (j < transformationMatrix_.cols - 1) {
-				logger->log(to_string(transformationMatrix_.at<double>(i, j))).log(", ");
-			}
-			else {
-				logger->log(to_string(transformationMatrix_.at<double>(i, j))).log(")");
-			}
-		}
-		logger->endl();
+	double width = sceneImage_->getImage().cols;		// image size
+	double height = sceneImage_->getImage().rows;        // image size
+	double sx, sy; //sizes of chip in both axes  = 3.79, sy = 4.96;             // sensor size  - 4.96 x 3.72 mm) 	
+	//check if the rotation isnt broken and assign the right side size of chip to right dimension of image
+	if (width < height) {
+		sx = min(cameraInfo.chipSizeX_, cameraInfo.chipSizeY_);
+		sy = max(cameraInfo.chipSizeX_, cameraInfo.chipSizeY_);
 	}
+	else {
+		sx = max(cameraInfo.chipSizeX_, cameraInfo.chipSizeY_);
+		sy = min(cameraInfo.chipSizeX_, cameraInfo.chipSizeY_);
+	}
+
+	double fx = width * cameraInfo.focalLength_ / sx;   // fx
+	double fy = height * cameraInfo.focalLength_ / sy;  // fy
+	double cx = width / 2;  // cx
+	double cy = height / 2; // cy
+
+
+	cameraIntrinsicsMatrixA_ = Mat::zeros(3, 3, CV_64FC1); // intrinsic camera parameters
+
+	cameraIntrinsicsMatrixA_.at<double>(0, 0) = fx;       //      [ fx   0  cx ]
+	cameraIntrinsicsMatrixA_.at<double>(1, 1) = fy;       //      [  0  fy  cy ]
+	cameraIntrinsicsMatrixA_.at<double>(0, 2) = cx;       //      [  0   0   1 ]
+	cameraIntrinsicsMatrixA_.at<double>(1, 2) = cy;
+	cameraIntrinsicsMatrixA_.at<double>(2, 2) = 1;
 }
 
 Mat CImageLocator3D::projectCameraSpacetoImage(const Mat& toProject) const
@@ -97,40 +110,68 @@ void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCo
 
 }
 
+Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec, const Mat& p2Vec, const Mat& p3Vec,
+ const sm::SGcsCoords& gcsP2Vec, const sm::SGcsCoords& gcsP3Vec)
+{
+
+	//in czech republic is the average height across gender and height 1,75 meters
+	double gcsDistance = sm::gcsDistance(sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
+	//calculate distance in our space
+	double distance = sm::distance(p2Vec.at<double>(0), p2Vec.at<double>(1), p2Vec.at<double>(2),
+		p3Vec.at<double>(0), p3Vec.at<double>(1), p3Vec.at<double>(2));
+	double distScaleFactor = distance / gcsDistance; //how much units is one meter in our 
+	cout << "gcsDistancXX: " << gcsDistance << endl;
+	cout << "our distanceXX: " << distance << endl;
+	double cameraOffsetFromGround = sm::HUMAN_HEIGHT - sm::CAMERA_HOLDING_OFFSET;
+	double lenghtInCameraSpaceUnits = cameraOffsetFromGround * distScaleFactor;
+
+	//get down vector from the building
+	Mat downVector = p2Vec - p1Vec;
+	normalize(downVector, downVector);
+	Mat realStandingPoint = Mat::zeros(3, 1, CV_64FC1);
+	realStandingPoint.at<double>(0) = /*origin + */ downVector.at<double>(0) * lenghtInCameraSpaceUnits;
+	realStandingPoint.at<double>(1) = /*origin + */ downVector.at<double>(1) * lenghtInCameraSpaceUnits;
+	realStandingPoint.at<double>(2) = /*origin + */ downVector.at<double>(2) * lenghtInCameraSpaceUnits;
+
+	//find real place where the guy has his legs
+	Mat vecStandingPointTo3 = p3Vec - realStandingPoint;//vecStandingPointTo3 is updated z coordinate
+	normalize(vecStandingPointTo3, vecStandingPointTo3);
+	Mat vecStandingPointTo2 = p2Vec - realStandingPoint;
+	normalize(vecStandingPointTo2, vecStandingPointTo2);
+	Mat vecUp = vecStandingPointTo3.cross(vecStandingPointTo2); //vecUp is updated y coordinate
+	normalize(vecUp, vecUp);
+	Mat right = vecUp.cross(vecStandingPointTo3); //right is updated x coordinate
+	normalize(right, right);
+
+	//create change basis matrix
+	Mat changeBasis = Mat::zeros(4, 4, CV_64FC1);
+	//x basis vector
+	changeBasis.at<double>(0, 0) = right.at<double>(0);
+	changeBasis.at<double>(1, 0) = right.at<double>(1);
+	changeBasis.at<double>(2, 0) = right.at<double>(2);
+	//y basis vector
+	changeBasis.at<double>(0, 1) = vecUp.at<double>(0);
+	changeBasis.at<double>(1, 1) = vecUp.at<double>(1);
+	changeBasis.at<double>(2, 1) = vecUp.at<double>(2);
+	//z basis vector
+	changeBasis.at<double>(0, 2) = vecStandingPointTo3.at<double>(0);
+	changeBasis.at<double>(1, 2) = vecStandingPointTo3.at<double>(1);
+	changeBasis.at<double>(2, 2) = vecStandingPointTo3.at<double>(2);
+	//right bottom one
+	changeBasis.at<double>(3, 3) = 1;
+
+	return changeBasis.inv();
+}
+
 void CImageLocator3D::calcLocation(vector<Point2f>& obj_corners, vector<Point2f>& sceneCorners, Ptr<CLogger>& logger)
 {
 	//major parts of FOLLOWING CODE was taken from OpenCV tutorial about the OpenCV Calib3D module https://docs.opencv.org/master/dc/d2c/tutorial_real_time_pose.html
 	//TUTORIAL INSPIRED/OVERTAKEN CODE PART BEGIN=====================================================================
-
-	//future cornes coordinates
-	std::vector<Point2f> scene_corners(4);
-	//transformating the cornes
-	perspectiveTransform(obj_corners, scene_corners, transformationMatrix_);
-
-	//XIAOMI REDMI 5 PLUS - hope for the best - here just for the testing
-	double f = 4;                           // focal length in mm
-	double sx = 3.79, sy = 4.96;             // sensor size  - 4.96 x 3.72 mm) 	
-	double width = sceneImage_->getImage().cols;		// image size
-	double height = sceneImage_->getImage().rows;        // image size
-	double fx = width * f / sx;   // fx
-	double fy = height * f / sy;  // fy
-	double cx = width / 2;      // cx
-	double cy = height / 2;    // cy
-
-
-	cameraIntrinsicsMatrixA_ = Mat::zeros(3, 3, CV_64FC1); // intrinsic camera parameters
 	Mat R_matrix_ = Mat::zeros(3, 3, CV_64FC1); // rotation matrix
 	RTMatrix_ = Mat::zeros(4, 4, CV_64FC1); // rotation-translation matrix
 	TVec_ = cv::Mat::zeros(3, 1, CV_64FC1);          // output translation vector
 	RVec_ = cv::Mat::zeros(3, 1, CV_64FC1);          // output rotation vector
 	distCoeffs_ = cv::Mat::zeros(4, 1, CV_64FC1);    // vector of distortion coefficients - setting to zero distortion
-
-	cameraIntrinsicsMatrixA_.at<double>(0, 0) = fx;       //      [ fx   0  cx ]
-	cameraIntrinsicsMatrixA_.at<double>(1, 1) = fy;       //      [  0  fy  cy ]
-	cameraIntrinsicsMatrixA_.at<double>(0, 2) = cx;       //      [  0   0   1 ]
-	cameraIntrinsicsMatrixA_.at<double>(1, 2) = cy;
-	cameraIntrinsicsMatrixA_.at<double>(2, 2) = 1;
-
 
 	bool useExtrinsicGuess = false;   // if true the function uses the provided RVec_ and TVec_ values as
 								  // initial approximations of the rotation and translation vectors
@@ -147,24 +188,15 @@ void CImageLocator3D::calcLocation(vector<Point2f>& obj_corners, vector<Point2f>
 		std::cout << objCorners3D[i] << std::endl;
 	}
 
-	//mirror coordinates
-	std::vector<Point2f> sceneCornersMirrored(4);
-	cout << "scene corners, scene image columns: " << sceneImage_->getImage().rows << endl;
-	for (int i = 0; i < 4; ++i) {
-		sceneCornersMirrored[i].x = scene_corners[i].x;
-		sceneCornersMirrored[i].y = sceneImage_->getImage().rows - scene_corners[i].y;
-		cout << "mirrored: " << sceneCornersMirrored[i] << endl;
-		cout << "orginal: " << scene_corners[i] << endl;
-	}
-
-	solvePnP(objCorners3D, scene_corners, cameraIntrinsicsMatrixA_, distCoeffs_, RVec_, TVec_, useExtrinsicGuess, SOLVEPNP_ITERATIVE); //because the method wasnt specified the iterative method will take place
+	//solve our PnP problem
+	solvePnP(objCorners3D, sceneCorners, cameraIntrinsicsMatrixA_, distCoeffs_, RVec_, TVec_, useExtrinsicGuess, SOLVEPNP_ITERATIVE); //because the method wasnt specified the iterative method will take place
 
 	//converting rotation vector to the rotation matrix
 	Rodrigues(RVec_, R_matrix_);
 
 	Quatd rotQuat = Quatd::createFromRotMat(R_matrix_);
 
-	//TODO P_matrix
+	//TODO RTMatrix_
 	//copy rotation
 	RTMatrix_.at<double>(0, 0) = R_matrix_.at<double>(0, 0);
 	RTMatrix_.at<double>(0, 1) = R_matrix_.at<double>(0, 1);
@@ -239,56 +271,33 @@ void CImageLocator3D::calcLocation(vector<Point2f>& obj_corners, vector<Point2f>
 
 	std::cout << "Scene corners" << std::endl;
 	for (size_t i = 0; i < 4; ++i) {
-		std::cout << scene_corners[i] << std::endl;
+		std::cout << sceneCorners[i] << std::endl;
 	}
 
 	//TODO consider the height of the camera (it might change the location a tiny bit) - camera is at point (0,0,0,1) - origin
+	//converting points from (x,y,z,1) to (x,y,z)
+	Mat vecOne = objCameraSPaceCorners[1](Range(0, 3), Range(0, 1));
 	Mat vecTwo = objCameraSPaceCorners[2](Range(0, 3), Range(0, 1));
-	Mat normVecTwo;
-	normalize(vecTwo, normVecTwo);
-
 	Mat vecThree = objCameraSPaceCorners[3](Range(0, 3), Range(0, 1));
-	Mat normVecThree;
-	normalize(vecThree, normVecThree);
 
-	cout << "normVecTwo:" << endl << normVecTwo << endl;
-	cout << "normVecThree:" << endl << normVecThree << endl;
-
-	//normVecThree stays as a updated z coordinate
-	Mat vecUp = normVecThree.cross(normVecTwo); //vecUp is updated y coordinate
-	normalize(vecUp, vecUp);
-	Mat right = vecUp.cross(normVecThree); //right is updated x coordinate
-	normalize(right, right);
-
-	Mat changeBasis = Mat::zeros(4, 4, CV_64FC1);
-	//x basis vector
-	changeBasis.at<double>(0, 0) = right.at<double>(0);
-	changeBasis.at<double>(1, 0) = right.at<double>(1);
-	changeBasis.at<double>(2, 0) = right.at<double>(2);
-	//y basis vector
-	changeBasis.at<double>(0, 1) = vecUp.at<double>(0);
-	changeBasis.at<double>(1, 1) = vecUp.at<double>(1);
-	changeBasis.at<double>(2, 1) = vecUp.at<double>(2);
-	//z basis vector
-	changeBasis.at<double>(0, 2) = normVecThree.at<double>(0);
-	changeBasis.at<double>(1, 2) = normVecThree.at<double>(1);
-	changeBasis.at<double>(2, 2) = normVecThree.at<double>(2);
-	//right bottom one
-	changeBasis.at<double>(3, 3) = 1;
-
-	//our coordinate system
-	Mat pointTwoOnPlane = changeBasis.inv() * objCameraSPaceCorners[2];
-	Mat pointThreeOnPlane = changeBasis.inv() * objCameraSPaceCorners[3];
+	//our coordinate system // ignoring the y axis to gain only the 2d coordinates
+	Mat correctionMatrix = getCorrectionMatrixForTheCameraLocalSpace(vecOne, vecTwo, vecThree,
+		sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
+	Mat pointTwoOnPlane = correctionMatrix * objCameraSPaceCorners[2];
+	Mat pointThreeOnPlane = correctionMatrix * objCameraSPaceCorners[3];
 	Point2d pointTwo(pointTwoOnPlane.at<double>(0), pointTwoOnPlane.at<double>(2)); // (x,y,z, w) -> (x, z) and renaming to (x, y)
 	Mat pointTwoVec(pointTwo);
 	Point2d pointThree(pointThreeOnPlane.at<double>(0), pointThreeOnPlane.at<double>(2));
 	Mat pointThreeVec(pointThree);
 
-	cout << "changeBasis" << endl << changeBasis << endl;
+	cout << "changeBasis" << endl << correctionMatrix << endl;
+	cout << "point zero transformed: " << correctionMatrix * objCameraSPaceCorners[0] << endl;
+	cout << "point one transformed: " << correctionMatrix * objCameraSPaceCorners[1] << endl;
 	cout << "New basis point two" << endl << pointTwoOnPlane << endl;
 	cout << "New basis point three" << endl << pointThreeOnPlane << endl;
 
-	sm::SGcsCoords coords = sm::solve3Kto2Kand1U(Point2d(0.0, 0.0), pointTwo, pointThree, sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
+	sm::SGcsCoords coords = sm::solve3Kto2Kand1U(Point2d(0.0, 0.0), pointTwo, pointThree,
+		sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
 	cout << "new method camera location: " << coords.longtitude_ << ", " << coords.latitude_ << endl;
 
 	//TUTORIAL INSPIRED/OVERTAKEN CODE PART END=====================================================================

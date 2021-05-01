@@ -86,7 +86,7 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 
 	if (viewResult) {
 
-		matches_[bestMatchIndex_].drawPreviewAndResult(runName, logger_);
+		matches_[bestMatchIndex_].drawPreviewAndResult(runName, logger_, params_);
 		logger_->log("The result object stats: ").endl();
 		logger_->log("Avarage feature match distance: ").log(to_string(matches_[bestMatchIndex_].getAvarageMatchesDistance())).endl();
 		logger_->log("Average first to second ratio is  ").log(to_string(matches_[bestMatchIndex_].getAvarageFirstToSecondRatio())).endl();
@@ -115,7 +115,7 @@ void CObjectInSceneFinder::viewBestResult(const string& runName)
 			"(the given logger in constructor has to stay valid for the whole lifetime of CObjectInSceneFinder),");
 	}
 	if (bestMatchExist_) {
-		matches_[bestMatchIndex_].drawPreviewAndResult(runName, logger_);
+		matches_[bestMatchIndex_].drawPreviewAndResult(runName, logger_, params_);
 	}
 	else {
 		throw logic_error("View of matches was called without computing matches first");

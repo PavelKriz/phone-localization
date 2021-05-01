@@ -53,7 +53,7 @@ class CImagesMatch {
 	double avarageMatchesDistance_ = numeric_limits<double>::max(); ///< average distance of all the matches (the smaller the better)
 	double matchedObjectFeaturesRatio_ = -1; ///< ratio between amount of detected matches and amount of filtered matches(the bigger the better)
 	double avarageFirstToSecondRatio_ = -1; ///< average ratio from the Lowe's ratio test (called here as first to second ratio)(the smaller the better)
-	Mat transformationMatrix_; ///< transformation matrix of the match
+	Mat objectSceneHomography_; ///< transformation matrix of the match
 	bool transformMatrixComputed_ = false; ///< information whether the transformation matrix was computed
 	/**
 	 * @brief Creates the right matcher object
@@ -90,8 +90,9 @@ public:
 	 * 
 	 * @param runName name of the current test 
 	 * @param logger logger in which it will print information about the process
+	 * @param params params the parameters that determine which matcher would be used
 	*/
-	void drawPreviewAndResult(const string& runName, Ptr<CLogger>& logger);
+	void drawPreviewAndResult(const string& runName, Ptr<CLogger>& logger, const SProcessParams& params);
 	/**
 	 * @brief Gives number of filtered matches
 	 * @return number of filtered matches

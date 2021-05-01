@@ -24,6 +24,14 @@ double sm::distance(double ax, double ay, double bx, double by)
 	return sqrt(pow(diffX, 2) + pow(diffY, 2));
 }
 
+double sm::distance(double ax, double ay, double az, double bx, double by, double bz)
+{
+	double diffX = ax - bx;
+	double diffY = ay - by;
+	double diffZ = az - bz;
+	return sqrt(pow(diffX, 2) + pow(diffY, 2) + pow(diffZ, 2));
+}
+
 sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const Point2d& p3, SGcsCoords p2Gcs, SGcsCoords p3Gcs)
 {
 	Mat p1Vec(p1);

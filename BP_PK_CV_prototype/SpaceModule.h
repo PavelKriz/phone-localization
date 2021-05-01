@@ -10,9 +10,6 @@
 
 #pragma once
 
-
-
-
 //for the constants
 #define _USE_MATH_DEFINES
 #include<cmath>
@@ -35,7 +32,18 @@ namespace sm {
      * @brief globaly considered average of earth radius
     */
     const double EARTH_RADIUS_IN_METERS = 6371000;
-
+    /**
+     * @brief average height of human body in Czech Republic across genders and ages
+    */
+    const double AVERAGE_CZECH_HUMAN_HEIGHT = 1.75; // in meters
+    /**
+     * @brief average human height that has to be considered in calculations
+    */
+    const double HUMAN_HEIGHT = AVERAGE_CZECH_HUMAN_HEIGHT;
+    /**
+     * @brief offset of camera in the height of the top of head
+    */
+    const double CAMERA_HOLDING_OFFSET = 0.2; // in meters
     
     /**
      * @brief Global coordinate system coordinates
@@ -61,7 +69,7 @@ namespace sm {
     */
     double gcsDistance(SGcsCoords first, SGcsCoords second);
     /**
-     * @brief Calculates Euclidean distance between points a and b
+     * @brief Calculates Euclidean distance between points a and b in 2D
      * @param ax x coordinate of point a
      * @param ay y coordinate of point a
      * @param bx x coordinate of point b
@@ -69,6 +77,17 @@ namespace sm {
      * @return distance between points a and b
     */
     double distance(double ax, double ay, double bx, double by);
+    /**
+     * @brief Calculates Euclidean distance between points a and b in 3D
+     * @param ax x coordinate of point a
+     * @param ay y coordinate of point a
+     * @param az z coordinate of point a
+     * @param bx x coordinate of point b
+     * @param by y coordinate of point b
+     * @param bz z coordinate of point b
+     * @return distance between points a and b
+    */
+    double distance(double ax, double ay, double az, double bx, double by, double bz);
 
     /**
      * @brief computes global coordinates (global coordinates system) for third point

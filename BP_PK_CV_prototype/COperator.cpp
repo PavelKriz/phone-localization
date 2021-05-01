@@ -180,6 +180,8 @@ SProcessParams COperator::getParams(Ptr<CLogger>& logger)
     }
 #endif
     
+    SCameraInfo cameraInfo(CAMERA_FOCAL_LENGTH, CAMERA_CHIP_SIZE_X, CAMERA_CHIP_SIZE_Y);
+
     return SProcessParams(
         DETECT_METHOD,
         DESCRIBE_METHOD,
@@ -189,7 +191,8 @@ SProcessParams COperator::getParams(Ptr<CLogger>& logger)
         beblidParams,
 #endif
         MATCHING_METHOD,
-        LOWE_RATIO_TEST_ALPHA
+        LOWE_RATIO_TEST_ALPHA,
+        cameraInfo
     );
 }
 
