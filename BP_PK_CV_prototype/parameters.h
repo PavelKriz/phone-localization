@@ -116,3 +116,12 @@ const xfeatures2d::BEBLID::BeblidSize BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_
 
 //========================================Lowe's ratio test parameter========================================
 const float LOWE_RATIO_TEST_ALPHA = 0.7f;
+
+//========================================3D locating and positioning parameters========================================
+/* *
+ * @brief if enabled it will increase the precsion of algorithmn on plane surface
+ * (if there would be hills it would be broken anyway so it should be true in most cases)
+ * good mainly if is in the scene a building object (building that is not like angled tower in Pisa, but straight building)
+ * it enables straightaning the geometry, but in some places where there is a risc that the object geometry is not perpendicular to the ground it might be disabled
+ */
+const bool CONSIDER_PHONE_HOLD_HEIGHT = true; ///< (if there would be hills it would be broken anyway so it should be true always)

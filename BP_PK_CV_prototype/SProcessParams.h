@@ -117,6 +117,7 @@ struct SProcessParams {
 	const SORBParams orbParams_;
 	const double loweRatioTestAlpha_;
 	const SCameraInfo cameraInfo_;
+	const bool considerPhoneHoldHeight_;
 
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	const SBEBLIDParams beblidParams_;
@@ -127,7 +128,8 @@ struct SProcessParams {
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	///basic constructor
 	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
-		SORBParams orbParams, SBEBLIDParams beblidParams, EAlgorithm matchingMethod, double loweRatioTestAlpha, const SCameraInfo& cameraInfo)
+		SORBParams orbParams, SBEBLIDParams beblidParams, EAlgorithm matchingMethod, double loweRatioTestAlpha,
+		const SCameraInfo& cameraInfo, bool considerPhoneHoldHeight)
 		:
 		detectMethod_(detectMethod),
 		describeMethod_(describeMethod),
@@ -136,12 +138,14 @@ struct SProcessParams {
 		beblidParams_(beblidParams),
 		matchingMethod_(matchingMethod),
 		loweRatioTestAlpha_(loweRatioTestAlpha),
-		cameraInfo_(cameraInfo)
+		cameraInfo_(cameraInfo),
+		considerPhoneHoldHeight_(considerPhoneHoldHeight)
 	{}
 #else
 	///basic constructor without experimental methods
 	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
-		SORBParams orbParams, EAlgorithm matchingMethod, double loweRatioTestAlpha, const SCameraInfo& cameraInfo)
+		SORBParams orbParams, EAlgorithm matchingMethod, double loweRatioTestAlpha,
+		const SCameraInfo& cameraInfo, bool considerPhoneHoldHeight)
 		:
 	detectMethod_(detectMethod),
 		describeMethod_(describeMethod),
@@ -149,7 +153,8 @@ struct SProcessParams {
 		orbParams_(orbParams),
 		matchingMethod_(matchingMethod),
 		loweRatioTestAlpha_(loweRatioTestAlpha),
-		cameraInfo_(cameraInfo)
+		cameraInfo_(cameraInfo),
+		considerPhoneHoldHeight_(considerPhoneHoldHeight)
 	{}
 #endif
 };

@@ -113,30 +113,42 @@ void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCo
 Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec, const Mat& p2Vec, const Mat& p3Vec,
  const sm::SGcsCoords& gcsP2Vec, const sm::SGcsCoords& gcsP3Vec)
 {
+	Mat standingPoint = Mat::zeros(3, 1, CV_64FC1);
 
-	//in czech republic is the average height across gender and height 1,75 meters
-	double gcsDistance = sm::gcsDistance(sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
-	//calculate distance in our space
-	double distance = sm::distance(p2Vec.at<double>(0), p2Vec.at<double>(1), p2Vec.at<double>(2),
-		p3Vec.at<double>(0), p3Vec.at<double>(1), p3Vec.at<double>(2));
-	double distScaleFactor = distance / gcsDistance; //how much units is one meter in our 
-	cout << "gcsDistancXX: " << gcsDistance << endl;
-	cout << "our distanceXX: " << distance << endl;
-	double cameraOffsetFromGround = sm::HUMAN_HEIGHT - sm::CAMERA_HOLDING_OFFSET;
-	double lenghtInCameraSpaceUnits = cameraOffsetFromGround * distScaleFactor;
+	//scene geometry straithening to be perpendicular with the ground (good on flat grounds and buidlings where the geomtry is clear)
+	//following description is a description of params_.considerPhoneHoldHeight_ in process params that comes from CONSIDER_PHONE_HOLD_HEIGHT from parameters.h
+/* *
+ * if enabled it will increase the precsion of algorithmn on plane surface
+ * (if there would be hills it would be broken anyway so it should be true in most cases)
+ * good mainly if is in the scene a building object (building that is not like angled tower in Pisa, but straight building)
+ * it enables straightaning the geometry, but in some places where there is a risc that the object geometry is not perpendicular to the ground it might be disabled
+ */
+	if (params_.considerPhoneHoldHeight_) {
 
-	//get down vector from the building
-	Mat downVector = p2Vec - p1Vec;
-	normalize(downVector, downVector);
-	Mat realStandingPoint = Mat::zeros(3, 1, CV_64FC1);
-	realStandingPoint.at<double>(0) = /*origin + */ downVector.at<double>(0) * lenghtInCameraSpaceUnits;
-	realStandingPoint.at<double>(1) = /*origin + */ downVector.at<double>(1) * lenghtInCameraSpaceUnits;
-	realStandingPoint.at<double>(2) = /*origin + */ downVector.at<double>(2) * lenghtInCameraSpaceUnits;
+		//in czech republic is the average height across gender and height 1,75 meters
+		double gcsDistance = sm::gcsDistance(gcsP2Vec, gcsP3Vec);
+		//calculate distance in our space
+		double distance = sm::distance(p2Vec.at<double>(0), p2Vec.at<double>(1), p2Vec.at<double>(2),
+			p3Vec.at<double>(0), p3Vec.at<double>(1), p3Vec.at<double>(2));
+		double distScaleFactor = distance / gcsDistance; //how much units is one meter in our 
+		cout << "gcsDistancXX: " << gcsDistance << endl;
+		cout << "our distanceXX: " << distance << endl;
+		double cameraOffsetFromGround = sm::HUMAN_HEIGHT - sm::CAMERA_HOLDING_OFFSET;
+		double lenghtInCameraSpaceUnits = cameraOffsetFromGround * distScaleFactor;
+
+		//get down vector from the building information
+		//the down vector is then scaled according to the length
+		Mat downVector = p2Vec - p1Vec;
+		normalize(downVector, downVector);
+		standingPoint.at<double>(0) = /*origin + */ downVector.at<double>(0) * lenghtInCameraSpaceUnits;
+		standingPoint.at<double>(1) = /*origin + */ downVector.at<double>(1) * lenghtInCameraSpaceUnits;
+		standingPoint.at<double>(2) = /*origin + */ downVector.at<double>(2) * lenghtInCameraSpaceUnits;
+	}
 
 	//find real place where the guy has his legs
-	Mat vecStandingPointTo3 = p3Vec - realStandingPoint;//vecStandingPointTo3 is updated z coordinate
+	Mat vecStandingPointTo3 = p3Vec - standingPoint;//vecStandingPointTo3 is updated z coordinate
 	normalize(vecStandingPointTo3, vecStandingPointTo3);
-	Mat vecStandingPointTo2 = p2Vec - realStandingPoint;
+	Mat vecStandingPointTo2 = p2Vec - standingPoint;
 	normalize(vecStandingPointTo2, vecStandingPointTo2);
 	Mat vecUp = vecStandingPointTo3.cross(vecStandingPointTo2); //vecUp is updated y coordinate
 	normalize(vecUp, vecUp);
@@ -298,7 +310,7 @@ void CImageLocator3D::calcLocation(vector<Point2f>& obj_corners, vector<Point2f>
 
 	sm::SGcsCoords coords = sm::solve3Kto2Kand1U(Point2d(0.0, 0.0), pointTwo, pointThree,
 		sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
-	cout << "new method camera location: " << coords.longtitude_ << ", " << coords.latitude_ << endl;
+	cout << "camera location: " << setprecision(9) << coords.longtitude_ << ", " << coords.latitude_ << endl;
 
 	//TUTORIAL INSPIRED/OVERTAKEN CODE PART END=====================================================================
 

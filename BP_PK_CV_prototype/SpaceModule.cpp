@@ -100,15 +100,13 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 
 	double distanceP3ToP1 = sm::distance(p1.x, p1.y, p3.x, p3.y);
 	
-	//just fill the parametric formula of a line and get the location of camera
-	Point2d cameraLoc;
-	cameraLoc.x = p3Gcs.longtitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg * longtitudeAdjustFactor);
-	cameraLoc.y = p3Gcs.latitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg);
+	//just fill the parametric formula of a line and get the location of p1 (camera in the project)
+	Point2d p1GcsLoc;
+	p1GcsLoc.x = p3Gcs.longtitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg * longtitudeAdjustFactor);
+	p1GcsLoc.y = p3Gcs.latitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg);
 
 	//converting back to correct longtitude
-	cameraLoc.x /= longtitudeAdjustFactor;
+	p1GcsLoc.x /= longtitudeAdjustFactor;
 
-	cout << setprecision(9) << "camera location: " << cameraLoc << endl;
-
-	return sm::SGcsCoords(cameraLoc.x, cameraLoc.y);
+	return sm::SGcsCoords(p1GcsLoc.x, p1GcsLoc.y);
 }
