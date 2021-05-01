@@ -22,16 +22,19 @@
     <ClCompile Include="BP_PK_CV_prototype.cpp" />
     <ClCompile Include="CFileLogger.cpp" />
     <ClCompile Include="CImage.cpp" />
+    <ClCompile Include="CImageLocator3D.cpp" />
     <ClCompile Include="CImagesMatch.cpp" />
     <ClCompile Include="CObjectInSceneFinder.cpp" />
     <ClCompile Include="COperator.cpp" />
     <ClCompile Include="COstreamLogger.cpp" />
     <ClCompile Include="CRuntimeLogger.cpp" />
+    <ClCompile Include="SpaceModule.cpp" />
     <ClCompile Include="SProcessParams.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CFileLogger.h" />
     <ClInclude Include="CImage.h" />
+    <ClInclude Include="CImageLocator3D.h" />
     <ClInclude Include="CImagesMatch.h" />
     <ClInclude Include="CLogger.h" />
     <ClInclude Include="CObjectInSceneFinder.h" />
@@ -41,13 +44,11 @@
     <ClInclude Include="experimentalModules.h" />
     <ClInclude Include="images.h" />
     <ClInclude Include="parameters.h" />
+    <ClInclude Include="SpaceModule.h" />
     <ClInclude Include="SProcessParams.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="test.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="BP_PK_CV_prototype.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

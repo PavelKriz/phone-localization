@@ -33,6 +33,8 @@
 
 #include "CImage.h"
 #include "SProcessParams.h"
+#include "SpaceModule.h"
+#include "CImageLocator3D.h"
 
 /**
  * @brief Class that handles matches between two object, mainly it represent the match itself
@@ -65,8 +67,6 @@ class CImagesMatch {
 	 * @throw logic_error when the method is called earlier then the transformation matrix is computed
 	*/
 	void printTransformationMatrix(Ptr<CLogger>& logger) const;
-
-	void calcLocation(vector<Point2f>& obj_corners, std::vector<Point3f>& obj_corners3D, vector<Point2f>& sceneCorners, Ptr<CLogger>& logger);
 public:
 	/**
 	 * @brief Constructor of the class
