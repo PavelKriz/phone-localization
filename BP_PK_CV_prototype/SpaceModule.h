@@ -59,7 +59,6 @@ namespace sm {
         SGcsCoords(Point2d position) : longtitude_(position.x), latitude_(position.y){}
         Point2d convertToOpenCVFormat() { return Point2d(longtitude_, latitude_); }
     };
-    
 
     /**
      * @brief returns distance in meters between two points in global coordinate system
@@ -88,6 +87,36 @@ namespace sm {
      * @return distance between points a and b
     */
     double distance(double ax, double ay, double az, double bx, double by, double bz);
+    
+    /**
+     * @brief Calculate point between A and B (halfway on the line from A to B)
+     * method averages these two points to get the result
+     * @param ax x coordinate of point a
+     * @param ay y coordinate of point a
+     * @param bx x coordinate of point b
+     * @param by y coordinate of point b
+     * @return the midpoint
+    */
+    Point2d getMidPoint(double ax, double ay, double bx, double by);
+
+    double metersInLatDeg(double latitude);
+    
+    double metersInLongDeg(double latitude);
+
+    double longtitudeAdjustingFactor(double latitude);
+
+    double longtitudeCorrectionFactor(double latitude);
+
+    /**
+     * @brief return the angle between given vector and vector pointing to east (1.0, 0.0)
+     * 
+     * for negative Y is the angle negative
+     * 
+     * @param ax x coordinate of give vector
+     * @param ay y coordinate of give vector
+     * @return the angle in radians
+    */
+    double getVecRotFromEast(double ax, double ay);
 
     /**
      * @brief computes global coordinates (global coordinates system) for third point

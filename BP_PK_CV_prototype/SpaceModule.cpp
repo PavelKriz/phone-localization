@@ -32,6 +32,53 @@ double sm::distance(double ax, double ay, double az, double bx, double by, doubl
 	return sqrt(pow(diffX, 2) + pow(diffY, 2) + pow(diffZ, 2));
 }
 
+Point2d sm::getMidPoint(double ax, double ay, double bx, double by)
+{
+	return Point2d((ax + bx)/2, (ay + by)/2);
+}
+
+double sm::metersInLatDeg(double latitude)
+{
+	//Length in meters of 1° of latitude = at 45 degrees is 111.141548 km - optimised only for latitudes around 45°
+	return 111141.548;
+}
+
+double sm::metersInLongDeg(double latitude)
+{
+	//Length in meters of 1° of longitude = 40075017 m * cos(latitude) / 360
+	return 40075017 * cos(latitude) / 360.0;
+}
+
+double sm::longtitudeAdjustingFactor(double latitude)
+{
+	double metersInLatDegreeRetVal = metersInLatDeg(latitude);
+	double metersInLongDegRetVal = metersInLongDeg(latitude);
+	double longtitudeAdjustFactor = metersInLatDegreeRetVal / metersInLongDegRetVal;
+
+	//checking the calculation
+	cout << "meters in Lat deg = " << metersInLatDegreeRetVal << " : meters in adjusted Long deg = " << metersInLongDegRetVal * longtitudeAdjustFactor << endl;
+	return longtitudeAdjustFactor;
+}
+
+double sm::longtitudeCorrectionFactor(double latitude)
+{
+	return 1 / longtitudeAdjustingFactor(latitude);
+}
+
+double sm::getVecRotFromEast(double ax, double ay)
+{
+	Mat vec = (Mat_<double>(2, 1) << ax, ay);
+	normalize(vec, vec);
+	Mat eastVector = (Mat_<double>(2, 1) << 1.0, 0.0);
+
+	double adjustTheSign = vec.at<double>(1) < 0 ? -1.0 : 1.0; //the angle will be negative in case of negative y
+	double radAngleWithEast = adjustTheSign * acos(vec.dot(eastVector));
+	double degAngleWithEast = radAngleWithEast * (180.0 / M_PI);
+	cout << "angle with the vector to east: " << degAngleWithEast << endl;
+
+	return radAngleWithEast;
+}
+
 sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const Point2d& p3, SGcsCoords p2Gcs, SGcsCoords p3Gcs)
 {
 	Mat p1Vec(p1);
@@ -45,14 +92,8 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	//third point 50.0865958N, 14.4192706E 
 	Mat gcsP3Vec(p3Gcs.convertToOpenCVFormat());
 
-	//Length in meters of 1° of latitude = at 45 degrees is 111.141548 km
-	//Length in meters of 1° of longitude = 40075017 m * cos(latitude) / 360
-	double metersInLatDeg = 111141.548;
-	double metersInLongDeg = 40075017 * cos(p2Gcs.latitude_) / 360;
-	double longtitudeAdjustFactor = metersInLatDeg / metersInLongDeg;
-
-	//checking the calculation
-	cout << "meters in Lat deg = " << metersInLatDeg << " : meters in adjusted Long deg = " << metersInLongDeg * longtitudeAdjustFactor << endl;
+	//
+	double longtitudeAdjustFactor = longtitudeAdjustingFactor(p2Gcs.latitude_);
 
 	//adjust the points to make same meassures in both dirrections
 	p2Gcs.longtitude_ *= longtitudeAdjustFactor;
@@ -62,12 +103,7 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 
 	//angle of vector twoToThree to the vector pointing to east
 	Mat gcsDiff = gcsP2Vec - gcsP3Vec;
-	normalize(gcsDiff, gcsDiff);
-	Mat eastVector = (Mat_<double>(2, 1) << 1.0, 0.0);
-	cout << "gcsDiff: " << gcsDiff << endl << "eastVector" << eastVector << endl;
-	double radAngleWithEast = acos(gcsDiff.dot(eastVector));
-	double degAngleWithEast = radAngleWithEast * (180.0 / M_PI);
-	cout << "angle with the vector to east: " << degAngleWithEast << endl;
+	double radAngleWithEast = getVecRotFromEast(gcsDiff.at<double>(0), gcsDiff.at<double>(1));
 
 	//p3 to p2
 	Mat p3ToP2Vec = p2Vec - p3Vec;
@@ -82,8 +118,7 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	cout << "angle that is by the point two: " << degAngleAtP3 << endl;
 
 	//create vector from point three to the camera in the gcs
-	double adjustTheSign = gcsDiff.at<double>(1) < 0 ? -1.0 : 1.0; //the angle will be negative in case of negative y
-	double radAngleDirVec = adjustTheSign * radAngleWithEast - radAngleAtP3;//angle between east vector and vector from point three and camera - angle of future direction vector of the line between point three and camera
+	double radAngleDirVec = radAngleWithEast - radAngleAtP3;//angle between east vector and vector from point three and camera - angle of future direction vector of the line between point three and camera
 	Point2d lineDirVec(cos(radAngleDirVec), sin(radAngleDirVec));
 
 	//second point 50.0867628N, 14.4193081E
@@ -102,11 +137,11 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	
 	//just fill the parametric formula of a line and get the location of p1 (camera in the project)
 	Point2d p1GcsLoc;
-	p1GcsLoc.x = p3Gcs.longtitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg * longtitudeAdjustFactor);
-	p1GcsLoc.y = p3Gcs.latitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg);
+	p1GcsLoc.x = p3Gcs.longtitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg(p3Gcs.latitude_) * longtitudeAdjustFactor);
+	p1GcsLoc.y = p3Gcs.latitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg(p3Gcs.latitude_));
 
 	//converting back to correct longtitude
-	p1GcsLoc.x /= longtitudeAdjustFactor;
+	p1GcsLoc.x *= longtitudeCorrectionFactor(p3Gcs.latitude_);
 
 	return sm::SGcsCoords(p1GcsLoc.x, p1GcsLoc.y);
 }

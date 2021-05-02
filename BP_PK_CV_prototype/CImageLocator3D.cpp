@@ -111,7 +111,7 @@ void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCo
 }
 
 Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec, const Mat& p2Vec, const Mat& p3Vec,
- const sm::SGcsCoords& gcsP2Vec, const sm::SGcsCoords& gcsP3Vec)
+ const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3)
 {
 	Mat standingPoint = Mat::zeros(3, 1, CV_64FC1);
 
@@ -125,8 +125,7 @@ Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec,
  */
 	if (params_.considerPhoneHoldHeight_) {
 
-		//in czech republic is the average height across gender and height 1,75 meters
-		double gcsDistance = sm::gcsDistance(gcsP2Vec, gcsP3Vec);
+		double gcsDistance = sm::gcsDistance(gcsP2, gcsP3);
 		//calculate distance in our space
 		double distance = sm::distance(p2Vec.at<double>(0), p2Vec.at<double>(1), p2Vec.at<double>(2),
 			p3Vec.at<double>(0), p3Vec.at<double>(1), p3Vec.at<double>(2));
@@ -173,6 +172,12 @@ Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec,
 	changeBasis.at<double>(3, 3) = 1;
 
 	return changeBasis.inv();
+}
+
+void CImageLocator3D::computeFlatRotation(const sm::SGcsCoords& gcsP1, const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3)
+{
+	Point2d midPoint = sm::getMidPoint(gcsP2.longtitude_, gcsP2.latitude_, gcsP3.longtitude_, gcsP3.longtitude_);
+
 }
 
 void CImageLocator3D::calcLocation(vector<Point2f>& obj_corners, vector<Point2f>& sceneCorners, Ptr<CLogger>& logger)
