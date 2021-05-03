@@ -170,8 +170,8 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& log
 
 	//TODO some speed optimalization can be done here by pushing back these points already in the lowe's ratio test
 	//-- Localize the object
-	std::vector<Point2f> objectKeypointsCoordinates;
-	std::vector<Point2f> sceneKeypointsCoordinates;
+	std::vector<Point2d> objectKeypointsCoordinates;
+	std::vector<Point2d> sceneKeypointsCoordinates;
 
 	for (int i = 0; i < matches_.size(); i++)
 	{
@@ -184,26 +184,26 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& log
 	transformMatrixComputed_ = true;
 
 	// Get the corners from the image_1 ( the object to be "detected" )
-	std::vector<Point2f> obj_corners(4);
-	obj_corners[0] = Point2f(0, 0); // left upper
-	obj_corners[1] = Point2f(objectImage_->getImage().cols, 0); // right uppper
-	obj_corners[2] = Point2f(objectImage_->getImage().cols, objectImage_->getImage().rows); // right bottom 
-	obj_corners[3] = Point2f(0, objectImage_->getImage().rows); // left bottom
+	std::vector<Point2d> obj_corners(4);
+	obj_corners[0] = Point2d(0, 0); // left upper
+	obj_corners[1] = Point2d(objectImage_->getImage().cols, 0); // right uppper
+	obj_corners[2] = Point2d(objectImage_->getImage().cols, objectImage_->getImage().rows); // right bottom 
+	obj_corners[3] = Point2d(0, objectImage_->getImage().rows); // left bottom
 
 		//future cornes coordinates
-	std::vector<Point2f> scene_corners(4);
+	std::vector<Point2d> scene_corners(4);
 	//transformating the cornes
 	perspectiveTransform(obj_corners, scene_corners, objectSceneHomography_);
 
 	//-- Draw lines between the corners (the mapped object in the scene - image_2 )
-	line(imageMatches, scene_corners[0] + Point2f(objectImage_->getImage().cols, 0),
-		scene_corners[1] + Point2f(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
-	line(imageMatches, scene_corners[1] + Point2f(objectImage_->getImage().cols, 0),
-		scene_corners[2] + Point2f(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
-	line(imageMatches, scene_corners[2] + Point2f(objectImage_->getImage().cols, 0),
-		scene_corners[3] + Point2f(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
-	line(imageMatches, scene_corners[3] + Point2f(objectImage_->getImage().cols, 0),
-		scene_corners[0] + Point2f(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
+	line(imageMatches, scene_corners[0] + Point2d(objectImage_->getImage().cols, 0),
+		scene_corners[1] + Point2d(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
+	line(imageMatches, scene_corners[1] + Point2d(objectImage_->getImage().cols, 0),
+		scene_corners[2] + Point2d(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
+	line(imageMatches, scene_corners[2] + Point2d(objectImage_->getImage().cols, 0),
+		scene_corners[3] + Point2d(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
+	line(imageMatches, scene_corners[3] + Point2d(objectImage_->getImage().cols, 0),
+		scene_corners[0] + Point2d(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
 
 	//draw the matches and places where the object should be placed in the scene
 	logger->putImage(imageMatches, "Matches");

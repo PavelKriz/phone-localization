@@ -37,6 +37,11 @@ Point2d sm::getMidPoint(double ax, double ay, double bx, double by)
 	return Point2d((ax + bx)/2, (ay + by)/2);
 }
 
+Mat sm::getHomogenousVector3D(double x, double y, double z)
+{
+	return (Mat_<double>(4,1) << x, y, z, 1.0);
+}
+
 double sm::metersInLatDeg(double latitude)
 {
 	//Length in meters of 1° of latitude = at 45 degrees is 111.141548 km - optimised only for latitudes around 45°
@@ -56,13 +61,22 @@ double sm::longtitudeAdjustingFactor(double latitude)
 	double longtitudeAdjustFactor = metersInLatDegreeRetVal / metersInLongDegRetVal;
 
 	//checking the calculation
-	cout << "meters in Lat deg = " << metersInLatDegreeRetVal << " : meters in adjusted Long deg = " << metersInLongDegRetVal * longtitudeAdjustFactor << endl;
+	//cout << "meters in Lat deg = " << metersInLatDegreeRetVal << " : meters in adjusted Long deg = " << metersInLongDegRetVal * longtitudeAdjustFactor << endl;
 	return longtitudeAdjustFactor;
 }
 
 double sm::longtitudeCorrectionFactor(double latitude)
 {
 	return 1 / longtitudeAdjustingFactor(latitude);
+}
+
+double sm::vectorAngle2D(double ax, double ay, double bx, double by, double cx, double cy)
+{
+	Mat vec1 = (Mat_<double>(2, 1) << (ax - bx), (ay - by));
+	Mat vec2 = (Mat_<double>(2, 1) << (cx - bx), (cy - by));
+	normalize(vec1, vec1);
+	normalize(vec2, vec2);
+	return acos(vec1.dot(vec2));
 }
 
 double sm::getVecRotFromEast(double ax, double ay)
@@ -73,32 +87,32 @@ double sm::getVecRotFromEast(double ax, double ay)
 
 	double adjustTheSign = vec.at<double>(1) < 0 ? -1.0 : 1.0; //the angle will be negative in case of negative y
 	double radAngleWithEast = adjustTheSign * acos(vec.dot(eastVector));
-	double degAngleWithEast = radAngleWithEast * (180.0 / M_PI);
-	cout << "angle with the vector to east: " << degAngleWithEast << endl;
+	//double degAngleWithEast = radAngleWithEast * (180.0 / M_PI);
+	//cout << "angle with the vector to east: " << degAngleWithEast << endl;
 
 	return radAngleWithEast;
 }
 
-sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const Point2d& p3, SGcsCoords p2Gcs, SGcsCoords p3Gcs)
+sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const Point2d& p3,
+	const SGcsCoords& p2Gcs, const SGcsCoords& p3Gcs, Ptr<CLogger>& logger)
 {
+	//convert points to vectors
 	Mat p1Vec(p1);
 	Mat p2Vec(p2);
 	Mat p3Vec(p3);
 	
 	//gcs (Geographic coordinate system) coordinate system
 	//first longtitude (x) and then lattitude(y)
-	//50.0867628N, 14.4193081E
+	//converting coordinates to 
 	Mat gcsP2Vec(p2Gcs.convertToOpenCVFormat());
-	//third point 50.0865958N, 14.4192706E 
 	Mat gcsP3Vec(p3Gcs.convertToOpenCVFormat());
 
-	//
-	double longtitudeAdjustFactor = longtitudeAdjustingFactor(p2Gcs.latitude_);
+	//the longtitude and latitude are not in the same scale is it is needed to scale them to same scale for the computations
+	//keep in mind that for meassuring distances using global methods like haversine formula it is needed to convert the longtitude back for the meassuring
+	double longtitudeAdjustFactor = longtitudeAdjustingFactor(p3Gcs.latitude_);
 
 	//adjust the points to make same meassures in both dirrections
-	p2Gcs.longtitude_ *= longtitudeAdjustFactor;
 	gcsP2Vec.at<double>(0) *= longtitudeAdjustFactor;
-	p3Gcs.longtitude_ *= longtitudeAdjustFactor;
 	gcsP3Vec.at<double>(0) *= longtitudeAdjustFactor;
 
 	//angle of vector twoToThree to the vector pointing to east
@@ -106,39 +120,31 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	double radAngleWithEast = getVecRotFromEast(gcsDiff.at<double>(0), gcsDiff.at<double>(1));
 
 	//p3 to p2
-	Mat p3ToP2Vec = p2Vec - p3Vec;
-	normalize(p3ToP2Vec, p3ToP2Vec);
-	//p6 to p2
-	Mat p3ToP1Vec = p1Vec - p3Vec;
-	normalize(p3ToP1Vec, p3ToP1Vec);
-	cout << "p3ToP1Vec: " << p3ToP1Vec << endl << "p3ToP2Vec" << p3ToP2Vec << endl;
-	//angle between vectors twoToThree and twoToZero
-	double radAngleAtP3 = acos(p3ToP2Vec.dot(p3ToP1Vec));
+	double radAngleAtP3 = sm::vectorAngle2D(p2.x, p2.y, p3.x, p3.y, p1.x, p1.y);
 	double degAngleAtP3 = radAngleAtP3 * (180.0 / M_PI);
-	cout << "angle that is by the point two: " << degAngleAtP3 << endl;
+	logger->log("angle that is by the point three: ").log(to_string(degAngleAtP3)).endl();
 
 	//create vector from point three to the camera in the gcs
 	double radAngleDirVec = radAngleWithEast - radAngleAtP3;//angle between east vector and vector from point three and camera - angle of future direction vector of the line between point three and camera
 	Point2d lineDirVec(cos(radAngleDirVec), sin(radAngleDirVec));
 
-	//second point 50.0867628N, 14.4193081E
-	//third point 50.0865958N, 14.4192706E 
-	//global distance
-	double gcsDistance = sm::gcsDistance(sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
+	//Computing the scale between two scales (between the camera space scale and the gcs scale)
+	//for meassuring distance we have to use correct coordinates (so the unchanged coordinates have to be used)
+	double gcsDistance = sm::gcsDistance(p2Gcs, p3Gcs);
 	//calculate distance in our space
 	double distance = sm::distance(p2.x, p2.y, p3.x, p3.y);
 	double distScaleFactor = distance / gcsDistance;
+	logger->log("gcsDistance: ").log(to_string(degAngleAtP3)).endl();
+	logger->log("our distance: ").log(to_string(distance)).endl();
+	logger->log("scale factor of the distances: ").log(to_string(distScaleFactor)).endl();
 
-	std::cout << "gcsDistance: " << gcsDistance << endl;
-	std::cout << "our distance: " << distance << endl;
-	std::cout << "scale factor of the distances: " << distance / gcsDistance << endl;
 
+	//Calculating the p1 gcs location
 	double distanceP3ToP1 = sm::distance(p1.x, p1.y, p3.x, p3.y);
-	
 	//just fill the parametric formula of a line and get the location of p1 (camera in the project)
 	Point2d p1GcsLoc;
-	p1GcsLoc.x = p3Gcs.longtitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg(p3Gcs.latitude_) * longtitudeAdjustFactor);
-	p1GcsLoc.y = p3Gcs.latitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg(p3Gcs.latitude_));
+	p1GcsLoc.x = gcsP3Vec.at<double>(0) + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg(p3Gcs.latitude_) * longtitudeAdjustFactor);
+	p1GcsLoc.y = gcsP3Vec.at<double>(1) + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg(p3Gcs.latitude_));
 
 	//converting back to correct longtitude
 	p1GcsLoc.x *= longtitudeCorrectionFactor(p3Gcs.latitude_);

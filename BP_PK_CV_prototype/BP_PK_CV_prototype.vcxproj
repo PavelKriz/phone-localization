@@ -44,6 +44,7 @@
     <ClInclude Include="experimentalModules.h" />
     <ClInclude Include="images.h" />
     <ClInclude Include="parameters.h" />
+    <ClInclude Include="SGcsCoords.h" />
     <ClInclude Include="SpaceModule.h" />
     <ClInclude Include="SProcessParams.h" />
   </ItemGroup>

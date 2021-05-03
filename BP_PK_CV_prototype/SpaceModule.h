@@ -3,7 +3,7 @@
  * \file       SpaceModule.h
  * \author     Pavel Kriz
  * \date       1/5/2021
- * \brief      Contains structures and functions computing different problems in 3D, 2D and geographical space.
+ * \brief      Contains functions computing different problems in 3D, 2D and geographical space.
 */
 //----------------------------------------------------------------------------------------
 
@@ -23,6 +23,9 @@
 #include <opencv2/core/mat.hpp>
 //core functions
 #include <opencv2/core.hpp>
+
+#include "SGcsCoords.h"
+#include "CLogger.h"
 
 using namespace cv;
 using namespace std;
@@ -45,21 +48,6 @@ namespace sm {
     */
     const double CAMERA_HOLDING_OFFSET = 0.2; // in meters
     
-    /**
-     * @brief Global coordinate system coordinates
-    */
-    struct SGcsCoords {
-        double longtitude_ = 0.0;
-        double latitude_ = 0.0;
-        SGcsCoords(double longtitude, double latitude) : longtitude_(longtitude), latitude_(latitude) {}
-        /**
-         * @brief constructs gcs coordinates from opencv 2d point
-         * @param position x has to be longtitude and y has to be latitude
-        */
-        SGcsCoords(Point2d position) : longtitude_(position.x), latitude_(position.y){}
-        Point2d convertToOpenCVFormat() { return Point2d(longtitude_, latitude_); }
-    };
-
     /**
      * @brief returns distance in meters between two points in global coordinate system
      * @param first point with coordinates in degrees
@@ -99,6 +87,8 @@ namespace sm {
     */
     Point2d getMidPoint(double ax, double ay, double bx, double by);
 
+    Mat getHomogenousVector3D(double x, double y, double z);
+
     double metersInLatDeg(double latitude);
     
     double metersInLongDeg(double latitude);
@@ -106,6 +96,8 @@ namespace sm {
     double longtitudeAdjustingFactor(double latitude);
 
     double longtitudeCorrectionFactor(double latitude);
+
+    double vectorAngle2D(double ax, double ay, double bx, double by, double cx, double cy);
 
     /**
      * @brief return the angle between given vector and vector pointing to east (1.0, 0.0)
@@ -131,5 +123,6 @@ namespace sm {
      * @param p3Gcs global location of p3
      * @return global coordinates of p1
     */
-    SGcsCoords solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const Point2d& p3, SGcsCoords p2Gcs, SGcsCoords p3Gcs);
+    SGcsCoords solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const Point2d& p3,
+        const SGcsCoords& p2Gcs, const SGcsCoords& p3Gcs, Ptr<CLogger>& logger);
 }

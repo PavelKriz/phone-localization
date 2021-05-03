@@ -37,6 +37,7 @@ class CImageLocator3D
 {
     Ptr<CImage> sceneImage_;
     Mat RTMatrix_; // rotation-translation matrix - from world space to local camera space
+    Mat RMatrix_;
     Mat TVec_;
     Mat RVec_;
     Mat distCoeffs_;
@@ -47,8 +48,9 @@ class CImageLocator3D
     Mat projectCameraSpacetoImage(const Mat& toProject) const;
     Mat projectWorldSpacetoImage(const Mat& toProject) const;
     void projectBuildingDraftIntoScene(const vector<Point3d>& objCorners3D, Ptr<CLogger>& logger) const;
+    //3d points have to be in 4x1 format (homogenous coordinates)
     Mat getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec, const Mat& p2Vec, const Mat& p3Vec,
-        const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3);
+        const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3, Ptr<CLogger>& logger);
     void computeFlatRotation(const sm::SGcsCoords& gcsP1,const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3);
 public:
     CImageLocator3D(const Ptr<CImage>& sceneImage, const SProcessParams& params)
@@ -58,6 +60,6 @@ public:
     {
         createCameraIntrinsicsMatrix(params.cameraInfo_);
     }
-    void calcLocation(vector<Point2f>& obj_corners, vector<Point2f>& sceneCorners, Ptr<CLogger>& logger);
+    void calcLocation(vector<Point2d>& obj_corners, vector<Point2d>& sceneCorners, Ptr<CLogger>& logger);
 };
 

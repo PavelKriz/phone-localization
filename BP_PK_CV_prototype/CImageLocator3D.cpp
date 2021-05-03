@@ -110,9 +110,14 @@ void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCo
 
 }
 
-Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec, const Mat& p2Vec, const Mat& p3Vec,
- const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3)
+Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1HomVec, const Mat& p2HomVec, const Mat& p3HomVec,
+ const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3, Ptr<CLogger>& logger)
 {
+	//converting points from (x,y,z,1) to (x,y,z)
+	Mat p1Vec = p1HomVec(Range(0, 3), Range(0, 1));
+	Mat p2Vec = p2HomVec(Range(0, 3), Range(0, 1));
+	Mat p3Vec = p3HomVec(Range(0, 3), Range(0, 1));
+
 	Mat standingPoint = Mat::zeros(3, 1, CV_64FC1);
 
 	//scene geometry straithening to be perpendicular with the ground (good on flat grounds and buidlings where the geomtry is clear)
@@ -130,8 +135,8 @@ Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec,
 		double distance = sm::distance(p2Vec.at<double>(0), p2Vec.at<double>(1), p2Vec.at<double>(2),
 			p3Vec.at<double>(0), p3Vec.at<double>(1), p3Vec.at<double>(2));
 		double distScaleFactor = distance / gcsDistance; //how much units is one meter in our 
-		cout << "gcsDistancXX: " << gcsDistance << endl;
-		cout << "our distanceXX: " << distance << endl;
+		logger->log("gcsDistance").log(to_string(gcsDistance)).endl();
+		logger->log("our distance").log(to_string(distance)).endl();
 		double cameraOffsetFromGround = sm::HUMAN_HEIGHT - sm::CAMERA_HOLDING_OFFSET;
 		double lenghtInCameraSpaceUnits = cameraOffsetFromGround * distScaleFactor;
 
@@ -180,11 +185,18 @@ void CImageLocator3D::computeFlatRotation(const sm::SGcsCoords& gcsP1, const sm:
 
 }
 
-void CImageLocator3D::calcLocation(vector<Point2f>& obj_corners, vector<Point2f>& sceneCorners, Ptr<CLogger>& logger)
+void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>& sceneCorners, Ptr<CLogger>& logger)
 {
-	//major parts of FOLLOWING CODE was taken from OpenCV tutorial about the OpenCV Calib3D module https://docs.opencv.org/master/dc/d2c/tutorial_real_time_pose.html
-	//TUTORIAL INSPIRED/OVERTAKEN CODE PART BEGIN=====================================================================
-	Mat R_matrix_ = Mat::zeros(3, 3, CV_64FC1); // rotation matrix
+	//inspiration for this code was taken from this OpenCV tutorial https://docs.opencv.org/master/dc/d2c/tutorial_real_time_pose.html
+
+	
+	logger->logSection("debug info start", 2);
+
+	sm::SGcsCoords gcsPoint2 = sm::SGcsCoords(14.4193081, 50.0867628);
+	sm::SGcsCoords gcsPoint3 = sm::SGcsCoords(14.4192706, 50.0865958);
+
+	//initiating the matrices by zero values and correct size
+	RMatrix_ = Mat::zeros(3, 3, CV_64FC1); // rotation matrix
 	RTMatrix_ = Mat::zeros(4, 4, CV_64FC1); // rotation-translation matrix
 	TVec_ = cv::Mat::zeros(3, 1, CV_64FC1);          // output translation vector
 	RVec_ = cv::Mat::zeros(3, 1, CV_64FC1);          // output rotation vector
@@ -193,131 +205,103 @@ void CImageLocator3D::calcLocation(vector<Point2f>& obj_corners, vector<Point2f>
 	bool useExtrinsicGuess = false;   // if true the function uses the provided RVec_ and TVec_ values as
 								  // initial approximations of the rotation and translation vectors
 
-	//do the 3d corners
+	//creating a plane in the 3D space - image visualising a facade of a building (probably building)
+	//the plane is then placed in the positive Z direction -> (x, y, 1.0) <- not a homogenous coordinate
+	//do the 3d corners - 3d points to PnP have to have 3x1 format
 	std::vector<Point3d> objCorners3D(4);
-	objCorners3D[0] = Point3d(obj_corners[0].x, obj_corners[0].y, 1.0); // left upper
-	objCorners3D[1] = Point3d(obj_corners[1].x, obj_corners[1].y, 1.0); // right uppper
-	objCorners3D[2] = Point3d(obj_corners[2].x, obj_corners[2].y, 1.0); // right bottom 
-	objCorners3D[3] = Point3d(obj_corners[3].x, obj_corners[3].y, 1.0); // left bottom
-
-	std::cout << "INPUT 3D Coordinates" << std::endl;
+	//the order is - left upper -> right uppper -> right bottom -> left bottom
 	for (size_t i = 0; i < 4; ++i) {
-		std::cout << objCorners3D[i] << std::endl;
+		objCorners3D[i] = Point3d(obj_corners[i].x, obj_corners[i].y, 1.0);
+	}
+
+	logger->log("Input 3D Coordinates").endl();
+	for (size_t i = 0; i < 4; ++i) {
+		logger->log(objCorners3D[i]).endl();
 	}
 
 	//solve our PnP problem
+	//3d points to PnP have to have 3x1 format
 	solvePnP(objCorners3D, sceneCorners, cameraIntrinsicsMatrixA_, distCoeffs_, RVec_, TVec_, useExtrinsicGuess, SOLVEPNP_ITERATIVE); //because the method wasnt specified the iterative method will take place
 
 	//converting rotation vector to the rotation matrix
-	Rodrigues(RVec_, R_matrix_);
+	Rodrigues(RVec_, RMatrix_);
 
-	Quatd rotQuat = Quatd::createFromRotMat(R_matrix_);
-
-	//TODO RTMatrix_
-	//copy rotation
-	RTMatrix_.at<double>(0, 0) = R_matrix_.at<double>(0, 0);
-	RTMatrix_.at<double>(0, 1) = R_matrix_.at<double>(0, 1);
-	RTMatrix_.at<double>(0, 2) = R_matrix_.at<double>(0, 2);
-	RTMatrix_.at<double>(1, 0) = R_matrix_.at<double>(1, 0);
-	RTMatrix_.at<double>(1, 1) = R_matrix_.at<double>(1, 1);
-	RTMatrix_.at<double>(1, 2) = R_matrix_.at<double>(1, 2);
-	RTMatrix_.at<double>(2, 0) = R_matrix_.at<double>(2, 0);
-	RTMatrix_.at<double>(2, 1) = R_matrix_.at<double>(2, 1);
-	RTMatrix_.at<double>(2, 2) = R_matrix_.at<double>(2, 2);
+	//Filling the RTMatrix_
+	//copy rotation from RMatrix_ to RTMatrix_
+	RTMatrix_.at<double>(0, 0) = RMatrix_.at<double>(0, 0);
+	RTMatrix_.at<double>(0, 1) = RMatrix_.at<double>(0, 1);
+	RTMatrix_.at<double>(0, 2) = RMatrix_.at<double>(0, 2);
+	RTMatrix_.at<double>(1, 0) = RMatrix_.at<double>(1, 0);
+	RTMatrix_.at<double>(1, 1) = RMatrix_.at<double>(1, 1);
+	RTMatrix_.at<double>(1, 2) = RMatrix_.at<double>(1, 2);
+	RTMatrix_.at<double>(2, 0) = RMatrix_.at<double>(2, 0);
+	RTMatrix_.at<double>(2, 1) = RMatrix_.at<double>(2, 1);
+	RTMatrix_.at<double>(2, 2) = RMatrix_.at<double>(2, 2);
 
 	//copy translation
 	RTMatrix_.at<double>(0, 3) = TVec_.at<double>(0);
 	RTMatrix_.at<double>(1, 3) = TVec_.at<double>(1);
 	RTMatrix_.at<double>(2, 3) = TVec_.at<double>(2);
 
-	//bottom row
+	//fill bottom row of RTMatrix_
 	RTMatrix_.at<double>(3, 3) = 1.0;
 
-	std::cout << "RVec_: " << RVec_ << std::endl;
-	std::cout << "TVec_: " << TVec_ << std::endl;
-	std::cout << "RTMatrix_: " << RTMatrix_ << std::endl;
+	logger->log("RVec_: ").log(RVec_).endl();
+	logger->log("TVec_: ").log(TVec_).endl();
+	logger->log("RTMatrix_: ").endl().log(RTMatrix_).endl();
 
-	Mat objCorner3D_4_0 = Mat::zeros(4, 1, CV_64FC1);
-	objCorner3D_4_0.at<double>(0) = objCorners3D[0].x;
-	objCorner3D_4_0.at<double>(1) = objCorners3D[0].y;
-	objCorner3D_4_0.at<double>(2) = objCorners3D[0].z;
-	objCorner3D_4_0.at<double>(3) = 1;
-	Mat objCorner3D_4_1 = Mat::zeros(4, 1, CV_64FC1);
-	objCorner3D_4_1.at<double>(0) = objCorners3D[1].x;
-	objCorner3D_4_1.at<double>(1) = objCorners3D[1].y;
-	objCorner3D_4_1.at<double>(2) = objCorners3D[1].z;
-	objCorner3D_4_1.at<double>(3) = 1;
-	Mat objCorner3D_4_2 = Mat::zeros(4, 1, CV_64FC1);
-	objCorner3D_4_2.at<double>(0) = objCorners3D[2].x;
-	objCorner3D_4_2.at<double>(1) = objCorners3D[2].y;
-	objCorner3D_4_2.at<double>(2) = objCorners3D[2].z;
-	objCorner3D_4_2.at<double>(3) = 1;
-	Mat objCorner3D_4_3 = Mat::zeros(4, 1, CV_64FC1);
-	objCorner3D_4_3.at<double>(0) = objCorners3D[3].x;
-	objCorner3D_4_3.at<double>(1) = objCorners3D[3].y;
-	objCorner3D_4_3.at<double>(2) = objCorners3D[3].z;
-	objCorner3D_4_3.at<double>(3) = 1;
+	//converting points to homogenous coordinates so they can be transformed
+	vector<Mat> objCornersHomVec3D(4);
+	for (size_t i = 0; i < 4; ++i) {
+		objCornersHomVec3D[i] = sm::getHomogenousVector3D(objCorners3D[i].x, objCorners3D[i].y, objCorners3D[i].z);
+	}
 
 	//get the corners in camera space
-	std::vector<Mat> objCameraSPaceCorners(4);
-	objCameraSPaceCorners[0] = RTMatrix_ * objCorner3D_4_0;
-	objCameraSPaceCorners[1] = RTMatrix_ * objCorner3D_4_1;
-	objCameraSPaceCorners[2] = RTMatrix_ * objCorner3D_4_2;
-	objCameraSPaceCorners[3] = RTMatrix_ * objCorner3D_4_3;
+	std::vector<Mat> objCornersCameraSpaceHomVec(4);
+	for (size_t i = 0; i < 4; ++i) {
+		objCornersCameraSpaceHomVec[i] = RTMatrix_ * objCornersHomVec3D[i];
+	}
 
 	//PRINT THE RESULT I GOT
-
-	for (size_t i = 0; i < objCameraSPaceCorners.size(); ++i) {
-		logger->log("Point ").log(to_string(i)).log(" := (");
-		logger->log(to_string(objCameraSPaceCorners[i].at<double>(0))).log(" ,");
-		logger->log(to_string(objCameraSPaceCorners[i].at<double>(1))).log(" ,");
-		logger->log(to_string(objCameraSPaceCorners[i].at<double>(2))).log(" ,");
-		logger->log(to_string(objCameraSPaceCorners[i].at<double>(3))).log(" )").endl();
+	logger->log("Points coordinates in the local camera space:").endl();
+	for (size_t i = 0; i < objCornersCameraSpaceHomVec.size(); ++i) {
+		logger->log(objCornersCameraSpaceHomVec[i]).endl();
 	}
 
-	//Mat takeFirstThree = Mat::zeros(3, 4, CV_64FC1);
-	//takeFirstThree.at<double>(0, 0) = 1.0;
-	//takeFirstThree.at<double>(1, 1) = 1.0;
-	//takeFirstThree.at<double>(2, 2) = 1.0;
-
-	std::cout << "Check space corners" << std::endl;
+	logger->log("Check space corners").endl();
 	std::vector<Mat> checkImageSpaceCorners(4);
 	for (size_t i = 0; i < 4; ++i) {
-		std::cout << projectWorldSpacetoImage(objCameraSPaceCorners[i]) << endl;
+		logger->log(projectWorldSpacetoImage(objCornersCameraSpaceHomVec[i])).endl();
 	}
 
-	std::cout << "Scene corners" << std::endl;
+	logger->log("Scene corners").endl();
 	for (size_t i = 0; i < 4; ++i) {
-		std::cout << sceneCorners[i] << std::endl;
+		logger->log(sceneCorners[i]).endl();
 	}
 
-	//TODO consider the height of the camera (it might change the location a tiny bit) - camera is at point (0,0,0,1) - origin
-	//converting points from (x,y,z,1) to (x,y,z)
-	Mat vecOne = objCameraSPaceCorners[1](Range(0, 3), Range(0, 1));
-	Mat vecTwo = objCameraSPaceCorners[2](Range(0, 3), Range(0, 1));
-	Mat vecThree = objCameraSPaceCorners[3](Range(0, 3), Range(0, 1));
+	//correcting the points with calculating the right rotation (rotating the world to match the flat ground in one axis - the ground is flat then) 
+	Mat correctionMatrix = getCorrectionMatrixForTheCameraLocalSpace(
+		objCornersCameraSpaceHomVec[1], objCornersCameraSpaceHomVec[2], objCornersCameraSpaceHomVec[3], gcsPoint2, gcsPoint3, logger);
 
-	//our coordinate system // ignoring the y axis to gain only the 2d coordinates
-	Mat correctionMatrix = getCorrectionMatrixForTheCameraLocalSpace(vecOne, vecTwo, vecThree,
-		sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
-	Mat pointTwoOnPlane = correctionMatrix * objCameraSPaceCorners[2];
-	Mat pointThreeOnPlane = correctionMatrix * objCameraSPaceCorners[3];
-	Point2d pointTwo(pointTwoOnPlane.at<double>(0), pointTwoOnPlane.at<double>(2)); // (x,y,z, w) -> (x, z) and renaming to (x, y)
-	Mat pointTwoVec(pointTwo);
-	Point2d pointThree(pointThreeOnPlane.at<double>(0), pointThreeOnPlane.at<double>(2));
-	Mat pointThreeVec(pointThree);
+	//ignoring the y axis to gain only the 2d coordinates
+	Mat objCornerOnPlaneVec2 = correctionMatrix * objCornersCameraSpaceHomVec[2];
+	Mat objCornerOnPlaneVec3 = correctionMatrix * objCornersCameraSpaceHomVec[3];
 
-	cout << "changeBasis" << endl << correctionMatrix << endl;
-	cout << "point zero transformed: " << correctionMatrix * objCameraSPaceCorners[0] << endl;
-	cout << "point one transformed: " << correctionMatrix * objCameraSPaceCorners[1] << endl;
-	cout << "New basis point two" << endl << pointTwoOnPlane << endl;
-	cout << "New basis point three" << endl << pointThreeOnPlane << endl;
+	// (x,y,z, w) -> (x, z) and renaming to (x, y)
+	Point2d pointTwo(objCornerOnPlaneVec2.at<double>(0), objCornerOnPlaneVec2.at<double>(2));
+	Point2d pointThree(objCornerOnPlaneVec3.at<double>(0), objCornerOnPlaneVec3.at<double>(2));
 
-	sm::SGcsCoords coords = sm::solve3Kto2Kand1U(Point2d(0.0, 0.0), pointTwo, pointThree,
-		sm::SGcsCoords(14.4193081, 50.0867628), sm::SGcsCoords(14.4192706, 50.0865958));
-	cout << "camera location: " << setprecision(9) << coords.longtitude_ << ", " << coords.latitude_ << endl;
+	logger->log("changeBasis").endl().log(correctionMatrix).endl();
+	logger->log("New basis point two").endl().log(objCornerOnPlaneVec2).endl();
+	logger->log("New basis point three").endl().log(objCornerOnPlaneVec3).endl();
 
-	//TUTORIAL INSPIRED/OVERTAKEN CODE PART END=====================================================================
+	//find the global coordinates for the camera
+	sm::SGcsCoords cameraGcsLoc = sm::solve3Kto2Kand1U(Point2d(0.0, 0.0), pointTwo, pointThree, gcsPoint2, gcsPoint3, logger);
 
+	//display the dummy prism into the scene to visualise the understood perspective and volume
 	projectBuildingDraftIntoScene(objCorners3D, logger);
+
+	logger->logSection("debug info end", 2);
+
+	logger->log("camera location: ").log(cameraGcsLoc).endl();
 }

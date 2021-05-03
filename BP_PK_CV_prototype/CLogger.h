@@ -16,6 +16,7 @@
 #include <opencv2/core/mat.hpp>
 
 #include <string>
+#include "SGcsCoords.h"
 
 using namespace std;
 using namespace cv;
@@ -49,6 +50,33 @@ public:
 	 * @return reference on this CLogger
 	*/
 	virtual CLogger& log(const string& toLog) = 0;
+	/**
+	 * @brief method used for logging matrices
+	 * 
+	 * if the matrix is column vector, then the vector is transposed in printing
+	 * 
+	 * @param toLog matrix that has to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& log(const Mat& toLog) = 0;
+	/**
+	 * @brief method used for logging 2d opencv points
+	 * @param toLog point that has to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& log(const Point2d& toLog) = 0;
+	/**
+	 * @brief method used for logging 3d opencv points
+	 * @param toLog point that has to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& log(const Point3d& toLog) = 0;
+	/**
+	 * @brief method used for logging global coordinates (SGcsCoords structs)
+	 * @param toLog coordinates that has to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& log(const sm::SGcsCoords& toLog) = 0;
 	/**
 	 * @brief Method specialised for logging errors
 	 * @param toLog string with error message to be logged

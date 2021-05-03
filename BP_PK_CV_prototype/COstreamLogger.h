@@ -13,7 +13,10 @@
 #pragma once
 
 #include <iostream>
+#include <iomanip>
 #include <utility>
+//core functions
+#include <opencv2/core.hpp>
 
 #include "CLogger.h"
 
@@ -73,6 +76,33 @@ public:
 	 * @return reference on this CLogger
 	*/
 	virtual CLogger& log(const string& toLog) override;
+	/**
+	 * @brief method used for logging matrices
+	 *
+	 * if the matrix is column vector, then the vector is transposed in printing
+	 *
+	 * @param toLog matrix that has to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& log(const Mat& toLog) override;
+	/**
+	 * @brief method used for logging 2d opencv points
+	 * @param toLog point that has to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& log(const Point2d& toLog) override;
+	/**
+	 * @brief method used for logging 3d opencv points
+	 * @param toLog point that has to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& log(const Point3d& toLog) override;
+	/**
+	 * @brief method used for logging global coordinates (SGcsCoords structs)
+	 * @param toLog coordinates that has to be logged
+	 * @return reference on this CLogger
+	*/
+	virtual CLogger& log(const sm::SGcsCoords& toLog) override;
 	/**
 	 * @brief Method specialised for logging errors
 	 * @param toLog string with error message to be logged

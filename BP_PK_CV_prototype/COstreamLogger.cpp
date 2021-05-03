@@ -33,6 +33,59 @@ CLogger& COstreamLogger::log(const string& toLog) {
 	return *this;
 }
 
+CLogger& COstreamLogger::log(const Mat& toLog)
+{
+	//checking if the Mat is vector
+	if ((toLog.rows == 1 || toLog.cols == 1) && toLog.dims == 2) {
+		if (toLog.cols == 1) {
+			//vector has to be transposed
+			out() << toLog.t() << "^T";
+		}
+		else {
+			out() << toLog.t();
+		}
+	}
+	//it is some non-vector matrix
+	else {
+		stringstream sOut;
+		sOut << toLog;
+		string line;
+		vector<string> lines;
+		while (std::getline(sOut, line)) {
+			lines.push_back(line);
+		}
+		for (size_t i = 0; i < lines.size(); ++i) {
+			log("[").log(line);
+			if (i < lines.size() - 1) {
+				endl();
+			}
+		}
+	}
+
+	return *this;
+}
+
+CLogger& COstreamLogger::log(const Point2d& toLog)
+{
+	out() << toLog;
+	return *this;
+}
+
+CLogger& COstreamLogger::log(const Point3d& toLog)
+{
+	out() << toLog;
+	return *this;
+}
+
+CLogger& COstreamLogger::log(const sm::SGcsCoords& toLog)
+{
+	streamsize prevPrecision = out().precision();
+	out() << setprecision(9); //commonly used precsion for global coordinates
+	out() << "[ long: " << toLog.longtitude_ << ", lat: " << toLog.latitude_ << "]";
+	out().precision(prevPrecision);
+	return *this;
+}
+
 CLogger& COstreamLogger::logError(const string& toLog)
 {
 	emergencyStart();
