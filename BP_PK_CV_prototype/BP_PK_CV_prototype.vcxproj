@@ -22,6 +22,7 @@
     <ClCompile Include="BP_PK_CV_prototype.cpp" />
     <ClCompile Include="CFileLogger.cpp" />
     <ClCompile Include="CImage.cpp" />
+    <ClCompile Include="CImageBuilder.cpp" />
     <ClCompile Include="CImageLocator3D.cpp" />
     <ClCompile Include="CImagesMatch.cpp" />
     <ClCompile Include="CObjectInSceneFinder.cpp" />
@@ -34,6 +35,7 @@
   <ItemGroup>
     <ClInclude Include="CFileLogger.h" />
     <ClInclude Include="CImage.h" />
+    <ClInclude Include="CImageBuilder.h" />
     <ClInclude Include="CImageLocator3D.h" />
     <ClInclude Include="CImagesMatch.h" />
     <ClInclude Include="CLogger.h" />

@@ -292,8 +292,8 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 	
 	logger->logSection("debug info start", 2);
 
-	sm::SGcsCoords gcsPoint2 = sm::SGcsCoords(14.4193081, 50.0867628);
-	sm::SGcsCoords gcsPoint3 = sm::SGcsCoords(14.4192706, 50.0865958);
+	sm::SGcsCoords gcsPoint2 = /*sm::SGcsCoords(14.4193081, 50.0867628)*/ objectImage_->getRightBaseGc();
+	sm::SGcsCoords gcsPoint3 = /*sm::SGcsCoords(14.4192706, 50.0865958)*/ objectImage_->getLeftBaseGc();
 
 	//initiating the matrices by zero values and correct size
 	RMatrix_ = Mat::zeros(3, 3, CV_64FC1); // rotation matrix
@@ -321,14 +321,13 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 
 	//solve our PnP problem
 	//3d points to PnP have to have 3x1 format
-	solvePnP(objCorners3D, sceneCorners, cameraIntrinsicsMatrixA_, distCoeffs_, RVec_, TVec_, useExtrinsicGuess, SOLVEPNP_ITERATIVE); //because the method wasnt specified the iterative method will take place
+	solvePnP(objCorners3D, sceneCorners, cameraIntrinsicsMatrixA_, distCoeffs_, RVec_, TVec_, useExtrinsicGuess, SOLVEPNP_ITERATIVE);
 
 	//processing the output from solvePnP to inner matries
 	createTransformationMatrices();
 
 	//display the dummy prism into the scene to visualise the understood perspective and volume
 	projectBuildingDraftIntoScene(objCorners3D, logger);
-
 
 	logger->log("RVec_: ").log(RVec_).endl();
 	logger->log("TVec_: ").log(TVec_).endl();

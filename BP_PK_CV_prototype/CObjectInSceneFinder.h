@@ -23,6 +23,7 @@
 #include "CFileLogger.h"
 #include "CImagesMatch.h"
 #include "CImage.h"
+#include "CImageBuilder.h"
 
 
 /**

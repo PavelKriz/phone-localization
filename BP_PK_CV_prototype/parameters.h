@@ -49,7 +49,8 @@ const bool PREVIEW_RESULT = true;
 	const double CAMERA_FOCAL_LENGTH = 4;
 	const double CAMERA_CHIP_SIZE_X = 4.96;
 	const double CAMERA_CHIP_SIZE_Y = 3.79;
-	const string SCENE_FILE_PATH = dumRottRoot + "dumRottScene2.jpg";
+	//const string SCENE_FILE_PATH = dumRottRoot + "dumRottScene2.jpg";
+	const string SCENE_FILE_PATH = imagesRoot + "white_house\\" + "whiteHouse1.jpg";
 	const vector<string> OBJECT_FILE_PATHS = { dumRottRoot + "dumRottRef.png", imagesRoot + "white_house\\" +  "whiteHouse1ref.png" };
 	const string RUN_NAME = "fileTest";
 #elif CURRENT_TEST == TEST2

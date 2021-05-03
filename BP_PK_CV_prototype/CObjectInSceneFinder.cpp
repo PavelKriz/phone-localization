@@ -11,9 +11,10 @@ CObjectInSceneFinder::CObjectInSceneFinder(const SProcessParams& params, Ptr<CLo
 		throw invalid_argument("CObjectInSceneFinder constructor was called with empty pointer to logger (CLogger) object.");
 	}
 	logger_->logSection("Run: " + runName, 0);
-	sceneImage_ = new CImage(sceneFilePath);
+	CImageBuilder bobTheBuilder;
+	sceneImage_ = bobTheBuilder.build(sceneFilePath, params, true, logger);
 	for (auto& it : objectFilePaths) {
-		objectImages_.push_back(new CImage(it));
+		objectImages_.push_back(bobTheBuilder.build(it, params, false, logger));
 	}
 	logger_->log("images loaded").endl();
 }

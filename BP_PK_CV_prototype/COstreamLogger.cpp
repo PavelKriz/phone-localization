@@ -55,7 +55,7 @@ CLogger& COstreamLogger::log(const Mat& toLog)
 			lines.push_back(line);
 		}
 		for (size_t i = 0; i < lines.size(); ++i) {
-			log("[").log(line);
+			log("[").log(lines[i]);
 			if (i < lines.size() - 1) {
 				endl();
 			}

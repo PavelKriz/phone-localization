@@ -36,6 +36,7 @@ using namespace cv;
 class CImageLocator3D
 {
     Ptr<CImage> sceneImage_;
+    Ptr<CImage> objectImage_;
     Mat RTMatrix_; // rotation-translation matrix - from world space to local camera space
     Mat RMatrix_;
     Mat TVec_;
@@ -61,9 +62,10 @@ class CImageLocator3D
     void gcsLocatingProblemFrom3Dto2D(vector<Point3d> objCorners3D, vector<Point2d>& sceneCorners,
         const sm::SGcsCoords& gcsPoint2, const sm::SGcsCoords& gcsPoint3, Point2d& p2Out, Point2d& p3Out, Ptr<CLogger>& logger);
 public:
-    CImageLocator3D(const Ptr<CImage>& sceneImage, const SProcessParams& params)
+    CImageLocator3D(const Ptr<CImage>& sceneImage, const Ptr<CImage>& objectImage, const SProcessParams& params)
         :
         sceneImage_(sceneImage),
+        objectImage_(objectImage),
         params_(params),
         cameraGcsLoc_(0.0, 0.0)
     {

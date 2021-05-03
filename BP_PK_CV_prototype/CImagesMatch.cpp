@@ -241,7 +241,7 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& log
 	
 	//calculate the real location
 	if (params.calcProjectionFrom3D_) {
-		CImageLocator3D imageLocator3D(sceneImage_, params);
+		CImageLocator3D imageLocator3D(sceneImage_, objectImage_, params);
 		imageLocator3D.calcLocation(obj_corners, scene_corners, logger);
 	}
 }
