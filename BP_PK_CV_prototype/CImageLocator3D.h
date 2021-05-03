@@ -42,21 +42,30 @@ class CImageLocator3D
     Mat RVec_;
     Mat distCoeffs_;
     Mat cameraIntrinsicsMatrixA_;
+    Mat worldToImageProjectionMat_;
     const SProcessParams params_;
+    sm::SGcsCoords cameraGcsLoc_;
+    Quatd flatGroundObjRotationFromEast_; ///<rotation around y axis
+    bool projectionProcessed_ = false; //information whether all the important calculations regarding projection locating have been done
+    bool gcsProcessed_ = false; //information whether all the important calculations regarding gcs locating have been done
 
     void createCameraIntrinsicsMatrix(const SCameraInfo& cameraInfo);
+    void createTransformationMatrices();
     Mat projectCameraSpacetoImage(const Mat& toProject) const;
     Mat projectWorldSpacetoImage(const Mat& toProject) const;
     void projectBuildingDraftIntoScene(const vector<Point3d>& objCorners3D, Ptr<CLogger>& logger) const;
     //3d points have to be in 4x1 format (homogenous coordinates)
     Mat getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1Vec, const Mat& p2Vec, const Mat& p3Vec,
         const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3, Ptr<CLogger>& logger);
-    void computeFlatRotation(const sm::SGcsCoords& gcsP1,const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3);
+    double computeFlatRotation(const sm::SGcsCoords& gcsCamera,const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3);
+    void gcsLocatingProblemFrom3Dto2D(vector<Point3d> objCorners3D, vector<Point2d>& sceneCorners,
+        const sm::SGcsCoords& gcsPoint2, const sm::SGcsCoords& gcsPoint3, Point2d& p2Out, Point2d& p3Out, Ptr<CLogger>& logger);
 public:
     CImageLocator3D(const Ptr<CImage>& sceneImage, const SProcessParams& params)
         :
         sceneImage_(sceneImage),
-        params_(params)
+        params_(params),
+        cameraGcsLoc_(0.0, 0.0)
     {
         createCameraIntrinsicsMatrix(params.cameraInfo_);
     }

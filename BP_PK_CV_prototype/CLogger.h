@@ -16,6 +16,7 @@
 #include <opencv2/core/mat.hpp>
 
 #include <string>
+//structure to being printed
 #include "SGcsCoords.h"
 
 using namespace std;

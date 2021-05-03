@@ -30,6 +30,41 @@ void CImageLocator3D::createCameraIntrinsicsMatrix(const SCameraInfo& cameraInfo
 	cameraIntrinsicsMatrixA_.at<double>(2, 2) = 1;
 }
 
+void CImageLocator3D::createTransformationMatrices()
+{
+
+	//rotation matrix, RMatrix_
+	//converting rotation vector to the rotation matrix
+	Rodrigues(RVec_, RMatrix_);
+
+	//Filling the RTMatrix_
+	//copy rotation from RMatrix_ to RTMatrix_
+	RTMatrix_.at<double>(0, 0) = RMatrix_.at<double>(0, 0);
+	RTMatrix_.at<double>(0, 1) = RMatrix_.at<double>(0, 1);
+	RTMatrix_.at<double>(0, 2) = RMatrix_.at<double>(0, 2);
+	RTMatrix_.at<double>(1, 0) = RMatrix_.at<double>(1, 0);
+	RTMatrix_.at<double>(1, 1) = RMatrix_.at<double>(1, 1);
+	RTMatrix_.at<double>(1, 2) = RMatrix_.at<double>(1, 2);
+	RTMatrix_.at<double>(2, 0) = RMatrix_.at<double>(2, 0);
+	RTMatrix_.at<double>(2, 1) = RMatrix_.at<double>(2, 1);
+	RTMatrix_.at<double>(2, 2) = RMatrix_.at<double>(2, 2);
+
+	//copy translation
+	RTMatrix_.at<double>(0, 3) = TVec_.at<double>(0);
+	RTMatrix_.at<double>(1, 3) = TVec_.at<double>(1);
+	RTMatrix_.at<double>(2, 3) = TVec_.at<double>(2);
+
+	//fill bottom row of RTMatrix_
+	RTMatrix_.at<double>(3, 3) = 1.0;
+
+	//worldToImageProjectionMat_
+	Mat A = cameraIntrinsicsMatrixA_;
+	Mat superiorAMatrix = (Mat_<double>(3, 4) << A.at<double>(0, 0), A.at<double>(0, 1), A.at<double>(0, 2), 0.0,
+		A.at<double>(1, 0), A.at<double>(1, 1), A.at<double>(1, 2), 0.0,
+		A.at<double>(2, 0), A.at<double>(2, 1), A.at<double>(2, 2), 0.0);
+	worldToImageProjectionMat_ = superiorAMatrix * RTMatrix_;
+}
+
 Mat CImageLocator3D::projectCameraSpacetoImage(const Mat& toProject) const
 {
 	Mat takeFirstThree = Mat::zeros(3, 4, CV_64FC1);
@@ -49,6 +84,16 @@ Mat CImageLocator3D::projectCameraSpacetoImage(const Mat& toProject) const
 
 Mat CImageLocator3D::projectWorldSpacetoImage(const Mat& toProject) const
 {
+	//project the point
+	Mat point2Dtmp = worldToImageProjectionMat_ * toProject;
+
+	//normalize
+	Mat point2DNorm = Mat::zeros(2, 1, CV_64FC1);
+	point2DNorm.at<double>(0) = point2Dtmp.at<double>(0) / point2Dtmp.at<double>(2);
+	point2DNorm.at<double>(1) = point2Dtmp.at<double>(1) / point2Dtmp.at<double>(2);
+
+	cout << endl << "What have I just created: " << endl << point2DNorm << endl;
+	
 	return projectCameraSpacetoImage(RTMatrix_ * toProject);
 }
 
@@ -71,6 +116,7 @@ void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCo
 	vector<Point2d> objectDummyProjected(8);
 	for (int i = 0; i < objectPrismDummy3D.size(); ++i) {
 		Mat projected = projectWorldSpacetoImage(objectPrismDummy3D[i]);
+		cout << "check what I have done (original) " << endl << projected << endl;
 		objectDummyProjected[i] = Point2d(projected.at<double>(0), projected.at<double>(1));
 	}
 
@@ -179,10 +225,64 @@ Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1HomV
 	return changeBasis.inv();
 }
 
-void CImageLocator3D::computeFlatRotation(const sm::SGcsCoords& gcsP1, const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3)
+double CImageLocator3D::computeFlatRotation(const sm::SGcsCoords& gcsCamera, const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3)
 {
-	Point2d midPoint = sm::getMidPoint(gcsP2.longtitude_, gcsP2.latitude_, gcsP3.longtitude_, gcsP3.longtitude_);
+	Point2d gcsObjectMidPoint = sm::getMidPoint2D(gcsP2.longtitude_, gcsP2.latitude_, gcsP3.longtitude_, gcsP3.latitude_);
+	double longCorrectFactor = sm::longtitudeAdjustingFactor(gcsP3.latitude_);
+	double camToMidPointVecX = (gcsObjectMidPoint.x * longCorrectFactor) - (gcsCamera.longtitude_* longCorrectFactor);
+	double camToMidPointVecY = gcsObjectMidPoint.y - gcsCamera.latitude_;
+	double radRotation = sm::getVecRotFromEast(camToMidPointVecX, camToMidPointVecY);
+	flatGroundObjRotationFromEast_ = Quatd::createFromAngleAxis(radRotation, Vec3d(0.0, 1.0, 0.0));
+	return radRotation;
+}
 
+void CImageLocator3D::gcsLocatingProblemFrom3Dto2D(vector<Point3d> objCorners3D, vector<Point2d>& sceneCorners, 
+	const sm::SGcsCoords& gcsPoint2, const sm::SGcsCoords& gcsPoint3, Point2d& p2Out, Point2d& p3Out, Ptr<CLogger>& logger)
+{
+	//converting points to homogenous coordinates so they can be transformed
+	vector<Mat> objCornersHomVec3D(4);
+	for (size_t i = 0; i < 4; ++i) {
+		objCornersHomVec3D[i] = sm::getHomogenousVector3D(objCorners3D[i].x, objCorners3D[i].y, objCorners3D[i].z);
+	}
+
+	//get the corners in camera space
+	std::vector<Mat> objCornersCameraSpaceHomVec(4);
+	for (size_t i = 0; i < 4; ++i) {
+		objCornersCameraSpaceHomVec[i] = RTMatrix_ * objCornersHomVec3D[i];
+	}
+
+	//PRINT THE RESULT I GOT
+	logger->log("Points coordinates in the local camera space:").endl();
+	for (size_t i = 0; i < objCornersCameraSpaceHomVec.size(); ++i) {
+		logger->log(objCornersCameraSpaceHomVec[i]).endl();
+	}
+
+	logger->log("Check space corners").endl();
+	std::vector<Mat> checkImageSpaceCorners(4);
+	for (size_t i = 0; i < 4; ++i) {
+		logger->log(projectWorldSpacetoImage(objCornersCameraSpaceHomVec[i])).endl();
+	}
+
+	logger->log("Scene corners").endl();
+	for (size_t i = 0; i < 4; ++i) {
+		logger->log(sceneCorners[i]).endl();
+	}
+
+	//correcting the points with calculating the right rotation (rotating the world to match the flat ground in one axis - the ground is flat then) 
+	Mat correctionMatrix = getCorrectionMatrixForTheCameraLocalSpace(
+		objCornersCameraSpaceHomVec[1], objCornersCameraSpaceHomVec[2], objCornersCameraSpaceHomVec[3], gcsPoint2, gcsPoint3, logger);
+
+	//ignoring the y axis to gain only the 2d coordinates
+	Mat objCornerOnPlaneVec2 = correctionMatrix * objCornersCameraSpaceHomVec[2];
+	Mat objCornerOnPlaneVec3 = correctionMatrix * objCornersCameraSpaceHomVec[3];
+
+	// (x,y,z, w) -> (x, z) and renaming to (x, y)
+	p2Out = Point2d(objCornerOnPlaneVec2.at<double>(0), objCornerOnPlaneVec2.at<double>(2));
+	p3Out = Point2d(objCornerOnPlaneVec3.at<double>(0), objCornerOnPlaneVec3.at<double>(2));
+
+	logger->log("changeBasis").endl().log(correctionMatrix).endl();
+	logger->log("New basis point two").endl().log(objCornerOnPlaneVec2).endl();
+	logger->log("New basis point three").endl().log(objCornerOnPlaneVec3).endl();
 }
 
 void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>& sceneCorners, Ptr<CLogger>& logger)
@@ -223,85 +323,33 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 	//3d points to PnP have to have 3x1 format
 	solvePnP(objCorners3D, sceneCorners, cameraIntrinsicsMatrixA_, distCoeffs_, RVec_, TVec_, useExtrinsicGuess, SOLVEPNP_ITERATIVE); //because the method wasnt specified the iterative method will take place
 
-	//converting rotation vector to the rotation matrix
-	Rodrigues(RVec_, RMatrix_);
+	//processing the output from solvePnP to inner matries
+	createTransformationMatrices();
 
-	//Filling the RTMatrix_
-	//copy rotation from RMatrix_ to RTMatrix_
-	RTMatrix_.at<double>(0, 0) = RMatrix_.at<double>(0, 0);
-	RTMatrix_.at<double>(0, 1) = RMatrix_.at<double>(0, 1);
-	RTMatrix_.at<double>(0, 2) = RMatrix_.at<double>(0, 2);
-	RTMatrix_.at<double>(1, 0) = RMatrix_.at<double>(1, 0);
-	RTMatrix_.at<double>(1, 1) = RMatrix_.at<double>(1, 1);
-	RTMatrix_.at<double>(1, 2) = RMatrix_.at<double>(1, 2);
-	RTMatrix_.at<double>(2, 0) = RMatrix_.at<double>(2, 0);
-	RTMatrix_.at<double>(2, 1) = RMatrix_.at<double>(2, 1);
-	RTMatrix_.at<double>(2, 2) = RMatrix_.at<double>(2, 2);
+	//display the dummy prism into the scene to visualise the understood perspective and volume
+	projectBuildingDraftIntoScene(objCorners3D, logger);
 
-	//copy translation
-	RTMatrix_.at<double>(0, 3) = TVec_.at<double>(0);
-	RTMatrix_.at<double>(1, 3) = TVec_.at<double>(1);
-	RTMatrix_.at<double>(2, 3) = TVec_.at<double>(2);
-
-	//fill bottom row of RTMatrix_
-	RTMatrix_.at<double>(3, 3) = 1.0;
 
 	logger->log("RVec_: ").log(RVec_).endl();
 	logger->log("TVec_: ").log(TVec_).endl();
 	logger->log("RTMatrix_: ").endl().log(RTMatrix_).endl();
 
-	//converting points to homogenous coordinates so they can be transformed
-	vector<Mat> objCornersHomVec3D(4);
-	for (size_t i = 0; i < 4; ++i) {
-		objCornersHomVec3D[i] = sm::getHomogenousVector3D(objCorners3D[i].x, objCorners3D[i].y, objCorners3D[i].z);
+	projectionProcessed_ = true;
+	if (!params_.calcGCSLocation_) {
+		return;
 	}
 
-	//get the corners in camera space
-	std::vector<Mat> objCornersCameraSpaceHomVec(4);
-	for (size_t i = 0; i < 4; ++i) {
-		objCornersCameraSpaceHomVec[i] = RTMatrix_ * objCornersHomVec3D[i];
-	}
-
-	//PRINT THE RESULT I GOT
-	logger->log("Points coordinates in the local camera space:").endl();
-	for (size_t i = 0; i < objCornersCameraSpaceHomVec.size(); ++i) {
-		logger->log(objCornersCameraSpaceHomVec[i]).endl();
-	}
-
-	logger->log("Check space corners").endl();
-	std::vector<Mat> checkImageSpaceCorners(4);
-	for (size_t i = 0; i < 4; ++i) {
-		logger->log(projectWorldSpacetoImage(objCornersCameraSpaceHomVec[i])).endl();
-	}
-
-	logger->log("Scene corners").endl();
-	for (size_t i = 0; i < 4; ++i) {
-		logger->log(sceneCorners[i]).endl();
-	}
-
-	//correcting the points with calculating the right rotation (rotating the world to match the flat ground in one axis - the ground is flat then) 
-	Mat correctionMatrix = getCorrectionMatrixForTheCameraLocalSpace(
-		objCornersCameraSpaceHomVec[1], objCornersCameraSpaceHomVec[2], objCornersCameraSpaceHomVec[3], gcsPoint2, gcsPoint3, logger);
-
-	//ignoring the y axis to gain only the 2d coordinates
-	Mat objCornerOnPlaneVec2 = correctionMatrix * objCornersCameraSpaceHomVec[2];
-	Mat objCornerOnPlaneVec3 = correctionMatrix * objCornersCameraSpaceHomVec[3];
-
-	// (x,y,z, w) -> (x, z) and renaming to (x, y)
-	Point2d pointTwo(objCornerOnPlaneVec2.at<double>(0), objCornerOnPlaneVec2.at<double>(2));
-	Point2d pointThree(objCornerOnPlaneVec3.at<double>(0), objCornerOnPlaneVec3.at<double>(2));
-
-	logger->log("changeBasis").endl().log(correctionMatrix).endl();
-	logger->log("New basis point two").endl().log(objCornerOnPlaneVec2).endl();
-	logger->log("New basis point three").endl().log(objCornerOnPlaneVec3).endl();
-
+	Point2d pointTwo, pointThree;
+	gcsLocatingProblemFrom3Dto2D(objCorners3D, sceneCorners, gcsPoint2, gcsPoint3, pointTwo, pointThree, logger);
+	
 	//find the global coordinates for the camera
-	sm::SGcsCoords cameraGcsLoc = sm::solve3Kto2Kand1U(Point2d(0.0, 0.0), pointTwo, pointThree, gcsPoint2, gcsPoint3, logger);
-
-	//display the dummy prism into the scene to visualise the understood perspective and volume
-	projectBuildingDraftIntoScene(objCorners3D, logger);
+	cameraGcsLoc_ = sm::solve3Kto2Kand1U(Point2d(0.0, 0.0), pointTwo, pointThree, gcsPoint2, gcsPoint3, logger);
+	double objAngleRad = computeFlatRotation(cameraGcsLoc_, gcsPoint2, gcsPoint3);
 
 	logger->logSection("debug info end", 2);
 
-	logger->log("camera location: ").log(cameraGcsLoc).endl();
+	logger->log("camera location: ").log(cameraGcsLoc_).endl();
+	logger->log("object is in rotated from east in angle: ").log(to_string(sm::radToDeg(objAngleRad))).endl();
+
+	gcsProcessed_ = true;
 }

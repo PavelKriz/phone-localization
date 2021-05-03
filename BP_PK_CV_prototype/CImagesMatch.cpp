@@ -63,7 +63,7 @@ void CImagesMatch::printTransformationMatrix(Ptr<CLogger>& logger) const
 	for (size_t i = 0; i < objectSceneHomography_.rows; ++i) {
 		logger->log("(");
 		for (size_t j = 0; j < objectSceneHomography_.cols; ++j) {
-			if (j < objectSceneHomography_.cols - 1) {
+			if ((j + 1) < objectSceneHomography_.cols) {
 				logger->log(to_string(objectSceneHomography_.at<double>(i, j))).log(", ");
 			}
 			else {
@@ -240,6 +240,8 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& log
 
 	
 	//calculate the real location
-	CImageLocator3D imageLocator3D(sceneImage_, params);
-	imageLocator3D.calcLocation(obj_corners, scene_corners, logger);
+	if (params.calcProjectionFrom3D_) {
+		CImageLocator3D imageLocator3D(sceneImage_, params);
+		imageLocator3D.calcLocation(obj_corners, scene_corners, logger);
+	}
 }

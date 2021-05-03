@@ -193,7 +193,9 @@ SProcessParams COperator::getParams(Ptr<CLogger>& logger)
         MATCHING_METHOD,
         LOWE_RATIO_TEST_ALPHA,
         cameraInfo,
-        CONSIDER_PHONE_HOLD_HEIGHT
+        CONSIDER_PHONE_HOLD_HEIGHT,
+        CALC_PROJECTION_FROM_3D,
+        CALC_GCS_LOCATION
     );
 }
 

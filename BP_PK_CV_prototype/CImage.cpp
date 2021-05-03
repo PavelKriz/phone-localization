@@ -222,8 +222,11 @@ void CImage::preciseRootSiftDescriptorsAdjust(Ptr<CLogger>& logger)
 
 //=================================================================================================
 
-CImage::CImage(const string& filePath)
-	: filePath_(filePath)
+CImage::CImage(const string& filePath, const sm::SGcsCoords& rightBaseGc, const sm::SGcsCoords& leftBaseGc)
+	:
+	filePath_(filePath),
+	rightBaseGc_(rightBaseGc),
+	leftBaseGc_(leftBaseGc)
 {
 	image_ = imread(filePath, CV_8U);
 	if (image_.empty())
@@ -264,6 +267,16 @@ const Mat& CImage::getDescriptors() const
 		throw logic_error("CImage - to get descriptors of the keypoints first the process function has to be called.");
 	}
 	return keypointsDescriptors_;
+}
+
+sm::SGcsCoords CImage::getRightBaseGc() const
+{
+	return rightBaseGc_;
+}
+
+sm::SGcsCoords CImage::getLeftBaseGc() const
+{
+	return leftBaseGc_;
 }
 
 //=================================================================================================

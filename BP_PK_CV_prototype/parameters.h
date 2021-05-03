@@ -44,6 +44,8 @@ const bool PREVIEW_RESULT = true;
 //inits for each tests
 #if CURRENT_TEST == TEST1
 	//scene was taken with XIAOMI REDMI 5 PLUS (smartphone back camera)
+	const bool CALC_PROJECTION_FROM_3D = true;
+	const bool CALC_GCS_LOCATION = true;
 	const double CAMERA_FOCAL_LENGTH = 4;
 	const double CAMERA_CHIP_SIZE_X = 4.96;
 	const double CAMERA_CHIP_SIZE_Y = 3.79;

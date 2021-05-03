@@ -85,7 +85,7 @@ namespace sm {
      * @param by y coordinate of point b
      * @return the midpoint
     */
-    Point2d getMidPoint(double ax, double ay, double bx, double by);
+    Point2d getMidPoint2D(double ax, double ay, double bx, double by);
 
     Mat getHomogenousVector3D(double x, double y, double z);
 
@@ -96,6 +96,10 @@ namespace sm {
     double longtitudeAdjustingFactor(double latitude);
 
     double longtitudeCorrectionFactor(double latitude);
+
+    double radToDeg(double radAngle);
+
+    double degToRad(double degAngle);
 
     double vectorAngle2D(double ax, double ay, double bx, double by, double cx, double cy);
 

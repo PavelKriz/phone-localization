@@ -115,21 +115,23 @@ struct SProcessParams {
 	const EAlgorithm describeMethod_;
 	const SSIFTParams siftParams_;
 	const SORBParams orbParams_;
-	const double loweRatioTestAlpha_;
-	const SCameraInfo cameraInfo_;
-	const bool considerPhoneHoldHeight_;
-
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	const SBEBLIDParams beblidParams_;
 #endif
 
 	const EAlgorithm matchingMethod_;
+	const double loweRatioTestAlpha_;
+	const SCameraInfo cameraInfo_;
+	const bool considerPhoneHoldHeight_;
+	const bool calcProjectionFrom3D_;
+	const bool calcGCSLocation_;
+
 
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	///basic constructor
 	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
 		SORBParams orbParams, SBEBLIDParams beblidParams, EAlgorithm matchingMethod, double loweRatioTestAlpha,
-		const SCameraInfo& cameraInfo, bool considerPhoneHoldHeight)
+		const SCameraInfo& cameraInfo, bool considerPhoneHoldHeight, bool calcProjectionFrom3D, bool calcGCSLocation)
 		:
 		detectMethod_(detectMethod),
 		describeMethod_(describeMethod),
@@ -139,13 +141,15 @@ struct SProcessParams {
 		matchingMethod_(matchingMethod),
 		loweRatioTestAlpha_(loweRatioTestAlpha),
 		cameraInfo_(cameraInfo),
-		considerPhoneHoldHeight_(considerPhoneHoldHeight)
+		considerPhoneHoldHeight_(considerPhoneHoldHeight),
+		calcProjectionFrom3D_(calcProjectionFrom3D),
+		calcGCSLocation_(calcGCSLocation)
 	{}
 #else
 	///basic constructor without experimental methods
 	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
 		SORBParams orbParams, EAlgorithm matchingMethod, double loweRatioTestAlpha,
-		const SCameraInfo& cameraInfo, bool considerPhoneHoldHeight)
+		const SCameraInfo& cameraInfo, bool considerPhoneHoldHeight, bool calcProjectionFrom3D, bool calcGCSLocation)
 		:
 	detectMethod_(detectMethod),
 		describeMethod_(describeMethod),
@@ -154,7 +158,9 @@ struct SProcessParams {
 		matchingMethod_(matchingMethod),
 		loweRatioTestAlpha_(loweRatioTestAlpha),
 		cameraInfo_(cameraInfo),
-		considerPhoneHoldHeight_(considerPhoneHoldHeight)
+		considerPhoneHoldHeight_(considerPhoneHoldHeight),
+		calcProjectionFrom3D_(calcProjectionFrom3D),
+		calcGCSLocation_(calcGCSLocation)
 	{}
 #endif
 };

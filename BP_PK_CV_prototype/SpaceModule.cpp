@@ -3,10 +3,10 @@
 double sm::gcsDistance(SGcsCoords first, SGcsCoords second)
 {
 	//get all the values to radians
-	first.longtitude_ *= (M_PI / 180.0);
-	first.latitude_ *= (M_PI / 180.0);
-	second.longtitude_ *= (M_PI / 180.0);
-	second.latitude_ *= (M_PI / 180.0);
+	first.longtitude_ = degToRad(first.longtitude_);
+	first.latitude_ = degToRad(first.latitude_);
+	second.longtitude_ = degToRad(second.longtitude_);
+	second.latitude_ = degToRad(second.latitude_);
 
 	double diffLong = (second.longtitude_ - first.longtitude_);
 	double diffLat = (second.latitude_ - first.latitude_);
@@ -32,7 +32,7 @@ double sm::distance(double ax, double ay, double az, double bx, double by, doubl
 	return sqrt(pow(diffX, 2) + pow(diffY, 2) + pow(diffZ, 2));
 }
 
-Point2d sm::getMidPoint(double ax, double ay, double bx, double by)
+Point2d sm::getMidPoint2D(double ax, double ay, double bx, double by)
 {
 	return Point2d((ax + bx)/2, (ay + by)/2);
 }
@@ -70,6 +70,17 @@ double sm::longtitudeCorrectionFactor(double latitude)
 	return 1 / longtitudeAdjustingFactor(latitude);
 }
 
+
+double sm::radToDeg(double radAngle)
+{
+	return radAngle * (180.0 / M_PI);
+}
+
+double sm::degToRad(double degAngle)
+{
+	return degAngle * (M_PI / 180.0);
+}
+
 double sm::vectorAngle2D(double ax, double ay, double bx, double by, double cx, double cy)
 {
 	Mat vec1 = (Mat_<double>(2, 1) << (ax - bx), (ay - by));
@@ -87,8 +98,7 @@ double sm::getVecRotFromEast(double ax, double ay)
 
 	double adjustTheSign = vec.at<double>(1) < 0 ? -1.0 : 1.0; //the angle will be negative in case of negative y
 	double radAngleWithEast = adjustTheSign * acos(vec.dot(eastVector));
-	//double degAngleWithEast = radAngleWithEast * (180.0 / M_PI);
-	//cout << "angle with the vector to east: " << degAngleWithEast << endl;
+	//cout << "angle with the vector to east: " << radToDeg(radAngleWithEast) << endl;
 
 	return radAngleWithEast;
 }
@@ -121,8 +131,7 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 
 	//p3 to p2
 	double radAngleAtP3 = sm::vectorAngle2D(p2.x, p2.y, p3.x, p3.y, p1.x, p1.y);
-	double degAngleAtP3 = radAngleAtP3 * (180.0 / M_PI);
-	logger->log("angle that is by the point three: ").log(to_string(degAngleAtP3)).endl();
+	logger->log("angle that is by the point three: ").log(to_string(radToDeg(radAngleAtP3))).endl();
 
 	//create vector from point three to the camera in the gcs
 	double radAngleDirVec = radAngleWithEast - radAngleAtP3;//angle between east vector and vector from point three and camera - angle of future direction vector of the line between point three and camera
@@ -134,7 +143,7 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	//calculate distance in our space
 	double distance = sm::distance(p2.x, p2.y, p3.x, p3.y);
 	double distScaleFactor = distance / gcsDistance;
-	logger->log("gcsDistance: ").log(to_string(degAngleAtP3)).endl();
+	logger->log("gcsDistance: ").log(to_string(gcsDistance)).endl();
 	logger->log("our distance: ").log(to_string(distance)).endl();
 	logger->log("scale factor of the distances: ").log(to_string(distScaleFactor)).endl();
 

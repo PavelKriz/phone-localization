@@ -35,6 +35,7 @@
 
 #include "CLogger.h"
 #include "SProcessParams.h"
+#include "SGcsCoords.h"
 
 #include <iostream>	
 
@@ -93,6 +94,8 @@ protected:
 	bool wasProcessed_ = false; ///< information whether the keypoints have been detected and described
 	vector<KeyPoint> imageKeypoints_; ///< vector with the detected keypoints (it is valid when wasProcessed is set to true)
 	Mat keypointsDescriptors_; ///< descriptors of the keypoints (it is valid when wasProcessed is set to true)
+	sm::SGcsCoords rightBaseGc_; ///< global coordinates at the right base/corner of the image (coordinates of the place at the corner)
+	sm::SGcsCoords leftBaseGc_; ///< global coordinates at the left base/corner of the image (coordinates of the place at the corner)
 
 	/**
 	 * @brief computes both keypoints and theirs descriptors, throws invalid argument
@@ -122,9 +125,11 @@ public:
 	/**
 	 * @brief Constructor (the image is loaded during the constructor run)
 	 * @param filePath filepath of the image (with the image itself, relative to the place where the app is running)
+	 * @param rightBaseGc global coordinates at the right base/corner of the image (coordinates of the place at the corner)
+	 * @param leftBaseGc global coordinates at the left base/corner of the image (coordinates of the place at the corner)
 	 * @throw ios_base::failure
 	*/
-	CImage(const string& filePath);
+	CImage(const string& filePath, const sm::SGcsCoords& rightBaseGc, const sm::SGcsCoords& leftBaseGc);
 	/**
 	 * @brief method that creates nested class object that is neede for the image to be processed (the object can be used for infinite amount of CImage classes)
 	 * @param params parameters that determine which algorithms would be used to detect features and which one used to describe them
@@ -161,4 +166,14 @@ public:
 	 * @throw logic_error message: "CImage - to get descriptors of the keypoints first the process function has to be called."
 	*/
 	const Mat& getDescriptors() const;
+	/**
+	 * @brief get global coordinates at the right base/corner of the image (coordinates of the place at the corner)
+	 * @return the coordinates
+	*/
+	sm::SGcsCoords getRightBaseGc() const;
+	/**
+	 * @brief get global coordinates at the left base/corner of the image (coordinates of the place at the corner)
+	 * @return the coordinates
+	*/
+	sm::SGcsCoords getLeftBaseGc() const;
 };
