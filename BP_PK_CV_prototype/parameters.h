@@ -25,12 +25,13 @@ using namespace cv;
 
 //========================================tests and files parameters========================================
 
-const string OUTPUT_ROOT = "output\\featureDetectingExtractingMethodsSpeedTest\\";
+const string OUTPUT_ROOT = "output\\final_testing\\";
 const string imagesRoot = "input_images\\";
 const string dumRottRoot = imagesRoot + "dum_rott\\";
+const string PopovaSelectionRoot = "Popova_selection\\";
 
 //if the output is going to be to files or only to the console
-const EOutputType OUTPUT_TYPE = EOutputType::CONSOLE;
+const EOutputType OUTPUT_TYPE = EOutputType::FILE;
 //display the result in the run?
 const bool PREVIEW_RESULT = true;
 
@@ -43,16 +44,49 @@ const bool PREVIEW_RESULT = true;
 
 //inits for each tests
 #if CURRENT_TEST == TEST1
-	//scene was taken with XIAOMI REDMI 5 PLUS (smartphone back camera)
 	const bool CALC_PROJECTION_FROM_3D = true;
 	const bool CALC_GCS_LOCATION = true;
+	//scene was taken with XIAOMI REDMI 5 PLUS (smartphone back camera) (~ 4.96 x 3.72 mm)
+	//const double CAMERA_FOCAL_LENGTH = 4;
+	//const double CAMERA_CHIP_SIZE_X = 4.96;
+	//const double CAMERA_CHIP_SIZE_Y = 3.72;
+	//scene was taken with Iphone 7 Plus - (~ 4.8 x 3.6 mm)
 	const double CAMERA_FOCAL_LENGTH = 4;
-	const double CAMERA_CHIP_SIZE_X = 4.96;
-	const double CAMERA_CHIP_SIZE_Y = 3.79;
+	const double CAMERA_CHIP_SIZE_X = 4.8;
+	const double CAMERA_CHIP_SIZE_Y = 3.6;
 	//const string SCENE_FILE_PATH = dumRottRoot + "dumRottScene2.jpg";
-	const string SCENE_FILE_PATH = imagesRoot + "white_house\\" + "whiteHouse1.jpg";
-	const vector<string> OBJECT_FILE_PATHS = { dumRottRoot + "dumRottRef.png", imagesRoot + "white_house\\" +  "whiteHouse1ref.png" };
-	const string RUN_NAME = "fileTest";
+	//const string SCENE_FILE_PATH = imagesRoot + "white_house\\" + "whiteHouse1.jpg";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building48_photo2.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building48_photo3.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building20_photo2.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building20_photo4.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building5_photo3.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building5_photo4.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building6_photo4.JPG";
+	const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building6_photo2.JPG";
+	//const string SCENE_FILE_PATH = dumRottRoot + "dumRottScene3.jpg";
+	//const string SCENE_FILE_PATH = dumRottRoot + "dumRottScene5.jpg";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building9_photo5.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building9_photo3.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building8_photo1.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building8_photo2.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building8_photo4.JPG";
+	//const string SCENE_FILE_PATH = imagesRoot + "white_house\\" + "whiteHouse2.jpg";
+	//const string SCENE_FILE_PATH = imagesRoot + "white_house\\" + "storchuv_dum.jpg";
+	const vector<string> OBJECT_FILE_PATHS = { dumRottRoot + "dumRottRef.png",
+		imagesRoot + "white_house\\" + "whiteHouse2ref.jpg",
+		imagesRoot + "white_house\\" + "storchuv_dum_ref1.jpg",
+		imagesRoot + "white_house\\" + "storchuv_dum_ref2.jpg",
+		imagesRoot + PopovaSelectionRoot + "obj\\_building48_photo2_b_neut_transform.jpg",
+		imagesRoot + PopovaSelectionRoot + "obj\\_building20_photo2_b_neut_transform.jpg",
+		imagesRoot + PopovaSelectionRoot + "obj\\_building5_photo4_b_neut_transform.jpg" ,
+		imagesRoot + PopovaSelectionRoot + "obj\\_building5_photo4_b_neut_transform_half.jpg",
+		imagesRoot + PopovaSelectionRoot + "obj\\_building6_photo4_b_neut_transform.jpg",
+		imagesRoot + PopovaSelectionRoot + "obj\\_building9_photo5_b_neut_transform.jpg",
+		imagesRoot + PopovaSelectionRoot + "obj\\_building9_photo3_b_neut_transform.jpg",
+		imagesRoot + PopovaSelectionRoot + "obj\\_building8_photo2_b_neut_transform.jpg",
+		imagesRoot + PopovaSelectionRoot + "obj\\_building8_photo4_b_neut_transform.jpg" };
+	const string RUN_NAME = "COLUMN3";
 #elif CURRENT_TEST == TEST2
 	const string SCENE_FILE_PATH = sefcikImagesScenes[13];
 	const vector<string> OBJECT_FILE_PATHS = sefcikImagesObjects;
@@ -69,7 +103,7 @@ const bool TIMING = false;
 
 //========================================chosen algorithms for matching, describing, matching========================================
 const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_SIFT;
-const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_SIFT;
+const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_ROOTSIFT;
 const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
 
 //========================================SIFT parameters========================================
@@ -118,7 +152,7 @@ const xfeatures2d::BEBLID::BeblidSize BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_
 #endif
 
 //========================================Lowe's ratio test parameter========================================
-const float LOWE_RATIO_TEST_ALPHA = 0.7f;
+const float LOWE_RATIO_TEST_ALPHA = 0.75f;
 
 //========================================3D locating and positioning parameters========================================
 /* *

@@ -101,40 +101,56 @@ CImagesMatch::CImagesMatch(const Ptr<CImage>& object, const Ptr<CImage>& scene, 
 	double avarageDistance = 0;
 	double avarageWeight = 0;
 	double avarageFirstToSecondRatio = 0;
-	for (int i = 0; i < knnMatches.size(); i++)
-	{
-		//the matcher might not find anything
-		if (knnMatches[i].size() == 0) {
-			continue;
+	double dynamicRatio = params.loweRatioTestAlpha_;
+	bool firstRun = true;
+	size_t firstFilteredSize = 0;
+	for (double dynamicRatio = params.loweRatioTestAlpha_;
+		dynamicRatio < 1 && matches_.size() < 4;
+		dynamicRatio += 0.05) {
+
+		//reset matches
+		matches_.clear();
+
+		for (int i = 0; i < knnMatches.size(); i++)
+		{
+			//the matcher might not find anything
+			if (knnMatches[i].size() == 0) {
+				continue;
+			}
+
+			//-- Quick calculation of max, min, avg distances between keypoints
+			++avarageWeight;
+			double dist = knnMatches[i][0].distance;
+			if (dist < minDistance) minDistance = dist;
+			if (dist > maxDistance) maxDistance = dist;
+			avarageDistance = ((avarageDistance * avarageWeight) + (dist)) / (1 + avarageWeight);
+
+			//check if there is at least two of found pairs and if not do something (push the match for example)
+			//less than two matches might happen for flann based matchers (maybe for others, but I havent experienced it)
+			if (knnMatches[i].size() < 2) {
+				matches_.push_back(knnMatches[i][0]);
+				continue;
+			}
+
+			// Lowe's ratio test
+			// just filtering some "badly" matched matches, getting only good matches
+			//TODO might be a slow solution
+			double currentFirstToSecondRatio = knnMatches[i][0].distance / knnMatches[i][1].distance;
+			avarageFirstToSecondRatio = ((avarageFirstToSecondRatio * avarageWeight) + (currentFirstToSecondRatio)) / (1 + avarageWeight);
+			if (knnMatches[i][0].distance < dynamicRatio * knnMatches[i][1].distance) {
+				matches_.push_back(knnMatches[i][0]);
+			}
 		}
-
-		//-- Quick calculation of max, min, avg distances between keypoints
-		++avarageWeight;
-		double dist = knnMatches[i][0].distance;
-		if (dist < minDistance) minDistance = dist;
-		if (dist > maxDistance) maxDistance = dist;
-		avarageDistance = ((avarageDistance * avarageWeight) + (dist)) / (1 + avarageWeight);
-
-		//check if there is at least two of found pairs and if not do something (push the match for example)
-		//less than two matches might happen for flann based matchers (maybe for others, but I havent experienced it)
-		if (knnMatches[i].size() < 2) {
-			matches_.push_back(knnMatches[i][0]);
-			continue;
-		}
-
-		// Lowe's ratio test
-		// just filtering some "badly" matched matches, getting only good matches
-		//TODO might be a slow solution
-		double currentFirstToSecondRatio = knnMatches[i][0].distance / knnMatches[i][1].distance;
-		avarageFirstToSecondRatio = ((avarageFirstToSecondRatio * avarageWeight) + (currentFirstToSecondRatio)) / (1 + avarageWeight);
-		if (knnMatches[i][0].distance < params.loweRatioTestAlpha_ * knnMatches[i][1].distance) {
-			matches_.push_back(knnMatches[i][0]);
+		//this is needed to do because the size will grow but with less strict test, so to keep the accuracy we have to keep the result from the first run
+		if (firstRun) {
+			firstRun = false;
+			firstFilteredSize = matches_.size();
 		}
 	}
 
 	avarageMatchesDistance_ = avarageDistance;
 	avarageFirstToSecondRatio_ = avarageFirstToSecondRatio;
-	matchedObjectFeaturesRatio_ = (double) matches_.size() / (double) knnMatches.size();
+	matchedObjectFeaturesRatio_ = (double) firstFilteredSize / (double) knnMatches.size();
 
 	logger->log("Min distance: ").log(to_string(minDistance)).log(" | Max distance:").log(to_string(maxDistance)).endl();
 	logger->log("Average distance:").log(to_string(avarageDistance)).endl();
@@ -181,6 +197,10 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& log
 	}
 
 	objectSceneHomography_ = findHomography(objectKeypointsCoordinates, sceneKeypointsCoordinates, RANSAC);
+	if (objectSceneHomography_.empty()) {
+		//sometimes the findHomography with RANSAC may return empty matrix (known bug og OpenCV) -> use RHO or LMeds (less robust then RHO)
+		objectSceneHomography_ = findHomography(objectKeypointsCoordinates, sceneKeypointsCoordinates, RHO);
+	}
 	transformMatrixComputed_ = true;
 
 	// Get the corners from the image_1 ( the object to be "detected" )

@@ -11,7 +11,7 @@ CObjectInSceneFinder::CObjectInSceneFinder(const SProcessParams& params, Ptr<CLo
 		throw invalid_argument("CObjectInSceneFinder constructor was called with empty pointer to logger (CLogger) object.");
 	}
 	logger_->logSection("Run: " + runName, 0);
-	CImageBuilder bobTheBuilder;
+	CImageBuilder bobTheBuilder; //Kabát Brokát toto schvaluje
 	sceneImage_ = bobTheBuilder.build(sceneFilePath, params, true, logger);
 	for (auto& it : objectFilePaths) {
 		objectImages_.push_back(bobTheBuilder.build(it, params, false, logger));
@@ -50,11 +50,11 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 
 	logger_->logSection("Matching", 1);
 	//searching for the scene object matching combination with lowest avarage distance of matches
-	double lowestDistance = numeric_limits<double>::max();
-	int lowestDistanceIndex = 0;
+	double featuresToMatchesRatio = 0.0;//numeric_limits<double>::max();
+	size_t bestScoreIndex = 0;
 	//that many matches will be created
 	matches_.reserve(objectImages_.size());
-	for (int i = 0; i < objectImages_.size(); ++i) {
+	for (size_t i = 0; i < objectImages_.size(); ++i) {
 		//computing the keypoints, descriptors, matches
 		//move construction
 		logger_->endl().log("Compare index: ").log(to_string(i)).endl();
@@ -62,10 +62,10 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 		matches_.emplace_back(CImagesMatch(objectImages_[i], sceneImage_, logger_, params_));
 
 		//checking if the match is possible to be the best until now
-		double currentDist = matches_.back().getAvarageMatchesDistance();
-		if (currentDist < lowestDistance) {
-			lowestDistanceIndex = i;
-			lowestDistance = currentDist;
+		double currentRatio = matches_.back().getMatchedObjectFeaturesRatio();//matches_.back().getAvarageMatchesDistance();
+		if (currentRatio > featuresToMatchesRatio) {
+			bestScoreIndex = i;
+			featuresToMatchesRatio = currentRatio;
 		}
 		bestMatchExist_ = true;
 	}
@@ -80,7 +80,7 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 		log(to_string(chrono::duration_cast<chrono::milliseconds>(afterMatching - begin).count())).
 		log("[ms]").endl();
 
-	bestMatchIndex_ = lowestDistanceIndex;
+	bestMatchIndex_ = bestScoreIndex;
 	logger_->logSection("Result", 2);
 	logger_->log("Best object match for scene is object with compare index: ").log(to_string(bestMatchIndex_)).endl();
 	logger_->log("Best object match for scene is object with filepath: ").log(objectImages_[bestMatchIndex_]->getFilePath()).endl();

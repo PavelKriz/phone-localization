@@ -91,8 +91,6 @@ Mat CImageLocator3D::projectWorldSpacetoImage(const Mat& toProject) const
 	Mat point2DNorm = Mat::zeros(2, 1, CV_64FC1);
 	point2DNorm.at<double>(0) = point2Dtmp.at<double>(0) / point2Dtmp.at<double>(2);
 	point2DNorm.at<double>(1) = point2Dtmp.at<double>(1) / point2Dtmp.at<double>(2);
-
-	cout << endl << "What have I just created: " << endl << point2DNorm << endl;
 	
 	return projectCameraSpacetoImage(RTMatrix_ * toProject);
 }
@@ -116,7 +114,6 @@ void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCo
 	vector<Point2d> objectDummyProjected(8);
 	for (int i = 0; i < objectPrismDummy3D.size(); ++i) {
 		Mat projected = projectWorldSpacetoImage(objectPrismDummy3D[i]);
-		cout << "check what I have done (original) " << endl << projected << endl;
 		objectDummyProjected[i] = Point2d(projected.at<double>(0), projected.at<double>(1));
 	}
 
@@ -125,31 +122,31 @@ void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCo
 	cvtColor(sceneImage_->getImage(), dummyInScene, COLOR_GRAY2RGB);
 
 	line(dummyInScene, objectDummyProjected[0],
-		objectDummyProjected[1], Scalar(0, 255, 255), 8);
+		objectDummyProjected[1], Scalar(0, 255, 255), 10);
 	line(dummyInScene, objectDummyProjected[1],
-		objectDummyProjected[2], Scalar(0, 255, 255), 8);
+		objectDummyProjected[2], Scalar(0, 255, 255), 10);
 	line(dummyInScene, objectDummyProjected[2],
-		objectDummyProjected[3], Scalar(0, 255, 255), 8);
+		objectDummyProjected[3], Scalar(0, 255, 255), 10);
 	line(dummyInScene, objectDummyProjected[3],
-		objectDummyProjected[0], Scalar(0, 255, 255), 8);
+		objectDummyProjected[0], Scalar(0, 255, 255), 10);
 
 	line(dummyInScene, objectDummyProjected[4],
-		objectDummyProjected[5], Scalar(0, 255, 255), 4);
+		objectDummyProjected[5], Scalar(0, 255, 255), 6);
 	line(dummyInScene, objectDummyProjected[5],
-		objectDummyProjected[6], Scalar(0, 255, 255), 4);
+		objectDummyProjected[6], Scalar(0, 255, 255), 6);
 	line(dummyInScene, objectDummyProjected[6],
-		objectDummyProjected[7], Scalar(0, 255, 255), 4);
+		objectDummyProjected[7], Scalar(0, 255, 255), 6);
 	line(dummyInScene, objectDummyProjected[7],
-		objectDummyProjected[4], Scalar(0, 255, 255), 4);
+		objectDummyProjected[4], Scalar(0, 255, 255), 6);
 
 	line(dummyInScene, objectDummyProjected[0],
-		objectDummyProjected[4], Scalar(0, 255, 255), 6);
+		objectDummyProjected[4], Scalar(0, 255, 255), 8);
 	line(dummyInScene, objectDummyProjected[1],
-		objectDummyProjected[5], Scalar(0, 255, 255), 6);
+		objectDummyProjected[5], Scalar(0, 255, 255), 8);
 	line(dummyInScene, objectDummyProjected[2],
-		objectDummyProjected[6], Scalar(0, 255, 255), 6);
+		objectDummyProjected[6], Scalar(0, 255, 255), 8);
 	line(dummyInScene, objectDummyProjected[3],
-		objectDummyProjected[7], Scalar(0, 255, 255), 6);
+		objectDummyProjected[7], Scalar(0, 255, 255), 8);
 
 	//draw the matches and places where the object should be placed in the scene
 	logger->putImage(dummyInScene, "dummyProjected");
@@ -292,8 +289,8 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 	
 	logger->logSection("debug info start", 2);
 
-	sm::SGcsCoords gcsPoint2 = /*sm::SGcsCoords(14.4193081, 50.0867628)*/ objectImage_->getRightBaseGc();
-	sm::SGcsCoords gcsPoint3 = /*sm::SGcsCoords(14.4192706, 50.0865958)*/ objectImage_->getLeftBaseGc();
+	sm::SGcsCoords gcsPoint2 =  objectImage_->getRightBaseGc();
+	sm::SGcsCoords gcsPoint3 =  objectImage_->getLeftBaseGc();
 
 	//initiating the matrices by zero values and correct size
 	RMatrix_ = Mat::zeros(3, 3, CV_64FC1); // rotation matrix
@@ -322,6 +319,7 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 	//solve our PnP problem
 	//3d points to PnP have to have 3x1 format
 	solvePnP(objCorners3D, sceneCorners, cameraIntrinsicsMatrixA_, distCoeffs_, RVec_, TVec_, useExtrinsicGuess, SOLVEPNP_ITERATIVE);
+	solvePnP(objCorners3D, sceneCorners, cameraIntrinsicsMatrixA_, distCoeffs_, RVec_, TVec_, true, SOLVEPNP_ITERATIVE);
 
 	//processing the output from solvePnP to inner matries
 	createTransformationMatrices();

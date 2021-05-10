@@ -51,7 +51,8 @@ double sm::metersInLatDeg(double latitude)
 double sm::metersInLongDeg(double latitude)
 {
 	//Length in meters of 1° of longitude = 40075017 m * cos(latitude) / 360
-	return 40075017 * cos(latitude) / 360.0;
+	//2 * M_PI * (6371000 * cos()
+	return 40075017 * cos(degToRad(latitude)) / 360.0;
 }
 
 double sm::longtitudeAdjustingFactor(double latitude)
@@ -122,12 +123,14 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	double longtitudeAdjustFactor = longtitudeAdjustingFactor(p3Gcs.latitude_);
 
 	//adjust the points to make same meassures in both dirrections
-	gcsP2Vec.at<double>(0) *= longtitudeAdjustFactor;
-	gcsP3Vec.at<double>(0) *= longtitudeAdjustFactor;
+	//gcsP2Vec.at<double>(0) *= longtitudeAdjustFactor;
+	//gcsP3Vec.at<double>(0) *= longtitudeAdjustFactor;
 
 	//angle of vector twoToThree to the vector pointing to east
 	Mat gcsDiff = gcsP2Vec - gcsP3Vec;
 	double radAngleWithEast = getVecRotFromEast(gcsDiff.at<double>(0), gcsDiff.at<double>(1));
+	logger->log("gcs Diff x: ").log(to_string(gcsDiff.at<double>(0))).log(" gcs Diff y: ").log(to_string(gcsDiff.at<double>(1))).endl();
+	logger->log("angle from east: ").log(to_string(radToDeg(radAngleWithEast))).endl();
 
 	//p3 to p2
 	double radAngleAtP3 = sm::vectorAngle2D(p2.x, p2.y, p3.x, p3.y, p1.x, p1.y);
@@ -136,6 +139,8 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	//create vector from point three to the camera in the gcs
 	double radAngleDirVec = radAngleWithEast - radAngleAtP3;//angle between east vector and vector from point three and camera - angle of future direction vector of the line between point three and camera
 	Point2d lineDirVec(cos(radAngleDirVec), sin(radAngleDirVec));
+	logger->log("angle that is taken from the east to the right point: ").log(to_string(radToDeg(radAngleDirVec))).endl();
+	logger->log("cos: ").log(to_string(cos(radAngleDirVec))).log(" sin:").log(to_string(sin(radAngleDirVec))).endl();
 
 	//Computing the scale between two scales (between the camera space scale and the gcs scale)
 	//for meassuring distance we have to use correct coordinates (so the unchanged coordinates have to be used)
@@ -152,11 +157,13 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	double distanceP3ToP1 = sm::distance(p1.x, p1.y, p3.x, p3.y);
 	//just fill the parametric formula of a line and get the location of p1 (camera in the project)
 	Point2d p1GcsLoc;
-	p1GcsLoc.x = gcsP3Vec.at<double>(0) + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg(p3Gcs.latitude_) * longtitudeAdjustFactor);
-	p1GcsLoc.y = gcsP3Vec.at<double>(1) + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg(p3Gcs.latitude_));
+	logger->log("distance from camera to p3: ").log(to_string((distanceP3ToP1 / distScaleFactor))).endl();
+	p1GcsLoc.x = p3Gcs.longtitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg(p3Gcs.latitude_));
+	p1GcsLoc.y = p3Gcs.latitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg(p3Gcs.latitude_));
+	logger->log("what is being added: ").log(to_string(metersInLongDeg(p3Gcs.latitude_))).endl();
 
 	//converting back to correct longtitude
-	p1GcsLoc.x *= longtitudeCorrectionFactor(p3Gcs.latitude_);
+	//p1GcsLoc.x *= longtitudeCorrectionFactor(p3Gcs.latitude_);
 
 	return sm::SGcsCoords(p1GcsLoc.x, p1GcsLoc.y);
 }

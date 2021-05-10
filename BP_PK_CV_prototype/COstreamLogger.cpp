@@ -15,13 +15,15 @@ CLogger& COstreamLogger::logSection(const string& name, unsigned int level) {
 
 	out() << std::endl;
 
-	for (int i = -1; i < (int)level; ++i)
+	for (size_t i = 0; i < (size_t)level + 1; ++i) {
 		out() << "===";
+	}
 
 	out() << upperName;
 
-	for (int i = -1; i < (int)level; ++i)
+	for (size_t i = 0; i < (size_t)level + 1; ++i) {
 		out() << "===";
+	}
 
 	endl();
 
@@ -81,7 +83,7 @@ CLogger& COstreamLogger::log(const sm::SGcsCoords& toLog)
 {
 	streamsize prevPrecision = out().precision();
 	out() << setprecision(9); //commonly used precsion for global coordinates
-	out() << "[ long: " << toLog.longtitude_ << ", lat: " << toLog.latitude_ << "]";
+	out() << "[ latitude, longtitude]: " << toLog.latitude_ << ", " << toLog.longtitude_;
 	out().precision(prevPrecision);
 	return *this;
 }
