@@ -1,0 +1,25 @@
+{
+	"scene_index" : 0,
+	"scenes" : [ 
+				"input_images/dum_rott/dumRottScene.jpg",
+				"input_images/dum_rott/dumRottScene2.jpg",
+				"input_images/dum_rott/dumRottScene3.jpg",
+				"input_images/dum_rott/dumRottScene5.jpg",
+				"input_images/white_house/whiteHouse1.jpg",
+				"input_images/white_house/whiteHouse2.jpg",
+				"input_images/white_house/storchuv_dum.jpg",
+				"input_images/Popova_selection/scn/_building48_photo2.JPG",
+				"input_images/Popova_selection/scn/_building48_photo3.JPG",
+				"input_images/Popova_selection/scn/_building20_photo2.JPG",
+				"input_images/Popova_selection/scn/_building20_photo4.JPG",
+				"input_images/Popova_selection/scn/_building5_photo3.JPG",
+				"input_images/Popova_selection/scn/_building5_photo4.JPG",
+				"input_images/Popova_selection/scn/_building6_photo4.JPG",
+				"input_images/Popova_selection/scn/_building6_photo2.JPG",
+				"input_images/Popova_selection/scn/_building9_photo5.JPG",
+				"input_images/Popova_selection/scn/_building9_photo3.JPG",
+				"input_images/Popova_selection/scn/_building8_photo1.JPG",
+				"input_images/Popova_selection/scn/_building8_photo2.JPG",
+				"input_images/Popova_selection/scn/_building8_photo4.JPG"
+				]
+}

@@ -19,6 +19,7 @@
 #include "CObjectInSceneFinder.h"
 #include "SProcessParams.h"
 #include "parameters.h"
+#include "CFileLoader.h"
 
 using namespace std;
 
@@ -27,12 +28,13 @@ using namespace std;
 */
 class COperator
 {
+    static void setAdvancedParams(CFileLoader& loader);
     /**
      * @brief Get the currently set params
      * @param logger it prints what it does into that logger
      * @return the set parameters
     */
-    static SProcessParams getParams(Ptr<CLogger>& logger);
+    static void logParams(Ptr<CLogger>& logger, const CFileLoader& loader);
 public:
     /**
      * @brief static method that executes the program

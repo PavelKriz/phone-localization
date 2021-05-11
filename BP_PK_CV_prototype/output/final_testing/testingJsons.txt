@@ -1,0 +1,232 @@
+OpenCV version : 4.5.2
+TIMING: OFF (speed optimalisation)
+NOTE: When is TIMING ON the images are not saved and also the processing might be slightly faster than without timing optimalisation
+
+======PARAMETERS OF USED ALGORITHMS======
+    Method used for detecting: SIFT
+    Method used for extracting/describing: SIFT
+    Method used for matching: BF_matching
+    
+    SIFT parameters are following:
+    note: defaut value means that it wasnt changed, other walua can be also euqal to the default ones
+    nFeatures: 0 (OpenCV defaults: SIFT = 0 (means no limit), ORB = 1000)
+    nOctaveLayers_: 3 (default value)
+    contrastThreshold_: 0.040000 (default value)
+    edgeTreshold_: 10.000000 (default value)
+    sigma_: 1.600000 (default value)
+    
+    camera focal length: 4.000000
+    camera sensors size x: 4.960000
+    camera sensors size y: 3.720000
+    
+===RUN: TESTINGJSONS===
+images loaded
+
+======DETECTIG AND DESCRIBING FEATURES======
+    
+=========Scene=========
+        Image with filepath: input_images/dum_rott/dumRottScene.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 7212
+        
+=========Objects=========
+        Image with filepath: input_images\dum_rott\dumRottRef.png is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 4807
+        Image with filepath: input_images\white_house\whiteHouse2ref.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 6068
+        Image with filepath: input_images\white_house\storchuv_dum_ref2.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 9879
+        Image with filepath: input_images\Popova_selection\obj\_building48_photo2_b_neut_transform.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 4241
+        Image with filepath: input_images\Popova_selection\obj\_building20_photo2_b_neut_transform.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 5082
+        Image with filepath: input_images\Popova_selection\obj\_building5_photo4_b_neut_transform.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 10127
+        Image with filepath: input_images\Popova_selection\obj\_building5_photo4_b_neut_transform_half.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 5712
+        Image with filepath: input_images\Popova_selection\obj\_building6_photo4_b_neut_transform.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 1703
+        Image with filepath: input_images\Popova_selection\obj\_building9_photo5_b_neut_transform.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 9651
+        Image with filepath: input_images\Popova_selection\obj\_building9_photo3_b_neut_transform.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 13055
+        Image with filepath: input_images\Popova_selection\obj\_building8_photo2_b_neut_transform.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 8828
+        Image with filepath: input_images\Popova_selection\obj\_building8_photo4_b_neut_transform.jpg is being processed.
+          CLAHE was done on the image.
+          Detection and description done, keypoints count: 7947
+        
+=========Timing=========
+        Detecting and describing all features took: 2482[ms]
+        
+======MATCHING======
+    
+    Compare index: 0
+    Matching scene with object that has filepath: input_images\dum_rott\dumRottRef.png
+    Min distance: 39.293766 | Max distance:399.566010
+    Average distance:226.104369
+    Average first to second ratio is: 0.802679
+    Ratio of filtered matches to number of keypoints of object is: 0.278760
+    
+    Compare index: 1
+    Matching scene with object that has filepath: input_images\white_house\whiteHouse2ref.jpg
+    Min distance: 52.507141 | Max distance:421.146057
+    Average distance:244.399079
+    Average first to second ratio is: 0.937718
+    Ratio of filtered matches to number of keypoints of object is: 0.008075
+    
+    Compare index: 2
+    Matching scene with object that has filepath: input_images\white_house\storchuv_dum_ref2.jpg
+    Min distance: 68.161575 | Max distance:409.228546
+    Average distance:283.819916
+    Average first to second ratio is: 0.948407
+    Ratio of filtered matches to number of keypoints of object is: 0.003340
+    
+    Compare index: 3
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building48_photo2_b_neut_transform.jpg
+    Min distance: 54.744862 | Max distance:391.149597
+    Average distance:246.389024
+    Average first to second ratio is: 0.936758
+    Ratio of filtered matches to number of keypoints of object is: 0.008489
+    
+    Compare index: 4
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building20_photo2_b_neut_transform.jpg
+    Min distance: 64.521317 | Max distance:393.354797
+    Average distance:272.572315
+    Average first to second ratio is: 0.946207
+    Ratio of filtered matches to number of keypoints of object is: 0.004526
+    
+    Compare index: 5
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building5_photo4_b_neut_transform.jpg
+    Min distance: 50.338852 | Max distance:403.913361
+    Average distance:265.750832
+    Average first to second ratio is: 0.944260
+    Ratio of filtered matches to number of keypoints of object is: 0.004147
+    
+    Compare index: 6
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building5_photo4_b_neut_transform_half.jpg
+    Min distance: 74.966660 | Max distance:393.786743
+    Average distance:265.081670
+    Average first to second ratio is: 0.947028
+    Ratio of filtered matches to number of keypoints of object is: 0.006127
+    
+    Compare index: 7
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building6_photo4_b_neut_transform.jpg
+    Min distance: 59.732738 | Max distance:396.118683
+    Average distance:245.417003
+    Average first to second ratio is: 0.939631
+    Ratio of filtered matches to number of keypoints of object is: 0.008808
+    
+    Compare index: 8
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building9_photo5_b_neut_transform.jpg
+    Min distance: 55.027267 | Max distance:396.069427
+    Average distance:289.971088
+    Average first to second ratio is: 0.952386
+    Ratio of filtered matches to number of keypoints of object is: 0.001140
+    
+    Compare index: 9
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building9_photo3_b_neut_transform.jpg
+    Min distance: 75.610847 | Max distance:405.376373
+    Average distance:284.662749
+    Average first to second ratio is: 0.950002
+    Ratio of filtered matches to number of keypoints of object is: 0.002604
+    
+    Compare index: 10
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building8_photo2_b_neut_transform.jpg
+    Min distance: 72.325653 | Max distance:401.896759
+    Average distance:275.980215
+    Average first to second ratio is: 0.950726
+    Ratio of filtered matches to number of keypoints of object is: 0.002152
+    
+    Compare index: 11
+    Matching scene with object that has filepath: input_images\Popova_selection\obj\_building8_photo4_b_neut_transform.jpg
+    Min distance: 71.070389 | Max distance:392.721283
+    Average distance:265.371802
+    Average first to second ratio is: 0.947227
+    Ratio of filtered matches to number of keypoints of object is: 0.002517
+    
+=========Timing=========
+        Finding the right object took: 1450[ms]
+        Time of the whole process: 3932[ms]
+        
+=========Result=========
+        Best object match for scene is object with compare index: 0
+        Best object match for scene is object with filepath: input_images\dum_rott\dumRottRef.png
+        The result transformation matrix is:
+        (0.791616, -0.163770, 140.110888)
+        (0.016955, 0.590293, 170.825745)
+        (0.000028, -0.000418, 1.000000)
+        
+=========debug info start=========
+        Input 3D Coordinates
+        [0, 0, 1]
+        [609, 0, 1]
+        [609, 751, 1]
+        [0, 751, 1]
+        RVec_: [-0.3246658960474376, -0.0303389335855055, 0.007716189685622055]^T
+        TVec_: [-303.5607699101413, -377.3229316789127, 942.5420259402574]^T
+        RTMatrix_: 
+        [[0.9995143335183749, -0.002698597768067975, -0.03104536457194317, -303.5607699101413;
+        [ 0.0124615970082707, 0.947732122867844, 0.3188236689526256, -377.3229316789127;
+        [ 0.02856231242953106, -0.319055701805337, 0.9473054699800808, 942.5420259402574;
+        [ 0, 0, 0, 1]
+        Points coordinates in the local camera space:
+        [-303.5918152747133, -377.00410800996, 943.4893314102375, 1]^T
+        [305.112413837977, -369.4149954319232, 960.8837796798219, 1]^T
+        [303.085766914158, 342.3318288418278, 721.2729476240138, 1]^T
+        [-305.6184621985323, 334.7427162637909, 703.8784993544293, 1]^T
+        Check space corners
+        [111.9916245560825, 319.151063917892]^T
+        [363.8239906801524, 330.320511664688]^T
+        [362.3429905597198, 596.2186234690884]^T
+        [33.91997559169497, 587.2503606336463]^T
+        Scene corners
+        [140.111, 170.826]
+        [611.681, 178.088]
+        [709.525, 887.538]
+        [24.942, 894.74]
+        gcsDistance18.026188
+        our distance609.000000
+        changeBasis
+        [[0.9303270417062762, 0.1359917955770623, 0.3405845372382237, 0;
+        [ -0.001066383844681237, 0.929703306839862, -0.3683077844364968, 0;
+        [ -0.3667294074594296, 0.3422834976839398, 0.8650731465706838, 0;
+        [ 0, 0, 0, 1]
+        New basis point two
+        [574.1776180928806, 52.29338623201295, 629.9779303721223, 1]^T
+        New basis point three
+        [0.9272761876377444, 52.29338623201289, 835.56257353771, 1]^T
+        gcs Diff x: 0.000032 gcs Diff y: 0.000161
+        angle from east: 78.631554
+        angle that is by the point three: 70.334239
+        angle that is taken from the east to the right point: 8.297315
+        cos: 0.989533 sin:0.144310
+        gcsDistance: 18.026188
+        our distance: 609.000000
+        scale factor of the distances: 33.784180
+        distance from camera to p3: 24.732377
+        what is being added: 71425.817432
+        
+=========debug info end=========
+        camera location: [ latitude, longtitude]: 50.0866324, 14.4196131
+        object is in rotated from east in angle: 174.571420
+        The result object stats: 
+        Avarage feature match distance: 226.104369
+        Average first to second ratio is  0.802679
+        Ratio of filtered matches to number of keypoints of object is: 0.278760
+        
+=========Timing=========
+        Result output took: 36[ms]
+        Time of the whole process with view: 3969[ms]
+        

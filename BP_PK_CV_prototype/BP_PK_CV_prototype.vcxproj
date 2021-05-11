@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BP_PK_CV_prototype.cpp" />
+    <ClCompile Include="CFileLoader.cpp" />
     <ClCompile Include="CFileLogger.cpp" />
     <ClCompile Include="CImage.cpp" />
     <ClCompile Include="CImageBuilder.cpp" />
@@ -29,10 +30,12 @@
     <ClCompile Include="COperator.cpp" />
     <ClCompile Include="COstreamLogger.cpp" />
     <ClCompile Include="CRuntimeLogger.cpp" />
+    <ClCompile Include="SpecializedInputOutput.cpp" />
     <ClCompile Include="SpaceModule.cpp" />
     <ClCompile Include="SProcessParams.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CFileLoader.h" />
     <ClInclude Include="CFileLogger.h" />
     <ClInclude Include="CImage.h" />
     <ClInclude Include="CImageBuilder.h" />
@@ -43,15 +46,17 @@
     <ClInclude Include="COperator.h" />
     <ClInclude Include="COstreamLogger.h" />
     <ClInclude Include="CRuntimeLogger.h" />
+    <ClInclude Include="SpecializedInputOutput.h" />
     <ClInclude Include="experimentalModules.h" />
     <ClInclude Include="images.h" />
     <ClInclude Include="parameters.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="SGcsCoords.h" />
     <ClInclude Include="SpaceModule.h" />
     <ClInclude Include="SProcessParams.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="test.json" />
+    <ResourceCompile Include="BP_PK_CV_prototype1.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

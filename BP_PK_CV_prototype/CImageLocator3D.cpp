@@ -325,7 +325,9 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 	createTransformationMatrices();
 
 	//display the dummy prism into the scene to visualise the understood perspective and volume
-	projectBuildingDraftIntoScene(objCorners3D, logger);
+	if (params_.calcProjectionFrom3D_) {
+		projectBuildingDraftIntoScene(objCorners3D, logger);
+	}
 
 	logger->log("RVec_: ").log(RVec_).endl();
 	logger->log("TVec_: ").log(TVec_).endl();

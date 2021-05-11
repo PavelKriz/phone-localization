@@ -26,6 +26,19 @@
 using namespace std;
 using namespace cv;
 
+//========================================methopd names and keys (that should be in config files)========================================
+const string SIFT_STR = "SIFT";
+const string ROOTSIFT_STR = "RootSIFT";
+const string PRECISE_ROOTSIFT_STR = "Precise RootSIFT";
+const string ORB_STR =  "ORB";
+
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
+const string BEBLID_STR = "BEBLID";
+#endif
+
+const string BF_MATCHING_STR = "BF_matching";
+const string FLANN_MATCHING_STR = "FLANN_matching";
+
 //========================================console========================================
 ///Enum for specifying the output type
 enum class EOutputType {
@@ -110,60 +123,55 @@ enum class EAlgorithm {
   Just a struct to pass all the parameters for the algorithms in the program
 */
 struct SProcessParams {
-    //keypoints and descriptors
-	const EAlgorithm detectMethod_;
-	const EAlgorithm describeMethod_;
-	const SSIFTParams siftParams_;
-	const SORBParams orbParams_;
+	//keypoints and descriptors
+	EAlgorithm detectMethod_;
+	EAlgorithm describeMethod_;
+	SSIFTParams siftParams_;
+	SORBParams orbParams_;
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
-	const SBEBLIDParams beblidParams_;
+	SBEBLIDParams beblidParams_;
 #endif
 
-	const EAlgorithm matchingMethod_;
-	const double loweRatioTestAlpha_;
-	const SCameraInfo cameraInfo_;
-	const bool considerPhoneHoldHeight_;
-	const bool calcProjectionFrom3D_;
-	const bool calcGCSLocation_;
+	EAlgorithm matchingMethod_;
+	double loweRatioTestAlpha_;
+	SCameraInfo cameraInfo_;
+	bool considerPhoneHoldHeight_;
+	bool calcProjectionFrom3D_;
+	bool calcGCSLocation_;
 
 
-#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 	///basic constructor
-	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
-		SORBParams orbParams, SBEBLIDParams beblidParams, EAlgorithm matchingMethod, double loweRatioTestAlpha,
-		const SCameraInfo& cameraInfo, bool considerPhoneHoldHeight, bool calcProjectionFrom3D, bool calcGCSLocation)
+	SProcessParams(const EAlgorithm& detectMethod,
+		const EAlgorithm& describeMethod,
+		SSIFTParams siftParams,
+		SORBParams orbParams,
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
+		SBEBLIDParams beblidParams,
+#endif
+		EAlgorithm matchingMethod,
+		double loweRatioTestAlpha,
+		const SCameraInfo& cameraInfo,
+		bool considerPhoneHoldHeight,
+		bool calcProjectionFrom3D,
+		bool calcGCSLocation)
 		:
 		detectMethod_(detectMethod),
 		describeMethod_(describeMethod),
 		siftParams_(siftParams),
 		orbParams_(orbParams),
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
 		beblidParams_(beblidParams),
-		matchingMethod_(matchingMethod),
-		loweRatioTestAlpha_(loweRatioTestAlpha),
-		cameraInfo_(cameraInfo),
-		considerPhoneHoldHeight_(considerPhoneHoldHeight),
-		calcProjectionFrom3D_(calcProjectionFrom3D),
-		calcGCSLocation_(calcGCSLocation)
-	{}
-#else
-	///basic constructor without experimental methods
-	SProcessParams(const EAlgorithm& detectMethod, const EAlgorithm& describeMethod, SSIFTParams siftParams,
-		SORBParams orbParams, EAlgorithm matchingMethod, double loweRatioTestAlpha,
-		const SCameraInfo& cameraInfo, bool considerPhoneHoldHeight, bool calcProjectionFrom3D, bool calcGCSLocation)
-		:
-	detectMethod_(detectMethod),
-		describeMethod_(describeMethod),
-		siftParams_(siftParams),
-		orbParams_(orbParams),
-		matchingMethod_(matchingMethod),
-		loweRatioTestAlpha_(loweRatioTestAlpha),
-		cameraInfo_(cameraInfo),
-		considerPhoneHoldHeight_(considerPhoneHoldHeight),
-		calcProjectionFrom3D_(calcProjectionFrom3D),
-		calcGCSLocation_(calcGCSLocation)
-	{}
 #endif
+		matchingMethod_(matchingMethod),
+		loweRatioTestAlpha_(loweRatioTestAlpha),
+		cameraInfo_(cameraInfo),
+		considerPhoneHoldHeight_(considerPhoneHoldHeight),
+		calcProjectionFrom3D_(calcProjectionFrom3D),
+		calcGCSLocation_(calcGCSLocation)
+	{}
 };
 
 ///Function that gives strings (with algorithm names) to all members of EAlgorithm enum
 string algToStr(const EAlgorithm alg);
+
+EAlgorithm strToAlg(const string& str);

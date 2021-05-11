@@ -5,8 +5,7 @@ Ptr<CImage> CImageBuilder::build(const string& imageFilePath, const SProcessPara
 {
     double rightLongtitude, rightLatitude, leftLongtitude, leftlatitude;
     if (params.calcGCSLocation_ && !sceneImage) {
-        size_t found = imageFilePath.find_last_of('.');
-        string filepathWithoutSuffix = imageFilePath.substr(0, found);
+        string filepathWithoutSuffix = sio::getFilePathWithoutSuffix(imageFilePath);
         try {
             // Create a root
             pt::ptree root;

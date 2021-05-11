@@ -1,0 +1,7 @@
+{
+    "references" : "config/references.json",
+    "scenes" : "config/scenes.json",
+    "parameters" : "config/parameters.json",
+	"output_root" : "output/final_testing/",
+	"run_name" : "testingJsons"
+}

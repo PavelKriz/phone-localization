@@ -23,94 +23,9 @@
 
 using namespace cv;
 
-//========================================tests and files parameters========================================
-
-const string OUTPUT_ROOT = "output\\final_testing\\";
-const string imagesRoot = "input_images\\";
-const string dumRottRoot = imagesRoot + "dum_rott\\";
-const string PopovaSelectionRoot = "Popova_selection\\";
-
-//if the output is going to be to files or only to the console
-const EOutputType OUTPUT_TYPE = EOutputType::FILE;
-//display the result in the run?
-const bool PREVIEW_RESULT = true;
-
-//define test numbers
-#define TEST1 1
-#define TEST2 2 
-
-//Current used test / tests are changed with preprocessor
-#define CURRENT_TEST TEST1
-
-//inits for each tests
-#if CURRENT_TEST == TEST1
-	const bool CALC_PROJECTION_FROM_3D = true;
-	const bool CALC_GCS_LOCATION = true;
-	//scene was taken with XIAOMI REDMI 5 PLUS (smartphone back camera) (~ 4.96 x 3.72 mm)
-	//const double CAMERA_FOCAL_LENGTH = 4;
-	//const double CAMERA_CHIP_SIZE_X = 4.96;
-	//const double CAMERA_CHIP_SIZE_Y = 3.72;
-	//scene was taken with Iphone 7 Plus - (~ 4.8 x 3.6 mm)
-	const double CAMERA_FOCAL_LENGTH = 4;
-	const double CAMERA_CHIP_SIZE_X = 4.8;
-	const double CAMERA_CHIP_SIZE_Y = 3.6;
-	//const string SCENE_FILE_PATH = dumRottRoot + "dumRottScene2.jpg";
-	//const string SCENE_FILE_PATH = imagesRoot + "white_house\\" + "whiteHouse1.jpg";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building48_photo2.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building48_photo3.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building20_photo2.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building20_photo4.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building5_photo3.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building5_photo4.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building6_photo4.JPG";
-	const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building6_photo2.JPG";
-	//const string SCENE_FILE_PATH = dumRottRoot + "dumRottScene3.jpg";
-	//const string SCENE_FILE_PATH = dumRottRoot + "dumRottScene5.jpg";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building9_photo5.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building9_photo3.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building8_photo1.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building8_photo2.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + PopovaSelectionRoot + "scn\\_building8_photo4.JPG";
-	//const string SCENE_FILE_PATH = imagesRoot + "white_house\\" + "whiteHouse2.jpg";
-	//const string SCENE_FILE_PATH = imagesRoot + "white_house\\" + "storchuv_dum.jpg";
-	const vector<string> OBJECT_FILE_PATHS = { dumRottRoot + "dumRottRef.png",
-		imagesRoot + "white_house\\" + "whiteHouse2ref.jpg",
-		imagesRoot + "white_house\\" + "storchuv_dum_ref1.jpg",
-		imagesRoot + "white_house\\" + "storchuv_dum_ref2.jpg",
-		imagesRoot + PopovaSelectionRoot + "obj\\_building48_photo2_b_neut_transform.jpg",
-		imagesRoot + PopovaSelectionRoot + "obj\\_building20_photo2_b_neut_transform.jpg",
-		imagesRoot + PopovaSelectionRoot + "obj\\_building5_photo4_b_neut_transform.jpg" ,
-		imagesRoot + PopovaSelectionRoot + "obj\\_building5_photo4_b_neut_transform_half.jpg",
-		imagesRoot + PopovaSelectionRoot + "obj\\_building6_photo4_b_neut_transform.jpg",
-		imagesRoot + PopovaSelectionRoot + "obj\\_building9_photo5_b_neut_transform.jpg",
-		imagesRoot + PopovaSelectionRoot + "obj\\_building9_photo3_b_neut_transform.jpg",
-		imagesRoot + PopovaSelectionRoot + "obj\\_building8_photo2_b_neut_transform.jpg",
-		imagesRoot + PopovaSelectionRoot + "obj\\_building8_photo4_b_neut_transform.jpg" };
-	const string RUN_NAME = "COLUMN3";
-#elif CURRENT_TEST == TEST2
-	const string SCENE_FILE_PATH = sefcikImagesScenes[13];
-	const vector<string> OBJECT_FILE_PATHS = sefcikImagesObjects;
-	const string RUN_NAME = "SIFT_ROOTSIFT_BF_1";  //better to write spaces with underscore and not to do camelcase
-#endif
-
-//========================================timing optimalizations========================================
-//used for logger optimalisation in case of loggers
-//timing of the calculation - needed when the timing is the highest priority
-//timing information whether the timing optimalization will take placeand the images wont be saved
-//in general is usually not needed even for the testing since the loggers are done in a way that the image saving is done on the application end
-//reccomended value is false for almost all cases
-const bool TIMING = false;
-
-//========================================chosen algorithms for matching, describing, matching========================================
-const EAlgorithm DETECT_METHOD = EAlgorithm::ALG_SIFT;
-const EAlgorithm DESCRIBE_METHOD = EAlgorithm::ALG_ROOTSIFT;
-const EAlgorithm MATCHING_METHOD = EAlgorithm::ALG_BF_MATCHING;
-
 //========================================SIFT parameters========================================
 //SIFT TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)
 //used only when SIFT is chosen as a used method
-const bool SIFT_N_FEATURES_TEST = true;
-const int SIFT_N_FEATURES = 1000;
 const bool SIFT_N_OCTAVE_LAYERS_TEST = false;
 const int SIFT_N_OCTAVE_LAYERS = 3;
 const bool SIFT_CONTRAST_THRESHOLD_TEST = false;
@@ -125,8 +40,6 @@ const double SIFT_SIGMA = 1.6;
 // https://stackoverflow.com/questions/28024048/how-to-get-efficient-result-in-orb-using-opencv-2-4-9
 //ORB TEST PARAMETERS (if set to false default value is choosen, otherwise the value stated here is chosen)
 //used only when ORB is chosen as a used method
-const bool ORB_N_FEATURES_TEST = true;
-const int ORB_N_FEATURES = 1000;
 const bool ORB_SCALE_FACTOR_TEST = false;
 const float ORB_SCALE_FACTOR = 1.2f;
 const bool ORB_N_LEVELS_TEST = false;
@@ -151,14 +64,33 @@ const bool BEBLID_N_BITS_TEST = true;
 const xfeatures2d::BEBLID::BeblidSize BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_512_BITS;
 #endif
 
-//========================================Lowe's ratio test parameter========================================
-const float LOWE_RATIO_TEST_ALPHA = 0.75f;
+//========================================JSON INPUT PARAMETERS========================================
+const string ROOT_CONFIG_JSON_FILE = "config.json";
 
-//========================================3D locating and positioning parameters========================================
-/* *
- * @brief if enabled it will increase the precsion of algorithmn on plane surface
- * (if there would be hills it would be broken anyway so it should be true in most cases)
- * good mainly if is in the scene a building object (building that is not like angled tower in Pisa, but straight building)
- * it enables straightaning the geometry, but in some places where there is a risc that the object geometry is not perpendicular to the ground it might be disabled
- */
-const bool CONSIDER_PHONE_HOLD_HEIGHT = true; ///< (if there would be hills it would be broken anyway so it should be true always)
+const string CONFIG_RUN_NAME_JSON_KEY = "run_name";
+const string CONFIG_REFERENCES_JSON_KEY = "references";
+const string CONFIG_SCENES_JSON_KEY = "scenes";
+const string CONFIG_OUTPUT_ROOT_JSON_KEY = "output_root";
+const string CONFIG_PARAMETERS_JSON_KEY = "parameters";
+
+const string REFERENCES_FILEPATHS_JSON_KEY = "filepaths";
+
+const string OUTPUT_TYPE_JSON_KEY = "output_type";
+const string PREVIEW_RESULT_JSON_KEY = "preview_result";
+const string TIMING_OPTIMALISATION_JSON_KEY = "timing_optimalisation";
+const string DETECTION_METHOD_JSON_KEY = "detection_method";
+const string DESCRIPTION_METHOD_JSON_KEY = "description_method";
+const string FEATURES_LIMIT_JSON_KEY = "features_limit";
+const string MATCHING_METHOD_JSON_KEY = "matching_method";
+const string RATIO_TEST_ALPHA_JSON_KEY = "ratio_test_alpha";
+const string STANDING_PERSON_OPTIMALISATION_JSON_KEY = "standing_person_optimalisation";
+const string FIND_PROJECTION_JSON_KEY = "find_projection_from_3d";
+const string FIND_GPS_JSON_KEY = "find_GPS";
+
+const string SCENE_INDEX_JSON_KEY = "scene_index";
+const string SCENES_ARRAY_JSON_KEY = "scenes";
+
+const string CAMERA_NAME_JSON_KEY = "camera_name";
+const string FOCAL_LENGTH_JSON_KEY = "focal_length";
+const string SENSOR_SIZE_X_JSON_KEY = "sensor_size_x";
+const string SENSOR_SIZE_Y_JSON_KEY = "sensor_size_y";
