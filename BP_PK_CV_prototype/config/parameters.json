@@ -8,6 +8,6 @@
 	"matching_method" : "BF_matching",
 	"ratio_test_alpha" : 0.7,
 	"standing_person_optimalisation" : true,
-	"find_projection_from_3d" : true,
+	"find_projection_from_3D" : true,
 	"find_GPS" : true
 }

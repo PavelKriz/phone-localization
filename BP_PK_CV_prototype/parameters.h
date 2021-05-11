@@ -88,7 +88,7 @@ const string FEATURES_LIMIT_JSON_KEY = "features_limit";
 const string MATCHING_METHOD_JSON_KEY = "matching_method";
 const string RATIO_TEST_ALPHA_JSON_KEY = "ratio_test_alpha";
 const string STANDING_PERSON_OPTIMALISATION_JSON_KEY = "standing_person_optimalisation";
-const string FIND_PROJECTION_JSON_KEY = "find_projection_from_3d";
+const string FIND_PROJECTION_JSON_KEY = "find_projection_from_3D";
 const string FIND_GPS_JSON_KEY = "find_GPS";
 
 const string SCENE_INDEX_JSON_KEY = "scene_index";
