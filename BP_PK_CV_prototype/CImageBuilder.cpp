@@ -12,10 +12,10 @@ Ptr<CImage> CImageBuilder::build(const string& imageFilePath, const SProcessPara
             // Load the json file in this ptree
             // can throw exceptions if the json isn't valid
             pt::read_json(filepathWithoutSuffix + ".json", root);
-            rightLongtitude = root.get<double>("rightBase.longtitude");
-            rightLatitude = root.get<double>("rightBase.latitude");
-            leftLongtitude = root.get<double>("leftBase.longtitude");
-            leftlatitude = root.get<double>("leftBase.latitude");
+            rightLongtitude = root.get<double>(IMAGE_RIGHT_BASE_LONGITUDE_JSON_KEY);
+            rightLatitude = root.get<double>(IMAGE_RIGHT_BASE_LATITUDE_JSON_KEY);
+            leftLongtitude = root.get<double>(IMAGE_LEFT_BASE_LONGITUDE_JSON_KEY);
+            leftlatitude = root.get<double>(IMAGE_LEFT_BASE_LATITUDE_JSON_KEY);
         } catch (exception& exc){
             throw invalid_argument(string("Error occured while reading json: ") + string(exc.what()));
         }

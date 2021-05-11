@@ -219,6 +219,10 @@ CFileLoader::CFileLoader(const string& rootConfigFilepath)
 
 void CFileLoader::load()
 {
+    if (locked_) {
+        throw logic_error("Trying to load already locked file loader!");
+    }
+    //methods has to be called in following order
     loadRoot();
     loadReferencesFilepaths();
     loadScenes();
@@ -298,3 +302,33 @@ const string& CFileLoader::outputRoot() const
 
     throw logic_error("The configurations have not been loaded yet.");
 }
+
+void CFileLoader::setSIFT(const SSIFTParams& siftParams)
+{
+    if (locked_) {
+        throw logic_error("Trying to set already locked file loader!");
+    }
+    int limitTmp = processParams_.siftParams_.nfeatures_;
+    processParams_.siftParams_ = siftParams;
+    processParams_.siftParams_.nfeatures_ = limitTmp;
+}
+
+void CFileLoader::setORB(const SORBParams& orbParams)
+{
+    if (locked_) {
+        throw logic_error("Trying to set already locked file loader!");
+    }
+    int limitTmp = processParams_.orbParams_.nfeatures_;
+    processParams_.orbParams_ = orbParams;
+    processParams_.orbParams_.nfeatures_ = limitTmp;
+}
+
+#ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
+void CFileLoader::setBEBLID(const SBEBLIDParams& beblidParams)
+{
+    if (locked_) {
+        throw logic_error("Trying to set already locked file loader!");
+    }
+    processParams_.beblidParams_ = beblidParams;
+}
+#endif

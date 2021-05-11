@@ -5,7 +5,7 @@
  * \date       9/4/2021
  * \brief      All parameters that can be set in the program.
  *
- *  Parameters that can be set: test directories, test names, image input files, output, algorithms, algorithms parameters, feature filters parameters.
+ *  Parameters that can be set: advanced settings like individual settings of the methods or hson input keys
  *
 */
 //----------------------------------------------------------------------------------------
@@ -18,8 +18,6 @@
 #include <opencv2/features2d.hpp>
 //include for the implemented enums of methods
 #include "SProcessParams.h"
-//image database
-#include "images.h"
 
 using namespace cv;
 
@@ -65,6 +63,12 @@ const xfeatures2d::BEBLID::BeblidSize BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_
 #endif
 
 //========================================JSON INPUT PARAMETERS========================================
+//image
+const string IMAGE_LEFT_BASE_LONGITUDE_JSON_KEY = "leftBase.longitude";
+const string IMAGE_LEFT_BASE_LATITUDE_JSON_KEY = "leftBase.latitude";
+const string IMAGE_RIGHT_BASE_LONGITUDE_JSON_KEY = "rightBase.longitude";
+const string IMAGE_RIGHT_BASE_LATITUDE_JSON_KEY = "rightBase.latitude";
+//config
 const string ROOT_CONFIG_JSON_FILE = "config.json";
 
 const string CONFIG_RUN_NAME_JSON_KEY = "run_name";

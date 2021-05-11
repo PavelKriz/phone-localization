@@ -48,7 +48,6 @@
     <ClInclude Include="CRuntimeLogger.h" />
     <ClInclude Include="SpecializedInputOutput.h" />
     <ClInclude Include="experimentalModules.h" />
-    <ClInclude Include="images.h" />
     <ClInclude Include="parameters.h" />
     <ClInclude Include="resource1.h" />
     <ClInclude Include="SGcsCoords.h" />

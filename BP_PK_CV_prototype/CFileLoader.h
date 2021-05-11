@@ -41,6 +41,7 @@ class CFileLoader
     //inner values
     bool scenesJsonLoaded = false;
     bool loaded_ = false;
+    bool locked_ = false;
 
     void loadCameraInfo();
     void loadReferencesFilepaths();
@@ -49,7 +50,7 @@ class CFileLoader
     void loadRoot();
 public:
     CFileLoader(const string& rootConfigFilepath);
-    //throws invalid argument
+    //throws invalid argument and logic error
     void load();
     //throws logic error
     const vector<string>& getReferencesFilepaths() const;
@@ -68,10 +69,12 @@ public:
     //throw logic error
     const string& outputRoot() const;
 
-    void setSIFT(const SSIFTParams& siftParams) { processParams_.siftParams_ = siftParams; }
-    void setORB(const SORBParams& orbParams) { processParams_.orbParams_ = orbParams; }
+    void setSIFT(const SSIFTParams& siftParams);
+    void setORB(const SORBParams& orbParams);
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
-    void setBEBLID(const SBEBLIDParams& beblidParams) { processParams_.beblidParams_ = beblidParams; }
+    //throw logic error
+    void setBEBLID(const SBEBLIDParams& beblidParams);
 #endif
+    void lock() { locked_ = true; }
 };
 

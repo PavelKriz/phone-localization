@@ -4,6 +4,7 @@ void COperator::setAdvancedParams(CFileLoader& loader)
 {
     //====================SIFT==========================
     SSIFTParams siftParams;
+    siftParams.nfeatures_ = loader.getProcessParams().siftParams_.nfeatures_;
     if (SIFT_N_OCTAVE_LAYERS_TEST) {
         siftParams.nOctaveLayers_ = SIFT_N_OCTAVE_LAYERS;
     }
@@ -20,6 +21,7 @@ void COperator::setAdvancedParams(CFileLoader& loader)
 
     //====================ORB==========================
     SORBParams orbParams;
+    orbParams.nfeatures_ = loader.getProcessParams().orbParams_.nfeatures_;
     if (ORB_SCALE_FACTOR_TEST) {
         orbParams.scaleFactor_ = ORB_SCALE_FACTOR;
     }
@@ -224,6 +226,8 @@ int COperator::run()
     try {
         //set advanced
         setAdvancedParams(fileLoader);
+        //lock the file loader so there is not any bad configuration during further run in the program
+        fileLoader.lock();
         //log the settings
         logParams(logger, fileLoader);
         //run the algorithms

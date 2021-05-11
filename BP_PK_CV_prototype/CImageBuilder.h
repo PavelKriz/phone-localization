@@ -13,6 +13,7 @@ namespace pt = boost::property_tree;
 #include "SGcsCoords.h"
 #include "SProcessParams.h"
 #include "SpecializedInputOutput.h"
+#include "parameters.h"
 
 
 class CImageBuilder
