@@ -254,5 +254,6 @@ int COperator::run()
     }
 
     consoleLogger->logSection("FINISHED", 0);
+    system("pause");
     return 1;
 }

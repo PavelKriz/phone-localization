@@ -17,7 +17,7 @@ void CFileLogger::checkAndCreateOutputDir()
 		boost::filesystem::create_directories(outputRoot_);
 	}
 	catch (exception& e) {
-		throw invalid_argument("File output failed!");
+		throw invalid_argument(string("File output failed! System message: ") + e.what());
 	}
 }
 

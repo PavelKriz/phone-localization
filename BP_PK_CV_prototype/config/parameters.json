@@ -1,5 +1,5 @@
 {
-	"output_type" : "FILE",
+	"output_type" : "CONSOLE",
 	"preview_result" : true,
 	"timing_optimalisation" : false,
 	"detection_method" : "SIFT",

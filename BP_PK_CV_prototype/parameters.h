@@ -62,6 +62,12 @@ const bool BEBLID_N_BITS_TEST = true;
 const xfeatures2d::BEBLID::BeblidSize BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_512_BITS;
 #endif
 
+//========================================CONSOLE IMAGE WINDOWS========================================
+const string PROTOTYPE_NAME = "BP_PK_CV_prototype";
+const string MATCHES_WINDOW_TITLE = PROTOTYPE_NAME + ": matches and homography - detected (left), scene (right)";
+const string VISUALISATION_2D_WINDOW_TITLE = PROTOTYPE_NAME + ": 2D visualisation of homography";
+const string VISUALISATION_3D_WINDOW_TITLE = PROTOTYPE_NAME + ": 3D visualisation (volume recognition)";
+
 //========================================JSON INPUT PARAMETERS========================================
 //image
 const string IMAGE_LEFT_BASE_LONGITUDE_JSON_KEY = "leftBase.longitude";
@@ -71,11 +77,11 @@ const string IMAGE_RIGHT_BASE_LATITUDE_JSON_KEY = "rightBase.latitude";
 //config
 const string ROOT_CONFIG_JSON_FILE = "config.json";
 
-const string CONFIG_RUN_NAME_JSON_KEY = "run_name";
-const string CONFIG_REFERENCES_JSON_KEY = "references";
-const string CONFIG_SCENES_JSON_KEY = "scenes";
-const string CONFIG_OUTPUT_ROOT_JSON_KEY = "output_root";
+const string CONFIG_REFERENCES_JSON_KEY = "reference_images";
+const string CONFIG_SCENES_JSON_KEY = "scene_images";
 const string CONFIG_PARAMETERS_JSON_KEY = "parameters";
+const string CONFIG_OUTPUT_ROOT_JSON_KEY = "output_root";
+const string CONFIG_RUN_NAME_JSON_KEY = "run_name";
 
 const string REFERENCES_FILEPATHS_JSON_KEY = "filepaths";
 

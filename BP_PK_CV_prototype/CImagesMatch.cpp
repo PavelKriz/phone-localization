@@ -226,7 +226,7 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& log
 		scene_corners[0] + Point2d(objectImage_->getImage().cols, 0), Scalar(0, 255, 255), 6);
 
 	//draw the matches and places where the object should be placed in the scene
-	logger->putImage(imageMatches, "Matches");
+	logger->putImage(imageMatches, MATCHES_WINDOW_TITLE);
 
 	//TODO zmenit tuhle matici na barevnou
 	//Mat sceneImageRenderBuffer(sceneImage_->getImage().rows, sceneImage_->getImage().cols, CV_8UC3, Scalar(0, 0, 0));
@@ -256,7 +256,7 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& log
 	logger->log("The result transformation matrix is:").endl();
 	printTransformationMatrix(logger);
 	// draw the object to the scene in the right place
-	logger->putImage(sceneImageRenderBuffer, "Image match");
+	logger->putImage(sceneImageRenderBuffer, VISUALISATION_2D_WINDOW_TITLE);
 
 	
 	//calculate the real location

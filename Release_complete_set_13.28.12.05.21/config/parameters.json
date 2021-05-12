@@ -1,0 +1,13 @@
+{
+	"output_type" : "CONSOLE",
+	"preview_result" : true,
+	"timing_optimalisation" : false,
+	"detection_method" : "SIFT",
+	"description_method" : "SIFT",
+	"features_limit" : 1000,
+	"matching_method" : "BF_matching",
+	"ratio_test_alpha" : 0.7,
+	"standing_person_optimalisation" : true,
+	"find_projection_from_3D" : true,
+	"find_GPS" : true
+}

@@ -1,3 +1,15 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file       CFileLoader.h
+ * \author     Pavel Kriz
+ * \date       10/5/2021
+ * \brief      Contains class loading configuration from files
+ *
+ *  Loading configuration from JSON files
+ *
+*/
+//----------------------------------------------------------------------------------------
+
 #pragma once
 
 //loading boost - used for loading json

@@ -1,3 +1,15 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file       CImageBuilder.h
+ * \author     Pavel Kriz
+ * \date       10/5/2021
+ * \brief      Contains class that correctly constructs CImage class
+ *
+ *  It loads geolocation informations (image data are specificaly loaded by the CImage class)
+ *
+*/
+//----------------------------------------------------------------------------------------
+
 #pragma once
 
 //loading boost - used for loading json
@@ -13,7 +25,6 @@ namespace pt = boost::property_tree;
 #include "SGcsCoords.h"
 #include "SProcessParams.h"
 #include "SpecializedInputOutput.h"
-#include "parameters.h"
 
 
 class CImageBuilder

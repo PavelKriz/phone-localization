@@ -3,7 +3,7 @@
  * \file       CImageLocator3D.h
  * \author     Pavel Kriz
  * \date       1/5/2021
- * \brief      
+ * \brief      Class used to locate the camera of the image in the space (relative towards the building and global position)
 */
 //----------------------------------------------------------------------------------------
 
@@ -29,6 +29,7 @@
 #include "CImage.h"
 #include "SpaceModule.h"
 #include "SProcessParams.h"
+#include "parameters.h"
 
 using namespace std;
 using namespace cv;

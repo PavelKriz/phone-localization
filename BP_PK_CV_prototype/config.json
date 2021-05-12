@@ -1,7 +1,7 @@
 {
-    "references" : "config/references.json",
-    "scenes" : "config/scenes.json",
+    "reference_images" : "config/references.json",
+    "scene_images" : "config/scenes.json",
     "parameters" : "config/parameters.json",
-	"output_root" : "output2/outputTesting4",
-	"run_name" : "testingJsons"
+	"output_root" : "output/outputTesting12.5",
+	"run_name" : "run12.5"
 }

@@ -33,8 +33,8 @@
 
 #include "CImage.h"
 #include "SProcessParams.h"
-#include "SpaceModule.h"
 #include "CImageLocator3D.h"
+#include "parameters.h"
 
 /**
  * @brief Class that handles matches between two object, mainly it represent the match itself

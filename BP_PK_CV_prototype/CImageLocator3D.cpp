@@ -149,7 +149,7 @@ void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCo
 		objectDummyProjected[7], Scalar(0, 255, 255), 8);
 
 	//draw the matches and places where the object should be placed in the scene
-	logger->putImage(dummyInScene, "dummyProjected");
+	logger->putImage(dummyInScene, VISUALISATION_3D_WINDOW_TITLE);
 
 }
 

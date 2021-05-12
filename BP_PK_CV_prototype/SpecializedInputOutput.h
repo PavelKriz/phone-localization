@@ -1,3 +1,13 @@
+//----------------------------------------------------------------------------------------
+/**
+ * \file       SpecializedInputOutput.h
+ * \author     Pavel Kriz
+ * \date       10/5/2021
+ * \brief      Contains functions that has some general purpose in the input or output logics
+ *
+*/
+//----------------------------------------------------------------------------------------
+
 #pragma once
 
 #include <limits>
