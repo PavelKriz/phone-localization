@@ -1,24 +1,46 @@
 #include "CFileLogger.h"
 
 
+string CFileLogger::correctOutputRoot(const string& toCorrect)
+{
+	if (toCorrect.back() != '/' || toCorrect.back() != '\\') {
+		return toCorrect + "/";
+	}
+	else {
+		return toCorrect;
+	}
+}
+
+void CFileLogger::checkAndCreateOutputDir()
+{
+	try {
+		boost::filesystem::create_directories(outputRoot_);
+	}
+	catch (exception& e) {
+		throw invalid_argument("File output failed!");
+	}
+}
+
 CFileLogger::CFileLogger(const string& outputRoot, const string& runName, bool timing)
 	: COstreamLogger(timing),
 		out_(outputRoot + runName + ".txt", ofstream::trunc),
-	outputRoot_(outputRoot),
+	outputRoot_(correctOutputRoot(outputRoot)),
 	runName_(runName)
 {
-
 }
 
 void CFileLogger::flush()
 {
 	//write text to the file
 	ofstream txtOut;
+
 	string outTxtName = outputRoot_ + runName_ + ".txt";
 	if (wasFlushed_) {
+		checkAndCreateOutputDir();
 		txtOut.open(outTxtName, ofstream::app);
 	}
 	else {
+		checkAndCreateOutputDir();
 		txtOut.open(outTxtName, ofstream::trunc);
 	}
 

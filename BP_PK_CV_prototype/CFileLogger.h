@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <boost/filesystem.hpp>
 
 
 //reading writing images
@@ -55,6 +56,9 @@ protected:
 	 * @brief the logger will start behaving as normally
 	*/
 	virtual void emergencyEnd() override { emergencyMode_ = false; }
+
+	string correctOutputRoot(const string& toCorrect);
+	void checkAndCreateOutputDir();
 public:
 	/**
 	 * @brief empty constructor is deleted

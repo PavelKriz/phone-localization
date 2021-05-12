@@ -2,6 +2,6 @@
     "references" : "config/references.json",
     "scenes" : "config/scenes.json",
     "parameters" : "config/parameters.json",
-	"output_root" : "output/final_testing/",
+	"output_root" : "output2/outputTesting4",
 	"run_name" : "testingJsons"
 }

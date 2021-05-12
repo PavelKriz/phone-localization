@@ -203,10 +203,12 @@ int COperator::run()
     }
     catch (invalid_argument& e) {
         std::cout << e.what() << endl;
+        system("pause");
         return -1;
     } 
     catch (logic_error& e) {
         std::cout << e.what() << endl;
+        system("pause");
         return -1;
     }
 
@@ -237,14 +239,17 @@ int COperator::run()
     }
     catch (ios_base::failure e) {
         logger->logError(e.what());
+        system("pause");
         return -1;
     }
     catch (invalid_argument e) {
         logger->logError(e.what());
+        system("pause");
         return -1;
     }
     catch (logic_error e) {
         logger->logError(e.what());
+        system("pause");
         return -1;
     }
 
