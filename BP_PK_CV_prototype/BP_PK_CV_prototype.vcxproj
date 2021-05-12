@@ -49,13 +49,9 @@
     <ClInclude Include="SpecializedInputOutput.h" />
     <ClInclude Include="experimentalModules.h" />
     <ClInclude Include="parameters.h" />
-    <ClInclude Include="resource1.h" />
     <ClInclude Include="SGcsCoords.h" />
     <ClInclude Include="SpaceModule.h" />
     <ClInclude Include="SProcessParams.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="BP_PK_CV_prototype1.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
