@@ -81,14 +81,16 @@ void CObjectInSceneFinder::run( const string& runName, bool viewResult)
 		log("[ms]").endl();
 
 	bestMatchIndex_ = bestScoreIndex;
-	logger_->logSection("Result", 2);
+
+	logger_->logSection("Results", 1);
+	logger_->logSection("Detected image", 2);
 	logger_->log("Best object match for scene is object with compare index: ").log(to_string(bestMatchIndex_)).endl();
 	logger_->log("Best object match for scene is object with filepath: ").log(objectImages_[bestMatchIndex_]->getFilePath()).endl();
 
 	if (viewResult) {
 
 		matches_[bestMatchIndex_].drawPreviewAndResult(runName, logger_, params_);
-		logger_->log("The result object stats: ").endl();
+		logger_->logSection("The result object stats",2);
 		logger_->log("Avarage feature match distance: ").log(to_string(matches_[bestMatchIndex_].getAvarageMatchesDistance())).endl();
 		logger_->log("Average first to second ratio is  ").log(to_string(matches_[bestMatchIndex_].getAvarageFirstToSecondRatio())).endl();
 		logger_->log("Ratio of filtered matches to number of keypoints of object is: ").log(to_string(matches_[bestMatchIndex_].getMatchedObjectFeaturesRatio())).endl();

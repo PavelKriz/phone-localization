@@ -83,7 +83,7 @@ CLogger& COstreamLogger::log(const sm::SGcsCoords& toLog)
 {
 	streamsize prevPrecision = out().precision();
 	out() << setprecision(9); //commonly used precsion for global coordinates
-	out() << "[ latitude, longtitude]: " << toLog.latitude_ << ", " << toLog.longtitude_;
+	out() << "[ latitude, longitude]: " << toLog.latitude_ << ", " << toLog.longitude;
 	out().precision(prevPrecision);
 	return *this;
 }

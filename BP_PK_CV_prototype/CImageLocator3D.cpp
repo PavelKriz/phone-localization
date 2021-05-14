@@ -92,7 +92,7 @@ Mat CImageLocator3D::projectWorldSpacetoImage(const Mat& toProject) const
 	point2DNorm.at<double>(0) = point2Dtmp.at<double>(0) / point2Dtmp.at<double>(2);
 	point2DNorm.at<double>(1) = point2Dtmp.at<double>(1) / point2Dtmp.at<double>(2);
 	
-	return projectCameraSpacetoImage(RTMatrix_ * toProject);
+	return point2DNorm;
 }
 
 void CImageLocator3D::projectBuildingDraftIntoScene(const vector<Point3d>& objCorners3D, Ptr<CLogger>& logger) const
@@ -178,8 +178,8 @@ Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1HomV
 		double distance = sm::distance(p2Vec.at<double>(0), p2Vec.at<double>(1), p2Vec.at<double>(2),
 			p3Vec.at<double>(0), p3Vec.at<double>(1), p3Vec.at<double>(2));
 		double distScaleFactor = distance / gcsDistance; //how much units is one meter in our 
-		logger->log("gcsDistance").log(to_string(gcsDistance)).endl();
-		logger->log("our distance").log(to_string(distance)).endl();
+		//logger->log("gcsDistance").log(to_string(gcsDistance)).endl();
+		//logger->log("our distance").log(to_string(distance)).endl();
 		double cameraOffsetFromGround = sm::HUMAN_HEIGHT - sm::CAMERA_HOLDING_OFFSET;
 		double lenghtInCameraSpaceUnits = cameraOffsetFromGround * distScaleFactor;
 
@@ -224,9 +224,9 @@ Mat CImageLocator3D::getCorrectionMatrixForTheCameraLocalSpace(const Mat& p1HomV
 
 double CImageLocator3D::computeFlatRotation(const sm::SGcsCoords& gcsCamera, const sm::SGcsCoords& gcsP2, const sm::SGcsCoords& gcsP3)
 {
-	Point2d gcsObjectMidPoint = sm::getMidPoint2D(gcsP2.longtitude_, gcsP2.latitude_, gcsP3.longtitude_, gcsP3.latitude_);
+	Point2d gcsObjectMidPoint = sm::getMidPoint2D(gcsP2.longitude, gcsP2.latitude_, gcsP3.longitude, gcsP3.latitude_);
 	double longCorrectFactor = sm::longtitudeAdjustingFactor(gcsP3.latitude_);
-	double camToMidPointVecX = (gcsObjectMidPoint.x * longCorrectFactor) - (gcsCamera.longtitude_* longCorrectFactor);
+	double camToMidPointVecX = (gcsObjectMidPoint.x * longCorrectFactor) - (gcsCamera.longitude* longCorrectFactor);
 	double camToMidPointVecY = gcsObjectMidPoint.y - gcsCamera.latitude_;
 	double radRotation = sm::getVecRotFromEast(camToMidPointVecX, camToMidPointVecY);
 	flatGroundObjRotationFromEast_ = Quatd::createFromAngleAxis(radRotation, Vec3d(0.0, 1.0, 0.0));
@@ -248,22 +248,22 @@ void CImageLocator3D::gcsLocatingProblemFrom3Dto2D(vector<Point3d> objCorners3D,
 		objCornersCameraSpaceHomVec[i] = RTMatrix_ * objCornersHomVec3D[i];
 	}
 
-	//PRINT THE RESULT I GOT
-	logger->log("Points coordinates in the local camera space:").endl();
-	for (size_t i = 0; i < objCornersCameraSpaceHomVec.size(); ++i) {
-		logger->log(objCornersCameraSpaceHomVec[i]).endl();
-	}
+	////PRINT THE RESULT I GOT
+	//logger->log("Points coordinates in the local camera space:").endl();
+	//for (size_t i = 0; i < objCornersCameraSpaceHomVec.size(); ++i) {
+	//	logger->log(objCornersCameraSpaceHomVec[i]).endl();
+	//}
 
-	logger->log("Check space corners").endl();
-	std::vector<Mat> checkImageSpaceCorners(4);
-	for (size_t i = 0; i < 4; ++i) {
-		logger->log(projectWorldSpacetoImage(objCornersCameraSpaceHomVec[i])).endl();
-	}
+	//logger->log("Check space corners").endl();
+	//std::vector<Mat> checkImageSpaceCorners(4);
+	//for (size_t i = 0; i < 4; ++i) {
+	//	logger->log(projectWorldSpacetoImage(objCornersCameraSpaceHomVec[i])).endl();
+	//}
 
-	logger->log("Scene corners").endl();
-	for (size_t i = 0; i < 4; ++i) {
-		logger->log(sceneCorners[i]).endl();
-	}
+	//logger->log("Scene corners").endl();
+	//for (size_t i = 0; i < 4; ++i) {
+	//	logger->log(sceneCorners[i]).endl();
+	//}
 
 	//correcting the points with calculating the right rotation (rotating the world to match the flat ground in one axis - the ground is flat then) 
 	Mat correctionMatrix = getCorrectionMatrixForTheCameraLocalSpace(
@@ -277,9 +277,9 @@ void CImageLocator3D::gcsLocatingProblemFrom3Dto2D(vector<Point3d> objCorners3D,
 	p2Out = Point2d(objCornerOnPlaneVec2.at<double>(0), objCornerOnPlaneVec2.at<double>(2));
 	p3Out = Point2d(objCornerOnPlaneVec3.at<double>(0), objCornerOnPlaneVec3.at<double>(2));
 
-	logger->log("changeBasis").endl().log(correctionMatrix).endl();
-	logger->log("New basis point two").endl().log(objCornerOnPlaneVec2).endl();
-	logger->log("New basis point three").endl().log(objCornerOnPlaneVec3).endl();
+	//logger->log("changeBasis").endl().log(correctionMatrix).endl();
+	//logger->log("New basis point two").endl().log(objCornerOnPlaneVec2).endl();
+	//logger->log("New basis point three").endl().log(objCornerOnPlaneVec3).endl();
 }
 
 void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>& sceneCorners, Ptr<CLogger>& logger)
@@ -287,7 +287,7 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 	//inspiration for this code was taken from this OpenCV tutorial https://docs.opencv.org/master/dc/d2c/tutorial_real_time_pose.html
 
 	
-	logger->logSection("debug info start", 2);
+	logger->logSection("3D and GPS results", 2);
 
 	sm::SGcsCoords gcsPoint2 =  objectImage_->getRightBaseGc();
 	sm::SGcsCoords gcsPoint3 =  objectImage_->getLeftBaseGc();
@@ -329,8 +329,8 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 		projectBuildingDraftIntoScene(objCorners3D, logger);
 	}
 
-	logger->log("RVec_: ").log(RVec_).endl();
-	logger->log("TVec_: ").log(TVec_).endl();
+	//logger->log("RVec_: ").log(RVec_).endl();
+	//logger->log("TVec_: ").log(TVec_).endl();
 	logger->log("RTMatrix_: ").endl().log(RTMatrix_).endl();
 
 	projectionProcessed_ = true;
@@ -345,10 +345,9 @@ void CImageLocator3D::calcLocation(vector<Point2d>& obj_corners, vector<Point2d>
 	cameraGcsLoc_ = sm::solve3Kto2Kand1U(Point2d(0.0, 0.0), pointTwo, pointThree, gcsPoint2, gcsPoint3, logger);
 	double objAngleRad = computeFlatRotation(cameraGcsLoc_, gcsPoint2, gcsPoint3);
 
-	logger->logSection("debug info end", 2);
-
 	logger->log("camera location: ").log(cameraGcsLoc_).endl();
-	logger->log("object is in rotated from east in angle: ").log(to_string(sm::radToDeg(objAngleRad))).endl();
+	logger->log("object is rotated from the east in angle: ").log(to_string(sm::radToDeg(objAngleRad))).endl();
+	logger->log("Previous rotation in form of quaternion").log(Mat(flatGroundObjRotationFromEast_.toVec())).endl();
 
 	gcsProcessed_ = true;
 }

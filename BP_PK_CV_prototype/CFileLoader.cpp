@@ -20,17 +20,17 @@ void CFileLoader::loadCameraInfo()
         sensorSizeY = root.get<float>(SENSOR_SIZE_Y_JSON_KEY);
     }
     catch (exception& exc) {
-        throw invalid_argument(jsonErrorIntroduction_ + exc.what());
+        throw ios_base::failure(jsonErrorIntroduction_ + exc.what());
     }
 
     if (!sio::numberInPositiveRange<float>(focalLength)) {
-        throw invalid_argument(jsonErrorIntroduction_ + "Focal length has to be positive number!");
+        throw ios_base::failure(jsonErrorIntroduction_ + "Focal length has to be positive number!");
     }
     if (!sio::numberInPositiveRange<float>(sensorSizeX)) {
-        throw invalid_argument(jsonErrorIntroduction_ + "Size of sensor has to be positive number!");
+        throw ios_base::failure(jsonErrorIntroduction_ + "Size of sensor has to be positive number!");
     }
     if (!sio::numberInPositiveRange<float>(sensorSizeY)) {
-        throw invalid_argument(jsonErrorIntroduction_ + "Size of sensor has to be positive number!");
+        throw ios_base::failure(jsonErrorIntroduction_ + "Size of sensor has to be positive number!");
     }
 
     processParams_.cameraInfo_.focalLength_ = focalLength;
@@ -51,7 +51,7 @@ void CFileLoader::loadReferencesFilepaths()
         }
     }
     catch (exception& exc) {
-        throw invalid_argument(jsonErrorIntroduction_ + exc.what());
+        throw ios_base::failure(jsonErrorIntroduction_ + exc.what());
     }
 }
 
@@ -89,7 +89,7 @@ void CFileLoader::loadProcessParameters()
         findGPS = root.get<bool>(FIND_GPS_JSON_KEY);
     }
     catch (exception& exc) {
-        throw invalid_argument(jsonErrorIntroduction_ + exc.what());
+        throw ios_base::failure(jsonErrorIntroduction_ + exc.what());
     }
 
 //===========prepare values==========
@@ -99,7 +99,7 @@ void CFileLoader::loadProcessParameters()
         matchingMethodAlg = strToAlg(matchingMethod);
     }
     catch (invalid_argument& ia) {
-        throw invalid_argument(jsonErrorIntroduction_ + ia.what());
+        throw ios_base::failure(jsonErrorIntroduction_ + ia.what());
     }
     if (outputType == "FILE") {
         outputType_ = EOutputType::FILE;
@@ -108,15 +108,15 @@ void CFileLoader::loadProcessParameters()
         outputType_ = EOutputType::CONSOLE;
     }
     else {
-        throw invalid_argument(jsonErrorIntroduction_ + OUTPUT_TYPE_JSON_KEY + " can have value only \"FILE\" or \"CONSOLE\"");
+        throw ios_base::failure(jsonErrorIntroduction_ + OUTPUT_TYPE_JSON_KEY + " can have value only \"FILE\" or \"CONSOLE\"");
     }
 
     //check values
     if (!sio::numberInPositiveRange<int>(featuresLimit)) {
-        throw invalid_argument(jsonErrorIntroduction_ + "Limit of the features has to be positive value!");
+        throw ios_base::failure(jsonErrorIntroduction_ + "Limit of the features has to be positive value!");
     }
     if (!sio::numberInRange<double>(ratioTestAlpha, 0.5, 1.0)) {
-        throw invalid_argument(jsonErrorIntroduction_ + "Lowe's ratio test alpha has to be in range <0.5, 1.0>!");
+        throw ios_base::failure(jsonErrorIntroduction_ + "Lowe's ratio test alpha has to be in range <0.5, 1.0>!");
     }
 
 //=========fill values============
@@ -166,12 +166,12 @@ void CFileLoader::loadScenes()
         }
     }
     catch (exception& exc) {
-        throw invalid_argument(jsonErrorIntroduction_ + exc.what());
+        throw ios_base::failure(jsonErrorIntroduction_ + exc.what());
     }
     
     //check values
     if (!sio::numberInRange<int>(sceneIndex, (int)0, (int) scenesFilepaths_.size())) {
-        throw invalid_argument(jsonErrorIntroduction_ + 
+        throw ios_base::failure(jsonErrorIntroduction_ +
             "Scene index has to be a valid index (0 <= index < number of scenes in array )" + SCENES_ARRAY_JSON_KEY);
     }
     sceneIndex_ = (size_t)sceneIndex;
@@ -193,7 +193,7 @@ void CFileLoader::loadRoot()
         parametersJsonFilePath_ = root.get<string>(CONFIG_PARAMETERS_JSON_KEY);
     }
     catch (exception& exc) {
-        throw invalid_argument(jsonErrorIntroduction_ + exc.what());
+        throw ios_base::failure(jsonErrorIntroduction_ + exc.what());
     }
 }
 

@@ -17,7 +17,7 @@ Ptr<CImage> CImageBuilder::build(const string& imageFilePath, const SProcessPara
             leftLongtitude = root.get<double>(IMAGE_LEFT_BASE_LONGITUDE_JSON_KEY);
             leftlatitude = root.get<double>(IMAGE_LEFT_BASE_LATITUDE_JSON_KEY);
         } catch (exception& exc){
-            throw invalid_argument(string("Error occured while reading json: ") + string(exc.what()));
+            throw ios_base::failure(string("Error occured while reading json: ") + string(exc.what()));
         }
     }
     else {

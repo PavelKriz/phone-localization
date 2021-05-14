@@ -127,7 +127,7 @@ public:
 	 * @param filePath filepath of the image (with the image itself, relative to the place where the app is running)
 	 * @param rightBaseGc global coordinates at the right base/corner of the image (coordinates of the place at the corner)
 	 * @param leftBaseGc global coordinates at the left base/corner of the image (coordinates of the place at the corner)
-	 * @throw ios_base::failure
+	 * @throw ios_base::failure in case of any io failure
 	*/
 	CImage(const string& filePath, const sm::SGcsCoords& rightBaseGc, const sm::SGcsCoords& leftBaseGc);
 	/**

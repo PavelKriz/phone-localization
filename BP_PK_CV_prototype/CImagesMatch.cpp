@@ -253,6 +253,7 @@ void CImagesMatch::drawPreviewAndResult(const string& runName, Ptr<CLogger>& log
 			}
 		}
 	}
+	logger->logSection("2D result", 2);
 	logger->log("The result transformation matrix is:").endl();
 	printTransformationMatrix(logger);
 	// draw the object to the scene in the right place

@@ -25,6 +25,11 @@ using namespace std;
 
 /**
  * @brief Class holds static methods that execute the program and initiate the parameters that are being passed in the app
+ * 
+ * 1. it calls the file configuration loading 
+ * 2. creates loggers
+ * 3. runs the calculation objects
+ * 
 */
 class COperator
 {

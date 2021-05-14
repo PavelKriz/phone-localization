@@ -3,7 +3,7 @@
 
 string CFileLogger::correctOutputRoot(const string& toCorrect)
 {
-	if (toCorrect.back() != '/' || toCorrect.back() != '\\') {
+	if (toCorrect.back() != '/' && toCorrect.back() != '\\' ) {
 		return toCorrect + "/";
 	}
 	else {
@@ -17,7 +17,7 @@ void CFileLogger::checkAndCreateOutputDir()
 		boost::filesystem::create_directories(outputRoot_);
 	}
 	catch (exception& e) {
-		throw invalid_argument(string("File output failed! System message: ") + e.what());
+		throw ios_base::failure(string("File output failed! System message: ") + e.what());
 	}
 }
 

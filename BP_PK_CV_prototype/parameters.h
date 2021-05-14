@@ -63,28 +63,32 @@ const xfeatures2d::BEBLID::BeblidSize BEBLID_N_BITS = xfeatures2d::BEBLID::SIZE_
 #endif
 
 //========================================CONSOLE IMAGE WINDOWS========================================
+//titles of the displayed windows
 const string PROTOTYPE_NAME = "BP_PK_CV_prototype";
 const string MATCHES_WINDOW_TITLE = PROTOTYPE_NAME + ": matches and homography - detected (left), scene (right)";
 const string VISUALISATION_2D_WINDOW_TITLE = PROTOTYPE_NAME + ": 2D visualisation of homography";
 const string VISUALISATION_3D_WINDOW_TITLE = PROTOTYPE_NAME + ": 3D visualisation (volume recognition)";
 
 //========================================JSON INPUT PARAMETERS========================================
-//image
-const string IMAGE_LEFT_BASE_LONGITUDE_JSON_KEY = "leftBase.longitude";
-const string IMAGE_LEFT_BASE_LATITUDE_JSON_KEY = "leftBase.latitude";
-const string IMAGE_RIGHT_BASE_LONGITUDE_JSON_KEY = "rightBase.longitude";
-const string IMAGE_RIGHT_BASE_LATITUDE_JSON_KEY = "rightBase.latitude";
-//config
-const string ROOT_CONFIG_JSON_FILE = "config.json";
+const string ROOT_CONFIG_JSON_FILE = "config.json"; ///<main JSON config relative filepath
 
+
+// keys in the JSON files - may be changed here but they than have to be changed in the JSON files too 
+
+//root config
 const string CONFIG_REFERENCES_JSON_KEY = "reference_images";
 const string CONFIG_SCENES_JSON_KEY = "scene_images";
 const string CONFIG_PARAMETERS_JSON_KEY = "parameters";
 const string CONFIG_OUTPUT_ROOT_JSON_KEY = "output_root";
 const string CONFIG_RUN_NAME_JSON_KEY = "run_name";
-
+//reference image JSON
+const string IMAGE_LEFT_BASE_LONGITUDE_JSON_KEY = "leftBase.longitude";
+const string IMAGE_LEFT_BASE_LATITUDE_JSON_KEY = "leftBase.latitude";
+const string IMAGE_RIGHT_BASE_LONGITUDE_JSON_KEY = "rightBase.longitude";
+const string IMAGE_RIGHT_BASE_LATITUDE_JSON_KEY = "rightBase.latitude";
+//reference images filepaths
 const string REFERENCES_FILEPATHS_JSON_KEY = "filepaths";
-
+//parameters JSON
 const string OUTPUT_TYPE_JSON_KEY = "output_type";
 const string PREVIEW_RESULT_JSON_KEY = "preview_result";
 const string TIMING_OPTIMALISATION_JSON_KEY = "timing_optimalisation";
@@ -96,10 +100,10 @@ const string RATIO_TEST_ALPHA_JSON_KEY = "ratio_test_alpha";
 const string STANDING_PERSON_OPTIMALISATION_JSON_KEY = "standing_person_optimalisation";
 const string FIND_PROJECTION_JSON_KEY = "find_projection_from_3D";
 const string FIND_GPS_JSON_KEY = "find_GPS";
-
+//scene images filepath JSON
 const string SCENE_INDEX_JSON_KEY = "scene_index";
 const string SCENES_ARRAY_JSON_KEY = "scenes";
-
+//scene image additional informations
 const string CAMERA_NAME_JSON_KEY = "camera_name";
 const string FOCAL_LENGTH_JSON_KEY = "focal_length";
 const string SENSOR_SIZE_X_JSON_KEY = "sensor_size_x";

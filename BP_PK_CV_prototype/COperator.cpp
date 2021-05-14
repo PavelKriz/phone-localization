@@ -201,7 +201,7 @@ int COperator::run()
     try {
         fileLoader.load();
     }
-    catch (invalid_argument& e) {
+    catch (ios_base::failure& e) {
         std::cout << e.what() << endl;
         system("pause");
         return -1;

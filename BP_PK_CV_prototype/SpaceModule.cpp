@@ -3,12 +3,12 @@
 double sm::gcsDistance(SGcsCoords first, SGcsCoords second)
 {
 	//get all the values to radians
-	first.longtitude_ = degToRad(first.longtitude_);
+	first.longitude = degToRad(first.longitude);
 	first.latitude_ = degToRad(first.latitude_);
-	second.longtitude_ = degToRad(second.longtitude_);
+	second.longitude = degToRad(second.longitude);
 	second.latitude_ = degToRad(second.latitude_);
 
-	double diffLong = (second.longtitude_ - first.longtitude_);
+	double diffLong = (second.longitude - first.longitude);
 	double diffLat = (second.latitude_ - first.latitude_);
 
 	// Haversine formula to calculate gcs distance:
@@ -123,24 +123,26 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	double longtitudeAdjustFactor = longtitudeAdjustingFactor(p3Gcs.latitude_);
 
 	//adjust the points to make same meassures in both dirrections
-	//gcsP2Vec.at<double>(0) *= longtitudeAdjustFactor;
-	//gcsP3Vec.at<double>(0) *= longtitudeAdjustFactor;
+	//===========================================================================================================TODO!!!!!!
+	//TODO further research on the longtitude correction
+	gcsP2Vec.at<double>(0) *= longtitudeAdjustFactor;
+	gcsP3Vec.at<double>(0) *= longtitudeAdjustFactor;
 
 	//angle of vector twoToThree to the vector pointing to east
 	Mat gcsDiff = gcsP2Vec - gcsP3Vec;
 	double radAngleWithEast = getVecRotFromEast(gcsDiff.at<double>(0), gcsDiff.at<double>(1));
-	logger->log("gcs Diff x: ").log(to_string(gcsDiff.at<double>(0))).log(" gcs Diff y: ").log(to_string(gcsDiff.at<double>(1))).endl();
-	logger->log("angle from east: ").log(to_string(radToDeg(radAngleWithEast))).endl();
+	//logger->log("gcs Diff x: ").log(to_string(gcsDiff.at<double>(0))).log(" gcs Diff y: ").log(to_string(gcsDiff.at<double>(1))).endl();
+	//logger->log("angle from east: ").log(to_string(radToDeg(radAngleWithEast))).endl();
 
 	//p3 to p2
 	double radAngleAtP3 = sm::vectorAngle2D(p2.x, p2.y, p3.x, p3.y, p1.x, p1.y);
-	logger->log("angle that is by the point three: ").log(to_string(radToDeg(radAngleAtP3))).endl();
+	//logger->log("angle that is by the point three: ").log(to_string(radToDeg(radAngleAtP3))).endl();
 
 	//create vector from point three to the camera in the gcs
 	double radAngleDirVec = radAngleWithEast - radAngleAtP3;//angle between east vector and vector from point three and camera - angle of future direction vector of the line between point three and camera
 	Point2d lineDirVec(cos(radAngleDirVec), sin(radAngleDirVec));
-	logger->log("angle that is taken from the east to the right point: ").log(to_string(radToDeg(radAngleDirVec))).endl();
-	logger->log("cos: ").log(to_string(cos(radAngleDirVec))).log(" sin:").log(to_string(sin(radAngleDirVec))).endl();
+	//logger->log("angle that is taken from the east to the right point: ").log(to_string(radToDeg(radAngleDirVec))).endl();
+	//logger->log("cos: ").log(to_string(cos(radAngleDirVec))).log(" sin:").log(to_string(sin(radAngleDirVec))).endl();
 
 	//Computing the scale between two scales (between the camera space scale and the gcs scale)
 	//for meassuring distance we have to use correct coordinates (so the unchanged coordinates have to be used)
@@ -148,19 +150,19 @@ sm::SGcsCoords sm::solve3Kto2Kand1U(const Point2d& p1, const Point2d& p2, const 
 	//calculate distance in our space
 	double distance = sm::distance(p2.x, p2.y, p3.x, p3.y);
 	double distScaleFactor = distance / gcsDistance;
-	logger->log("gcsDistance: ").log(to_string(gcsDistance)).endl();
-	logger->log("our distance: ").log(to_string(distance)).endl();
-	logger->log("scale factor of the distances: ").log(to_string(distScaleFactor)).endl();
+	//logger->log("gcsDistance: ").log(to_string(gcsDistance)).endl();
+	//logger->log("our distance: ").log(to_string(distance)).endl();
+	//logger->log("scale factor of the distances: ").log(to_string(distScaleFactor)).endl();
 
 
 	//Calculating the p1 gcs location
 	double distanceP3ToP1 = sm::distance(p1.x, p1.y, p3.x, p3.y);
 	//just fill the parametric formula of a line and get the location of p1 (camera in the project)
 	Point2d p1GcsLoc;
-	logger->log("distance from camera to p3: ").log(to_string((distanceP3ToP1 / distScaleFactor))).endl();
-	p1GcsLoc.x = p3Gcs.longtitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg(p3Gcs.latitude_));
+	//logger->log("distance from camera to p3: ").log(to_string((distanceP3ToP1 / distScaleFactor))).endl();
+	p1GcsLoc.x = p3Gcs.longitude + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.x) / (metersInLongDeg(p3Gcs.latitude_));
 	p1GcsLoc.y = p3Gcs.latitude_ + ((distanceP3ToP1 / distScaleFactor) * lineDirVec.y) / (metersInLatDeg(p3Gcs.latitude_));
-	logger->log("what is being added: ").log(to_string(metersInLongDeg(p3Gcs.latitude_))).endl();
+	//logger->log("what is being added: ").log(to_string(metersInLongDeg(p3Gcs.latitude_))).endl();
 
 	//converting back to correct longtitude
 	//p1GcsLoc.x *= longtitudeCorrectionFactor(p3Gcs.latitude_);

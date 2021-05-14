@@ -26,10 +26,10 @@
 using namespace std;
 using namespace cv;
 
-//========================================methopd names and keys (that should be in config files)========================================
-const string SIFT_STR = "SIFT";
+//========================================method names and keys (these are optians in in config files)========================================
+const string SIFT_STR = "SIFT"; 
 const string ROOTSIFT_STR = "RootSIFT";
-const string PRECISE_ROOTSIFT_STR = "Precise RootSIFT";
+const string PRECISE_ROOTSIFT_STR = "Precise_RootSIFT";
 const string ORB_STR =  "ORB";
 
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
@@ -39,8 +39,10 @@ const string BEBLID_STR = "BEBLID";
 const string BF_MATCHING_STR = "BF_matching";
 const string FLANN_MATCHING_STR = "FLANN_matching";
 
-//========================================console========================================
-///Enum for specifying the output type
+//========================================console or file system========================================
+/**
+ * @brief Enum for specifying the output type
+*/
 enum class EOutputType {
 	CONSOLE,
 	FILE
@@ -105,7 +107,15 @@ struct SBEBLIDParams {
 };
 #endif
 
-///Enum with all implemented algorithms that can be vary
+
+/**
+ * @brief Enum with all implemented algorithms that can be vary
+ * 
+ * It includes feature detection,extraction, and matching algorithms
+ * 
+ * It itself does not have any implementation, the enum is used to determine which method will be used in the place of implementation.
+ * 
+*/
 enum class EAlgorithm {
 	ALG_SIFT,
 	ALG_ROOTSIFT,
@@ -124,20 +134,20 @@ enum class EAlgorithm {
 */
 struct SProcessParams {
 	//keypoints and descriptors
-	EAlgorithm detectMethod_;
-	EAlgorithm describeMethod_;
-	SSIFTParams siftParams_;
-	SORBParams orbParams_;
+	EAlgorithm detectMethod_; ///< feature detection method
+	EAlgorithm describeMethod_; ///< feature description method
+	SSIFTParams siftParams_; ///< parameters of the SIFT method
+	SORBParams orbParams_; ///< parameters of the ORB method
 #ifdef COMPILE_EXPERIMENTAL_MODULES_ENABLED
-	SBEBLIDParams beblidParams_;
+	SBEBLIDParams beblidParams_; ///< parameters of the BEBLID method
 #endif
 
-	EAlgorithm matchingMethod_;
-	double loweRatioTestAlpha_;
-	SCameraInfo cameraInfo_;
-	bool considerPhoneHoldHeight_;
-	bool calcProjectionFrom3D_;
-	bool calcGCSLocation_;
+	EAlgorithm matchingMethod_; ///< matching method that is used
+	double loweRatioTestAlpha_; ///< the alpha of the Lowe's ratio test
+	SCameraInfo cameraInfo_; ///< camera intrinsics parameters
+	bool considerPhoneHoldHeight_; ///< turns on/off the accuracy optimalistion in calculation of global location (GPS). It is recommended to be enabled for scenes with flat ground, which is everytime for the default image database.
+	bool calcProjectionFrom3D_; ///< determines if part of the output will be the volume recognision image (projected guessed bounding box of the building)
+	bool calcGCSLocation_; ///<determines if the global location (GPS) calculation will take place
 
 
 	///basic constructor
@@ -171,7 +181,23 @@ struct SProcessParams {
 	{}
 };
 
-///Function that gives strings (with algorithm names) to all members of EAlgorithm enum
-string algToStr(const EAlgorithm alg);
+//========================================functions to work with algorithm names========================================
 
+/**
+ * @brief Converts the algorithm enum into string form
+ * 
+ * The strings of the algorithms are defined by constants (see function implementation)
+ * 
+ * @param alg Algorithm to be converted
+ * @return algorithm in form of string
+*/
+string algToStr(const EAlgorithm alg);
+/**
+ * @brief Converts the string into the algorithm enum
+ * 
+ * The strings of the algorithms are defined by constants (see function implementation)
+ * 
+ * @param alg Algorithm to be converted
+ * @return algorithm in form of string
+*/
 EAlgorithm strToAlg(const string& str);

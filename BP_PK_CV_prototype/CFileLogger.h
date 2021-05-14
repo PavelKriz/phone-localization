@@ -56,8 +56,16 @@ protected:
 	 * @brief the logger will start behaving as normally
 	*/
 	virtual void emergencyEnd() override { emergencyMode_ = false; }
-
+	/**
+	 * @brief Corrects the filepath to have always / or \\ at the end
+	 * @param toCorrect filepath to be corrected
+	 * @return corrected filepath
+	*/
 	string correctOutputRoot(const string& toCorrect);
+	/**
+	 * @brief It checks the inner output filepath and if the directiories in the filepath do not exist it creates all the needed directories.
+	 * @throw ios_base::failure in case of any io based failure
+	*/
 	void checkAndCreateOutputDir();
 public:
 	/**

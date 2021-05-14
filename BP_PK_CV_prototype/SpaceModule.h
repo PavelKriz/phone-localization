@@ -86,23 +86,62 @@ namespace sm {
      * @return the midpoint
     */
     Point2d getMidPoint2D(double ax, double ay, double bx, double by);
-
+    /**
+     * @brief From (x,y,z) creates (x,y,z,1)^T matrix
+     * @param x coordinate
+     * @param y coordinate
+     * @param z coordinate
+     * @return the homogeneus coordinates
+    */
     Mat getHomogenousVector3D(double x, double y, double z);
-
+    /**
+     * @brief Get how many meters are in one latitude degree for given latitude
+     * @param latitude latitude of the space that is being evaluated
+     * @return meters in one latitude degree
+    */
     double metersInLatDeg(double latitude);
-    
+    /**
+     * @brief Get how many meters are in one longitude degree for given latitude
+     * @param latitude latitude of the space that is being evaluated
+     * @return meters in one longitude degree
+    */
     double metersInLongDeg(double latitude);
-
+    /**
+     * @brief Factor ALPHA that does this at given latitude: ALPHA * longitude = latitude
+     * @param latitude given latitude
+     * @return the factor ALPHA
+    */
     double longtitudeAdjustingFactor(double latitude);
 
+    /**
+     * @brief Returns the inverse of the factor from longtitudeAdjustingFactor method call (for the same latitude)
+     * @param latitude given latitude
+     * @return the factor ALPHA^-1
+    */
     double longtitudeCorrectionFactor(double latitude);
-
+    /**
+     * @brief Convertion from radians to degrees
+     * @param radAngle angle in radians
+     * @return angle in degrees
+    */
     double radToDeg(double radAngle);
-
+    /**
+     * @brief Convertion from degrees to radians
+     * @param degAngle angle in degrees
+     * @return angle in radians
+    */
     double degToRad(double degAngle);
-
+    /**
+     * @brief Angle between two vectors defined by points ABC, first vector: A - B, second vector C - B
+     * @param ax x point A coordinate
+     * @param ay y point A coordinate
+     * @param bx x point B coordinate
+     * @param by y point B coordinate
+     * @param cx x point C coordinate
+     * @param cy y point C coordinate
+     * @return the angle between the two vectors
+    */
     double vectorAngle2D(double ax, double ay, double bx, double by, double cx, double cy);
-
     /**
      * @brief return the angle between given vector and vector pointing to east (1.0, 0.0)
      * 
